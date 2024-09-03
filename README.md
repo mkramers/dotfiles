@@ -41,4 +41,7 @@ corepack enable
 ```bash
 # eza - better ls
 brew install eza
+
+# bat - better cat (https://github.com/sharkdp/bat?tab=readme-ov-file#installation)
+brew install bat
 ```
