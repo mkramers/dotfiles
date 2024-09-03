@@ -19,3 +19,8 @@ pip install pipenv --user
 ```bash
 brew install just
 ```
+
+- [Install nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script):
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+```
