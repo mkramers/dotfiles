@@ -8,6 +8,9 @@
 ```bash
 brew update
 brew install pyenv
+
+# install python version
+pyenv install 3.11.6
 ```
 
 - [Install pipenv](https://pipenv.pypa.io/en/latest/installation.html#installing-pipenv):
@@ -23,4 +26,13 @@ brew install just
 - [Install nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script):
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+# install node v16.15.1
+nvm install v16.15.1
+nvm use v16.15.1
+```
+
+- [Install yarn](https://yarnpkg.com/getting-started/install):
+```bash
+corepack enable
 ```
