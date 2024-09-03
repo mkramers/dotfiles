@@ -11,3 +11,7 @@ for file in ~/.dotfiles/.{omzrc,devrc,pathrc,aliases}; do
    fi
 done
 unset file
+
+if [[ $(uname) == "Linux" ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
