@@ -53,8 +53,19 @@ brew install bat
 # fzf - fuzzy search
 brew install fzf
 
+# zoxide - better cd (https://github.com/ajeetdsouza/zoxide)
+brew install zoxide
+
+# superfile - file manager (https://github.com/yorukot/superfile)
+brew install superfile
+
+# github cli
+brew install gh
+
+# aws cli
+brew install awscli
+
 # oh-my-zsh plugins
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-
 brew install zsh-autosuggestions
 ```
