@@ -125,29 +125,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-alias ll="ls -la"
-alias k='kubectl'
-alias dc='docker compose'
-alias dcd='docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml'
-alias docker-clean='docker rmi $(docker images -f "dangling=true" -q)'
-alias gmm="git branch --merged master | grep -v '^\*\|master' | xargs -I % git branch -d %"
-alias cls='clear && echo -en "\e[3J"'
-alias hlmta='hasural metadata apply'
-alias hlms='hasural migrate status'
-alias hlc='hasural console'
-
-hasural() {
-   hasura "$@" --skip-update-check --envfile ../.env.hasura.local
-}
-
-hlma() {
-   hasural migrate apply "$@"
-}
-
-copyaws() {
-   aws-vault export $@ --format=json | jq '{aws_access_key: .AccessKeyId, aws_secret_access_key: .SecretAccessKey, aws_session_token: .SessionToken}' | pbcopy
-}
-
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
 export PATH="$(yarn global bin):$PATH"
@@ -160,12 +137,6 @@ export PATH="/Users/mk/.local/bin:$PATH"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 eval "$(zoxide init zsh)"
-alias cd="z"
-alias cat="bat"
-alias kill-by-port='lsof -i :<PORT> | grep LISTEN | awk '{print $2}' | xargs kill -9'
-alias kctl="kubectl"
-
-alias awsv='(){ aws-vault exec -t $(op item get aws-$1 --otp) $1 ;}'
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -181,6 +152,12 @@ alias awsv='(){ aws-vault exec -t $(op item get aws-$1 --otp) $1 ;}'
 #fi
 #unset __conda_setup
 # <<< conda initialize <<<
+
+
+if [ ! -f ~/.aliases ]; then
+    echo "WARNING: File ~/.aliases not found."
+fi
+source ~/.aliases
 
 
 . "$HOME/.cargo/env"

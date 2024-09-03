@@ -1,0 +1,44 @@
+# misc
+alias ll="ls -la"
+alias cls='clear && echo -en "\e[3J"'
+
+if zoxide -V >/dev/null 2>&1; then
+    alias cd="z"
+fi
+
+if bat -V >/dev/null 2>&1; then
+	alias cat="bat"
+fi
+
+alias kill-by-port='lsof -i :<PORT> | grep LISTEN | awk '{print $2}' | xargs kill -9'
+
+# git
+alias gmm="git branch --merged master | grep -v '^\*\|master' | xargs -I % git branch -d %"
+
+# kctl
+alias kctl="kubectl"
+
+# docker
+alias dc='docker compose'
+alias dcd='docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml'
+alias docker-clean='docker rmi $(docker images -f "dangling=true" -q)'
+
+# hasura
+alias hlmta='hasural metadata apply'
+alias hlms='hasural migrate status'
+alias hlc='hasural console'
+
+hasural() {
+   hasura "$@" --skip-update-check --envfile ../.env.hasura.local
+}
+
+hlma() {
+   hasural migrate apply "$@"
+}
+
+hlmd() {
+   hasural migrate create "$@"
+}
+
+# aws
+alias awsv='(){ aws-vault exec -t $(op item get aws-$1 --otp) $1 ;}'
