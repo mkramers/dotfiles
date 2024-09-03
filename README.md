@@ -4,6 +4,11 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
+- [Install stow](https://www.gnu.org/software/stow/)
+```bash
+brew install stow
+```
+
 - [Install pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#unixmacos):
 ```bash
 brew update
@@ -44,4 +49,10 @@ brew install eza
 
 # bat - better cat (https://github.com/sharkdp/bat?tab=readme-ov-file#installation)
 brew install bat
+
+# fzf - fuzzy search
+brew install fzf
+
+# oh-my-zsh plugins
+brew install zsh-autosuggestions
 ```

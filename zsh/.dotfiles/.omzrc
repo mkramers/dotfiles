@@ -14,7 +14,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
 	git
 	fzf
-  	zsh-autosuggestions)
+  zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
