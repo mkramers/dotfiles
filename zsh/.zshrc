@@ -2,6 +2,7 @@
 autoload -Uz compinit
 compinit
 
+# load all rc files
 for file in ~/.dotfiles/.{omzrc,devrc,pathrc,aliases}; do
    if [ -f "$file" ]; then
       source "$file"
