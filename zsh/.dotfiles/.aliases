@@ -1,6 +1,12 @@
 # misc
-alias ll="ls -la"
 alias cls='clear && echo -en "\e[3J"'
+
+if eza -v >/dev/null 2>&1; then
+   alias ls="eza"
+fi
+
+
+alias ll="ls -la"
 
 if zoxide -V >/dev/null 2>&1; then
 	eval "$(zoxide init zsh)"

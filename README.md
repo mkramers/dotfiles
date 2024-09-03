@@ -36,3 +36,9 @@ nvm use v16.15.1
 ```bash
 corepack enable
 ```
+
+- Install utils:
+```bash
+# eza - better ls
+brew install eza
+```
