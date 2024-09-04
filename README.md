@@ -65,6 +65,9 @@ brew install gh
 # aws cli
 brew install awscli
 
+# poetry
+curl -sSL https://install.python-poetry.org | python3 -
+
 # oh-my-zsh plugins
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 brew install zsh-autosuggestions
