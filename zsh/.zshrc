@@ -1,7 +1,3 @@
-# autocomplete
-autoload -Uz compinit
-compinit
-
 # load all rc files
 for file in ~/.dotfiles/.{omzrc,pathrc,devrc,aliases}; do
    if [ -f "$file" ]; then
@@ -11,6 +7,10 @@ for file in ~/.dotfiles/.{omzrc,pathrc,devrc,aliases}; do
    fi
 done
 unset file
+
+# autocomplete
+autoload -Uz compinit
+compinit
 
 if [[ $(uname) == "Linux" ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
