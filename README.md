@@ -4,6 +4,11 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
+- [Install oh-my-zsh](https://ohmyz.sh/#install):
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
 - [Install stow](https://www.gnu.org/software/stow/)
 ```bash
 brew install stow
