@@ -1,1 +1,3 @@
 .DS_Store
+zsh/.config/yazi/plugins
+zsh/.config/yazi/package.toml
