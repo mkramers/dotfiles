@@ -12,3 +12,4 @@ unset file
 autoload -Uz compinit
 compinit
 
+export EDITOR=micro
