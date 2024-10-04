@@ -49,3 +49,5 @@ hlmd() {
 
 # aws
 alias awsv='(){ aws-vault exec -t $(op item get aws-$1 --otp) $1 ;}'
+
+alias lg='lazygit'
