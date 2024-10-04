@@ -1,5 +1,5 @@
 # load all rc files
-for file in ~/.dotfiles/.{pathrc,omzrc,devrc,aliases}; do
+for file in ~/.dotfiles/.{omzrc,pathrc,devrc,aliases}; do
    if [ -f "$file" ]; then
       source "$file"
    else
