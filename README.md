@@ -1,4 +1,4 @@
-### Bootstrap
+115;9u### Bootstrap
 - [Install brew](https://brew.sh/):
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -61,9 +61,6 @@ brew install fzf
 # zoxide - better cd (https://github.com/ajeetdsouza/zoxide)
 brew install zoxide
 
-# superfile - file manager (https://github.com/yorukot/superfile)
-brew install superfile
-
 # github cli
 brew install gh
 
@@ -72,6 +69,12 @@ brew install awscli
 
 # poetry
 curl -sSL https://install.python-poetry.org | python3 -
+
+# jq
+brew install jq
+
+# yazi
+brew install yazi ffmpegthumbnailer sevenzip poppler fd ripgrep imagemagick font-symbols-only-nerd-font
 
 # oh-my-zsh plugins
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
