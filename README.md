@@ -67,6 +67,12 @@ brew install gh
 # aws cli
 brew install awscli
 
+# lazygit
+brew install lazygit
+
+# lazydocker
+brew install lazydocker
+
 # poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
