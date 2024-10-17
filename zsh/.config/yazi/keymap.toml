@@ -12,8 +12,3 @@ desc = "Cancel input"
 on   = [ "g", "i" ]
 run  = "plugin lazygit"
 desc = "run lazygit"
-
-[[manager.prepend_keymap]]
-on   = "f"
-run  = "plugin jump-to-char"
-desc = "Jump to char"
