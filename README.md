@@ -81,12 +81,7 @@ brew install jq
 
 # yazi
 brew install yazi ffmpegthumbnailer sevenzip poppler fd ripgrep imagemagick font-symbols-only-nerd-font
-
-# yazi plugins
-ya pack -a Reledia/glow
-ya pack -a yazi-rs/plugins:full-border
-ya pack -a dangooddd/kanagawa
-ya pack -a Lil-Dank/lazygit
+ya pack -i
 
 # oh-my-zsh plugins
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
