@@ -31,6 +31,9 @@ $env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro
 $env.EDITOR = $env.config.buffer_editor
 $env.SHELL = 'nu'
 
+# enable usage of a custom aqua registry
+$env.AQUA_POLICY_CONFIG = "~/.aqua/aqua-policy.yaml"
+
 alias ll = ls -la
 alias nano = micro
 alias cat = bat
