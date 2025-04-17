@@ -43,4 +43,4 @@ def awsv [account_name: string] {
 }
 
 # hack for fnm in nu
-use ./modules/fnm.nu
+# use ./modules/fnm.nu
