@@ -32,7 +32,7 @@ $env.EDITOR = $env.config.buffer_editor
 $env.SHELL = 'nu'
 
 # enable usage of a custom aqua registry
-$env.AQUA_POLICY_CONFIG = "~/.aqua/aqua-policy.yaml"
+$env.AQUA_POLICY_CONFIG = $env.HOME | path join ".aqua/aqua-policy.yaml"
 
 alias ll = ls -la
 alias nano = micro
