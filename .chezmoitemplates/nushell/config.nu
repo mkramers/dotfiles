@@ -37,6 +37,9 @@ alias cat = bat
 alias s = kitten ssh
 alias y = yazi
 
+# allows us to edit the config.nu source file instead of the real one
+alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join ".chezmoitemplates/nushell/config.nu")
+
 # aws-vault + 1Password auth
 def awsv [account_name: string] {
   aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- nu
