@@ -53,3 +53,4 @@ packages:
 - name: terraform-linters/tflint@v0.56.0
 - name: hashicorp/terraform@v1.11.4
 - name: amacneil/dbmate@v2.26.0
+- name: stateful/runme@v3.13.1
