@@ -15,13 +15,10 @@ mv nu ../
 rm -r <filename>*
 
 # get chezmoi - see below for verified install --------------------
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply mkramers/dotfiles
 
 #get aqua - see below for verified install --------------------
 curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.1.1/aqua-installer | bash
-
-# init dotfiles from GH via chezmoi --------------------
-chezmoi init --apply mkramers/dotfiles
 
 # launch nushell
 ~/.local/bin/nu
@@ -73,6 +70,9 @@ rm -r chezmoi_*
 
 # optional
 rm ./cosign
+
+# init dotfiles from GH
+chezmoi init --apply mkramers/dotfiles
 ```
 
 ### Aqua Verified Install
