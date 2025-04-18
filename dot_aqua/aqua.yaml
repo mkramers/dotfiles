@@ -54,3 +54,5 @@ packages:
 - name: hashicorp/terraform@v1.11.4
 - name: amacneil/dbmate@v2.26.0
 - name: stateful/runme@v3.13.1
+- name: vectordotdev/vector@v0.46.1
+  registry: local
