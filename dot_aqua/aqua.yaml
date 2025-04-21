@@ -56,3 +56,5 @@ packages:
 - name: stateful/runme@v3.13.1
 - name: vectordotdev/vector@v0.46.1
   registry: local
+- name: carapace-sh/carapace-bin@v1.3.0
+  registry: local
