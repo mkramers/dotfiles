@@ -10,8 +10,7 @@ cd ~/.local/bin
 # find appropriate release from https://github.com/nushell/nushell/releases
 curl -LO <url>
 tar -xvzf <filename>
-cd <filename>
-mv nu ../
+mv  <filename>/nu ../
 rm -r <filename>*
 
 # get chezmoi - see below for verified install --------------------
