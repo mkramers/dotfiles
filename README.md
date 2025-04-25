@@ -8,10 +8,7 @@ cd ~/.local/bin
 
 # get nushell --------------------
 # find appropriate release from https://github.com/nushell/nushell/releases
-curl -LO <url>
-tar -xvzf <filename>
-mv  <filename>/nu ../
-rm -r <filename>*
+curl -sL <url> | tar --strip-components 1 -xvzf - */nu
 
 # get chezmoi - see below for verified install --------------------
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply mkramers/dotfiles
