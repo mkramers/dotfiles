@@ -33,6 +33,7 @@ alias cat = bat
 alias s = kitten ssh
 alias y = yazi
 alias tre = tre -a
+alias lzg = lazygit
 
 # allows us to edit the config.nu chezmoi source file instead of the real one
 alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join ".chezmoitemplates/nushell/config.nu")
