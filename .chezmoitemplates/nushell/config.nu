@@ -3,6 +3,7 @@
 # ----------------------------------------------------
 
 use std/util "path add"
+path add "/usr/local/bin"
 path add ($env.HOME | path join ".local/bin")
 path add ($env.HOME | path join ".local/share/aquaproj-aqua/bin")
 {{- if eq .chezmoi.os "darwin" }}
@@ -49,4 +50,4 @@ def awsv [account_name: string] {
 # ----- apps -----------------------------------------
 # ----------------------------------------------------
 # partially broken - enables better fnm integration 
-# use ./modules/fnm.nu
+use ./modules/fnm.nu

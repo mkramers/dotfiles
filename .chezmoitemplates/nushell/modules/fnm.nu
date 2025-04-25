@@ -31,32 +31,8 @@ export-env {
         return $env_vars
     }
 
-    # !! The prompt to download is broken so this all doesn't work !!
-    
-    # Check if fnm command exists
     if not (which fnm | is-empty) {
         # Load fnm environment variables
         fnm-env | load-env
-
-        # Set directory change hook (only set once)
-        if (not ($env | default false __fnm_hooked | get __fnm_hooked)) {
-            # Mark hook as set
-            $env.__fnm_hooked = true
-            
-            # Initialize configuration structure
-            $env.config = ($env | default {} config).config
-            $env.config = ($env.config | default {} hooks)
-            $env.config = ($env.config | update hooks ($env.config.hooks | default {} env_change))
-            $env.config = ($env.config | update hooks.env_change ($env.config.hooks.env_change | default [] PWD))
-            
-            # Add directory change handler function
-            # When .nvmrc or .node-version file exists in the directory
-            # Automatically switch to the corresponding Node.js version
-            $env.config = ($env.config | update hooks.env_change.PWD ($env.config.hooks.env_change.PWD | append { |before, after|
-                if ('FNM_DIR' in $env) and ([.nvmrc .node-version] | path exists | any { |it| $it }) {
-                   # (^fnm use); (fnm-env | load-env)
-                }
-            }))
-        }
     }
 }
