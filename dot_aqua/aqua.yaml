@@ -58,3 +58,10 @@ packages:
   registry: local
 - name: carapace-sh/carapace-bin@v1.3.0
   registry: local
+- name: hasura/graphql-engine@v2.47.0
+- name: maddyblue/sqlfmt@v0.5.0
+- name: jorgerojas26/lazysql@v0.3.7
+- name: golang-migrate/migrate@v4.18.3
+- name: theseus-rs/postgresql-binaries@17.5.0
+- name: kashav/fsql@v0.5.2
+- name: noborus/trdsql@v1.1.0
