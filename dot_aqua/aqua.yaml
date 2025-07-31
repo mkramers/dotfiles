@@ -51,7 +51,7 @@ packages:
 - name: Schniz/fnm@v1.38.1
 - name: kubernetes/kubectl@v1.32.3
 - name: terraform-linters/tflint@v0.56.0
-- name: hashicorp/terraform@v1.11.4
+- name: hashicorp/terraform@v1.12.2
 - name: amacneil/dbmate@v2.26.0
 - name: stateful/runme@v3.13.1
 - name: vectordotdev/vector@v0.46.1
@@ -67,3 +67,6 @@ packages:
 - name: noborus/trdsql@v1.1.0
 - name: Wilfred/difftastic@0.63.0
 - name: peak/s5cmd@v2.3.0
+- name: argoproj/argo-cd@v3.0.5
+- name: helm/helm@v3.18.2
+- name: alcideio/rbac-tool@v1.20.0
