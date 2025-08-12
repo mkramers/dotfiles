@@ -48,6 +48,10 @@ def awsv [account_name: string] {
   aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- nu
 }
 
+def paws [] {
+  $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
+}
+
 # ----------------------------------------------------
 # ----- apps -----------------------------------------
 # ----------------------------------------------------
