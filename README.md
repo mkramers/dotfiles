@@ -8,13 +8,16 @@ cd ~/.local/bin
 
 # get nushell --------------------
 # find appropriate release from https://github.com/nushell/nushell/releases
+curl -sL <url> | tar --strip-components=1 --wildcards -xvzf - */nu
+
+# or on macos
 curl -sL <url> | tar --strip-components 1 -xvzf - */nu
 
 # get chezmoi - see below for verified install --------------------
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply mkramers/dotfiles
 
 #get aqua - see below for verified install --------------------
-curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.1.1/aqua-installer | bash
+curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/v4.0.2/aqua-installer | bash
 
 # launch nushell
 ~/.local/bin/nu
