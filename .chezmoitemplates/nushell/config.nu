@@ -35,6 +35,7 @@ alias y = yazi
 alias tre = tre -a
 alias lzg = lazygit
 alias pipenv = uv run --no-project --with pipenv pipenv
+alias cdg = cd (git rev-parse --show-toplevel)
 
 # allows us to edit the config.nu chezmoi source file instead of the real one
 alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join ".chezmoitemplates/nushell/config.nu")
@@ -43,9 +44,17 @@ alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join
 # ----- funcs -----------------------------------------
 # ----------------------------------------------------
 
-# aws-vault + 1Password auth
+# aws-vault + 1Password OTP
 def awsv [account_name: string] {
   aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- nu
+}
+
+# aws-vault exec + 1Password OTP
+def awsve [
+  account_name: string,
+  ...rest
+] {
+  aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- ...$rest
 }
 
 def paws [] {
