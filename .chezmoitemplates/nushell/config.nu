@@ -23,6 +23,33 @@ $env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro
 $env.EDITOR = $env.config.buffer_editor
 $env.SHELL = 'nu'
 
+
+# ----------------------------------------------------
+# ----- funcs -----------------------------------------
+# ----------------------------------------------------
+
+# forces devpod to use zsh internally to avoid parsing errors
+def --wrapped devpod [...rest] {
+	with-env { SHELL: 'zsh' } {
+		^devpod ...$rest
+	}
+}
+
+# aws-vault + 1Password OTP
+def awsv [account_name: string, ...rest] {
+  mut cmd = ["nu"]
+  
+  if (($rest | length) > 0) {
+    $cmd = $rest
+  }
+  
+  aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- ...$cmd
+}
+
+def paws [] {
+  $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
+}
+
 # ----------------------------------------------------
 # ----- alias -----------------------------------------
 # ----------------------------------------------------
@@ -36,30 +63,11 @@ alias tre = tre -a
 alias lzg = lazygit
 alias pipenv = uv run --no-project --with pipenv pipenv
 alias cdg = cd (git rev-parse --show-toplevel)
+alias k9s-kflow = awsv kflow k9s
+
 
 # allows us to edit the config.nu chezmoi source file instead of the real one
 alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join ".chezmoitemplates/nushell/config.nu")
-
-# ----------------------------------------------------
-# ----- funcs -----------------------------------------
-# ----------------------------------------------------
-
-# aws-vault + 1Password OTP
-def awsv [account_name: string] {
-  aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- nu
-}
-
-# aws-vault exec + 1Password OTP
-def awsve [
-  account_name: string,
-  ...rest
-] {
-  aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- ...$rest
-}
-
-def paws [] {
-  $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
-}
 
 # ----------------------------------------------------
 # ----- apps -----------------------------------------
