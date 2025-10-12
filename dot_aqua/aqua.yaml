@@ -27,7 +27,7 @@ packages:
 - name: twpayne/chezmoi@v2.62.1
 - name: astral-sh/uv@0.6.14
 - name: ogham/exa@v0.10.1
-- name: duckdb/duckdb@v1.2.2
+- name: duckdb/duckdb@v1.3.2
 - name: sharkdp/fd@v10.2.0
 - name: derailed/k9s@v0.50.3
 - name: charmbracelet/glow@v2.1.0
@@ -39,7 +39,7 @@ packages:
 - name: 99designs/aws-vault@v7.2.0
 - name: cli/cli@v2.69.0
 - name: oven-sh/bun@bun-v1.2.10
-- name: F1bonacc1/process-compose@v1.46.0
+- name: F1bonacc1/process-compose@v1.75.1
   registry: local
 - name: openobserve/openobserve@v0.14.5
   registry: local
@@ -51,7 +51,7 @@ packages:
 - name: Schniz/fnm@v1.38.1
 - name: kubernetes/kubectl@v1.32.3
 - name: terraform-linters/tflint@v0.56.0
-- name: hashicorp/terraform@v1.12.2
+- name: hashicorp/terraform@v1.13.3
 - name: amacneil/dbmate@v2.26.0
 - name: stateful/runme@v3.13.1
 - name: vectordotdev/vector@v0.46.1
@@ -72,3 +72,6 @@ packages:
 - name: alcideio/rbac-tool@v1.20.0
 - name: quarylabs/sqruff@v0.29.3
 - name: hashicorp/packer@v1.14.1
+- name: nektos/act@v0.2.81
+- name: mikefarah/yq@v4.47.2
+- name: devspace-sh/devspace@v6.3.18

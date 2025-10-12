@@ -36,7 +36,7 @@ def --wrapped devpod [...rest] {
 }
 
 # aws-vault + 1Password OTP
-def awsv [account_name: string, ...rest] {
+def --wrapped awsv [account_name: string, ...rest] {
   mut cmd = ["nu"]
   
   if (($rest | length) > 0) {
