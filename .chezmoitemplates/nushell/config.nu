@@ -21,7 +21,7 @@ $env.AQUA_POLICY_CONFIG = $env.HOME | path join ".aqua/aqua-policy.yaml"
 $env.config.show_banner = false
 $env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro" }
 $env.EDITOR = $env.config.buffer_editor
-$env.SHELL = 'nu'
+$env.SHELL = '/Users/mk/.local/bin/nu'
 
 
 # ----------------------------------------------------
