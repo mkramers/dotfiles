@@ -29,7 +29,7 @@ packages:
 - name: ogham/exa@v0.10.1
 - name: duckdb/duckdb@v1.3.2
 - name: sharkdp/fd@v10.2.0
-- name: derailed/k9s@v0.50.3
+- name: derailed/k9s@v0.50.16
 - name: charmbracelet/glow@v2.1.0
 - name: Orange-OpenSource/hurl@6.1.1
 - name: dduan/tre@v0.4.0
@@ -75,3 +75,4 @@ packages:
 - name: nektos/act@v0.2.81
 - name: mikefarah/yq@v4.47.2
 - name: devspace-sh/devspace@v6.3.18
+- name: charmbracelet/gum@v0.17.0
