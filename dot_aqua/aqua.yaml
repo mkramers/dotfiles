@@ -76,3 +76,4 @@ packages:
 - name: mikefarah/yq@v4.47.2
 - name: devspace-sh/devspace@v6.3.18
 - name: charmbracelet/gum@v0.17.0
+- name: aquasecurity/trivy@v0.67.2
