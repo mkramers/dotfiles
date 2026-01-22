@@ -23,6 +23,9 @@ $env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro
 $env.EDITOR = $env.config.buffer_editor
 $env.SHELL = '/Users/mk/.local/bin/nu'
 
+# cli
+$env.FZF_DEFAULT_COMMAND = "fd --type file --color=always"
+$env.FZF_CTRL_T_COMMAND = "$FZF_DEFAULT_COMMAND"
 
 # ----------------------------------------------------
 # ----- funcs -----------------------------------------
@@ -61,7 +64,6 @@ alias s = kitten ssh
 alias y = yazi
 alias tre = tre -a
 alias lzg = lazygit
-alias pipenv = uv run --no-project --with pipenv pipenv
 alias cdg = cd (git rev-parse --show-toplevel)
 alias k9s-kflow = awsv kflow k9s
 

@@ -76,5 +76,14 @@ packages:
 - name: mikefarah/yq@v4.47.2
 - name: devspace-sh/devspace@v6.3.18
 - name: charmbracelet/gum@v0.17.0
-- name: aquasecurity/trivy@v0.67.2
+- name: aquasecurity/trivy@v0.68.1
+- name: ms-jpq/sad@v0.4.32
+- name: dandavison/delta@0.18.2
 - name: Byron/dua-cli@v2.32.2
+- name: F1bonacc1/process-compose@v1.78.0
+  registry: local
+- name: gruntwork-io/terragrunt@v0.97.1
+- name: opentofu/opentofu@v1.11.1
+- name: iann0036/iamlive@v1.1.27
+- name: gruntwork-io/terragrunt@v0.97.1
+- name: twistedpair/google-cloud-sdk@552.0.0
