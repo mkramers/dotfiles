@@ -77,3 +77,4 @@ packages:
 - name: devspace-sh/devspace@v6.3.18
 - name: charmbracelet/gum@v0.17.0
 - name: aquasecurity/trivy@v0.67.2
+- name: Byron/dua-cli@v2.32.2
