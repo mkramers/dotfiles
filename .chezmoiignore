@@ -8,3 +8,5 @@ Library/Application Support/nushell/modules/fnm.nu
 {{ end }}
 
 README.md
+bootstrap.sh
+docs/
