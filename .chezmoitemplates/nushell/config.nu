@@ -26,6 +26,7 @@ $env.SHELL = '/Users/mk/.local/bin/nu'
 # cli
 $env.FZF_DEFAULT_COMMAND = "fd --type file --color=always"
 $env.FZF_CTRL_T_COMMAND = "$FZF_DEFAULT_COMMAND"
+$env.GIT_PAGER = "delta"
 
 # ----------------------------------------------------
 # ----- funcs -----------------------------------------
