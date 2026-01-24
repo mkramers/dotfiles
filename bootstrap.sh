@@ -135,8 +135,17 @@ echo ""
 echo -e "${GREEN}✓ Bootstrap complete!${NC}"
 echo ""
 
-read -p "Launch nushell now? [Y/n] " -n 1 -r
-echo ""
+if [[ -t 0 ]]; then
+    # Running interactively
+    read -p "Launch nushell now? [Y/n] " -n 1 -r
+    echo ""
+else
+    # Running via pipe (curl | bash), read from tty
+    echo -n "Launch nushell now? [Y/n] "
+    read -n 1 -r REPLY < /dev/tty
+    echo ""
+fi
+
 if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     exec "$LOCAL_BIN/nu"
 fi
