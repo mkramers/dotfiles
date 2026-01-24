@@ -63,7 +63,7 @@ alias {{ $name }} = {{ $cmd }}
 alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join ".chezmoitemplates/nushell/config.nu")
 
 # ----------------------------------------------------
-# ----- apps -----------------------------------------
+# ----- mise (tool version manager) -------------------
 # ----------------------------------------------------
-# partially broken - enables better fnm integration
-use ./modules/fnm.nu
+
+$env.PATH = ($env.PATH | split row (char esep) | prepend ($env.HOME | path join ".local/share/mise/shims"))

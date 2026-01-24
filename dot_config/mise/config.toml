@@ -1,0 +1,76 @@
+[tools]
+# Native runtimes
+node = "lts"
+bun = "latest"
+
+# Native backends
+"cargo:eza" = "latest"
+"github:F1bonacc1/process-compose" = "latest"
+
+# CLI tools via aqua backend
+"aqua:zyedidia/micro" = "latest"
+"aqua:BurntSushi/ripgrep" = "latest"
+"aqua:antonmedv/fx" = "latest"
+"aqua:TomWright/dasel" = "latest"
+"aqua:sharkdp/bat" = "latest"
+"aqua:carvel-dev/ytt" = "latest"
+"aqua:sachaos/viddy" = "latest"
+"aqua:junegunn/fzf" = "latest"
+"aqua:casey/just" = "latest"
+"aqua:twpayne/chezmoi" = "latest"
+"aqua:astral-sh/uv" = "latest"
+"aqua:duckdb/duckdb" = "latest"
+"aqua:sharkdp/fd" = "latest"
+"aqua:derailed/k9s" = "latest"
+"aqua:charmbracelet/glow" = "latest"
+"aqua:Orange-OpenSource/hurl" = "latest"
+"aqua:dduan/tre" = "latest"
+"aqua:astral-sh/ruff" = "latest"
+"aqua:aws/aws-cli" = "latest"
+"aqua:1password/cli" = "latest"
+"aqua:99designs/aws-vault" = "latest"
+"aqua:cli/cli" = "latest"
+"aqua:ClementTsang/bottom" = "latest"
+"aqua:sxyazi/yazi" = "latest"
+"aqua:jesseduffield/lazygit" = "latest"
+"aqua:jesseduffield/lazydocker" = "latest"
+"aqua:johnkerl/miller" = "latest"
+"aqua:kubernetes/kubectl" = "latest"
+"aqua:terraform-linters/tflint" = "latest"
+"aqua:hashicorp/terraform" = "latest"
+"aqua:amacneil/dbmate" = "latest"
+"aqua:stateful/runme" = "latest"
+"aqua:hasura/graphql-engine" = "latest"
+"aqua:maddyblue/sqlfmt" = "latest"
+"aqua:jorgerojas26/lazysql" = "latest"
+"aqua:golang-migrate/migrate" = "latest"
+"aqua:kashav/fsql" = "latest"
+"aqua:noborus/trdsql" = "latest"
+"aqua:Wilfred/difftastic" = "latest"
+"aqua:peak/s5cmd" = "latest"
+"aqua:argoproj/argo-cd" = "latest"
+"aqua:helm/helm" = "latest"
+"aqua:alcideio/rbac-tool" = "latest"
+"aqua:quarylabs/sqruff" = "latest"
+"aqua:hashicorp/packer" = "latest"
+"aqua:nektos/act" = "latest"
+"aqua:mikefarah/yq" = "latest"
+"aqua:devspace-sh/devspace" = "latest"
+"aqua:charmbracelet/gum" = "latest"
+"aqua:aquasecurity/trivy" = "latest"
+"aqua:ms-jpq/sad" = "latest"
+"aqua:dandavison/delta" = "latest"
+"aqua:Byron/dua-cli" = "latest"
+"aqua:gruntwork-io/terragrunt" = "latest"
+"aqua:opentofu/opentofu" = "latest"
+"aqua:iann0036/iamlive" = "latest"
+"aqua:carapace-sh/carapace-bin" = "latest"
+
+# TODO: These need custom setup or aren't in mise registry
+# - vectordotdev/vector
+# - openobserve/openobserve
+# - theseus-rs/postgresql-binaries
+# - twistedpair/google-cloud-sdk (use gcloud vfox instead?)
+
+[settings]
+experimental = true

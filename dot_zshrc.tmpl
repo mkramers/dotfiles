@@ -95,6 +95,12 @@ alias configzsh='${EDITOR:-nano} $(chezmoi source-path)/dot_zshrc.tmpl'
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
+# ----------------------------------------------------
+# ----- mise (tool version manager) -------------------
+# ----------------------------------------------------
+
+eval "$(~/.local/bin/mise activate zsh)"
+
 {{- if eq .chezmoi.os "linux" }}
 
 # ----------------------------------------------------

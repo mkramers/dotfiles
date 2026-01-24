@@ -9,11 +9,9 @@ set -euo pipefail
 # Pinned versions
 NUSHELL_VERSION="0.110.0"
 CHEZMOI_VERSION="2.69.3"
-AQUA_VERSION="v2.56.5"
 
 # Paths
 LOCAL_BIN="$HOME/.local/bin"
-AQUA_BIN="$HOME/.local/share/aquaproj-aqua/bin"
 
 # Colors (if terminal supports them)
 if [[ -t 1 ]]; then
@@ -95,14 +93,14 @@ else
 fi
 
 # =============================================================================
-# Step 4: Install aqua
+# Step 4: Install mise
 # =============================================================================
-step "4/5" "Installing aqua $AQUA_VERSION..."
+step "4/5" "Installing mise..."
 
-if [[ -x "$AQUA_BIN/aqua" ]]; then
+if [[ -x "$LOCAL_BIN/mise" ]]; then
     skip
 else
-    curl -fsSL "https://raw.githubusercontent.com/aquaproj/aqua-installer/$AQUA_VERSION/aqua-installer" | bash -s -- -i "$AQUA_BIN"
+    curl -fsSL https://mise.run | sh
 fi
 
 # =============================================================================
@@ -110,12 +108,11 @@ fi
 # =============================================================================
 step "5/5" "Running post-install setup..."
 
-# Add aqua to PATH for this session
-export PATH="$AQUA_BIN:$LOCAL_BIN:$PATH"
-export AQUA_POLICY_CONFIG="$HOME/.aqua/aqua-policy.yaml"
+# Add mise to PATH for this session
+export PATH="$LOCAL_BIN:$PATH"
 
-echo "      - Installing aqua packages..."
-aqua i -l
+echo "      - Installing mise packages..."
+"$LOCAL_BIN/mise" install --yes 2>/dev/null || "$LOCAL_BIN/mise" install
 
 echo "      - Installing yazi plugins..."
 if command -v ya &>/dev/null; then
