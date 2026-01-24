@@ -119,7 +119,7 @@ aqua i -l
 
 echo "      - Installing yazi plugins..."
 if command -v ya &>/dev/null; then
-    ya pack -i
+    ya pack -i &>/dev/null
 fi
 
 echo "      - Setting up carapace completions..."
