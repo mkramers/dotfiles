@@ -7,9 +7,9 @@ set -euo pipefail
 # =============================================================================
 
 # Pinned versions
-NUSHELL_VERSION="0.102.0"
-CHEZMOI_VERSION="2.62.1"
-AQUA_VERSION="v2.45.0"
+NUSHELL_VERSION="0.110.0"
+CHEZMOI_VERSION="2.69.3"
+AQUA_VERSION="v2.56.5"
 
 # Paths
 LOCAL_BIN="$HOME/.local/bin"
