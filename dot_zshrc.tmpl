@@ -94,3 +94,12 @@ alias configzsh='${EDITOR:-nano} $(chezmoi source-path)/dot_zshrc.tmpl'
 
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
+
+{{- if eq .chezmoi.os "linux" }}
+
+# ----------------------------------------------------
+# ----- auto-launch nushell --------------------------
+# ----------------------------------------------------
+
+[[ -x ~/.local/bin/nu ]] && exec ~/.local/bin/nu -l
+{{- end }}
