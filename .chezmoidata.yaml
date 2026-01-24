@@ -1,0 +1,39 @@
+shell:
+  paths:
+    - path: /usr/local/bin
+    - path: .local/bin
+      relative: true
+    - path: .local/share/aquaproj-aqua/bin
+      relative: true
+    - path: /Applications/Sublime Text.app/Contents/SharedSupport/bin
+      os: darwin
+
+  env:
+    AQUA_POLICY_CONFIG: .aqua/aqua-policy.yaml
+    EDITOR: nano
+    FZF_DEFAULT_COMMAND: fd --type file --color=always
+    FZF_CTRL_T_COMMAND: $FZF_DEFAULT_COMMAND
+    GIT_PAGER:
+      value: delta
+      check: delta
+      fallback: less
+
+  aliases:
+    cat: bat
+    k9s-kflow: aws-vault exec admin-kflow -- k9s
+    ll: ls -la
+    lzg: lazygit
+    nano: micro
+    s: kitten ssh
+    tre: tre -a
+    y: yazi
+
+  functions:
+    cdg:
+      description: cd to git root
+      nu: cd (git rev-parse --show-toplevel)
+      zsh: cd "$(git rev-parse --show-toplevel)"
+    paws:
+      description: print AWS env vars
+      nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
+      zsh: env | grep AWS

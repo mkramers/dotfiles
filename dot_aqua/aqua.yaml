@@ -7,7 +7,6 @@
 #   require_checksum: true
 #   supported_envs:
 #   - all
-# help me
 registries:
 - type: standard
   ref: v4.345.0 # renovate: depName=aquaproj/aqua-registry
@@ -39,8 +38,6 @@ packages:
 - name: 99designs/aws-vault@v7.2.0
 - name: cli/cli@v2.69.0
 - name: oven-sh/bun@bun-v1.2.10
-- name: F1bonacc1/process-compose@v1.75.1
-  registry: local
 - name: openobserve/openobserve@v0.14.5
   registry: local
 - name: ClementTsang/bottom@0.10.2
@@ -85,5 +82,4 @@ packages:
 - name: gruntwork-io/terragrunt@v0.97.1
 - name: opentofu/opentofu@v1.11.1
 - name: iann0036/iamlive@v1.1.27
-- name: gruntwork-io/terragrunt@v0.97.1
 - name: twistedpair/google-cloud-sdk@552.0.0
