@@ -21,7 +21,7 @@ $env.AQUA_POLICY_CONFIG = $env.HOME | path join ".aqua/aqua-policy.yaml"
 $env.config.show_banner = false
 $env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro" }
 $env.EDITOR = $env.config.buffer_editor
-$env.SHELL = '/Users/mk/.local/bin/nu'
+$env.SHELL = $env.HOME | path join ".local/bin/nu"
 
 # cli
 $env.FZF_DEFAULT_COMMAND = "fd --type file --color=always"
@@ -33,21 +33,11 @@ $env.GIT_PAGER = "delta"
 # ----------------------------------------------------
 
 # forces devpod to use zsh internally to avoid parsing errors
+# NOTE: nushell-only, no need to sync to zsh
 def --wrapped devpod [...rest] {
 	with-env { SHELL: 'zsh' } {
 		^devpod ...$rest
 	}
-}
-
-# aws-vault + 1Password OTP
-def --wrapped awsv [account_name: string, ...rest] {
-  mut cmd = ["nu"]
-  
-  if (($rest | length) > 0) {
-    $cmd = $rest
-  }
-  
-  aws-vault exec --duration 12h -t (op item get $"aws-($account_name)" --otp) $account_name -- ...$cmd
 }
 
 def paws [] {
@@ -66,7 +56,7 @@ alias y = yazi
 alias tre = tre -a
 alias lzg = lazygit
 alias cdg = cd (git rev-parse --show-toplevel)
-alias k9s-kflow = awsv kflow k9s
+alias k9s-kflow = aws-vault exec admin-kflow -- k9s
 
 
 # allows us to edit the config.nu chezmoi source file instead of the real one

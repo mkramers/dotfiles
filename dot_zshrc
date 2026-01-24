@@ -1,0 +1,96 @@
+# ----------------------------------------------------
+# ----- prompt ----------------------------------------
+# ----------------------------------------------------
+
+autoload -Uz vcs_info
+precmd() { vcs_info }
+setopt PROMPT_SUBST
+
+zstyle ':vcs_info:git:*' formats '%F{magenta}(%b)%f '
+
+PROMPT='%F{141}%~%f ${vcs_info_msg_0_}%F{183}❯%f '
+
+# ----------------------------------------------------
+# ----- path ------------------------------------------
+# ----------------------------------------------------
+
+typeset -U path
+path=(
+    /usr/local/bin
+    $HOME/.local/bin
+    $HOME/.local/share/aquaproj-aqua/bin
+    /Applications/Sublime\ Text.app/Contents/SharedSupport/bin
+    $path
+)
+
+# ----------------------------------------------------
+# ----- env -------------------------------------------
+# ----------------------------------------------------
+
+export AQUA_POLICY_CONFIG="$HOME/.aqua/aqua-policy.yaml"
+
+if command -v micro &> /dev/null; then
+    export EDITOR="micro"
+else
+    export EDITOR="nano"
+fi
+
+export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export GIT_PAGER="delta"
+
+# ----------------------------------------------------
+# ----- opts ------------------------------------------
+# ----------------------------------------------------
+
+setopt AUTO_CD
+setopt HIST_IGNORE_DUPS
+setopt SHARE_HISTORY
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
+# ----------------------------------------------------
+# ----- completion ------------------------------------
+# ----------------------------------------------------
+
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' menu select
+
+# ----------------------------------------------------
+# ----- funcs -----------------------------------------
+# ----------------------------------------------------
+
+# print AWS env vars
+paws() {
+    env | grep AWS
+}
+
+# cd to git root
+cdg() {
+    cd "$(git rev-parse --show-toplevel)"
+}
+
+# ----------------------------------------------------
+# ----- alias -----------------------------------------
+# ----------------------------------------------------
+
+alias ll='ls -la'
+alias nano='micro'
+alias cat='bat'
+alias s='kitten ssh'
+alias y='yazi'
+alias tre='tre -a'
+alias lzg='lazygit'
+alias k9s-kflow='aws-vault exec admin-kflow -- k9s'
+
+# edit zshrc chezmoi source
+alias configzsh='${EDITOR:-nano} $(chezmoi source-path)/dot_zshrc'
+
+# ----------------------------------------------------
+# ----- colors ----------------------------------------
+# ----------------------------------------------------
+
+export CLICOLOR=1
+export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
