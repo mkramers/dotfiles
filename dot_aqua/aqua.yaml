@@ -25,7 +25,7 @@ packages:
 - name: junegunn/fzf@v0.61.1
 - name: casey/just@1.40.0
 - name: twpayne/chezmoi@v2.62.1
-- name: astral-sh/uv@0.6.14
+- name: astral-sh/uv@0.9.26
 - name: ogham/exa@v0.10.1
 - name: duckdb/duckdb@v1.3.2
 - name: sharkdp/fd@v10.2.0
@@ -76,7 +76,7 @@ packages:
 - name: mikefarah/yq@v4.47.2
 - name: devspace-sh/devspace@v6.3.18
 - name: charmbracelet/gum@v0.17.0
-- name: aquasecurity/trivy@v0.68.1
+- name: aquasecurity/trivy@v0.68.2
 - name: ms-jpq/sad@v0.4.32
 - name: dandavison/delta@0.18.2
 - name: Byron/dua-cli@v2.32.2
