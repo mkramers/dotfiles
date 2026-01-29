@@ -49,7 +49,32 @@ def {{ $name }} [] {
   {{ $func.nu }}
 }
 
-{{ end }}
+{{ end -}}
+# worktrunk (wt) shell integration for nushell
+# Enables wt switch/remove/merge to change directories
+def --env --wrapped wt [...rest] {
+  let directive_file = (mktemp)
+  try {
+    with-env { WORKTRUNK_DIRECTIVE_FILE: $directive_file } {
+      ^wt ...$rest
+    }
+  } catch { |err|
+    rm -f $directive_file
+    error make {msg: $err.msg}
+  }
+  if ($directive_file | path exists) {
+    let directives = (open $directive_file --raw | str trim)
+    rm -f $directive_file
+    if ($directives | is-not-empty) {
+      let parsed = ($directives | parse "cd '{path}'")
+      if ($parsed | is-not-empty) {
+        cd ($parsed | get path | first)
+      }
+    }
+  }
+}
+
+
 
 # ----------------------------------------------------
 # ----- alias -----------------------------------------
