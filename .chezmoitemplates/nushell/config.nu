@@ -58,9 +58,9 @@ def --env --wrapped wt [...rest] {
     with-env { WORKTRUNK_DIRECTIVE_FILE: $directive_file } {
       ^wt ...$rest
     }
-  } catch { |err|
+  } catch {
     rm -f $directive_file
-    error make {msg: $err.msg}
+    return
   }
   if ($directive_file | path exists) {
     let directives = (open $directive_file --raw | str trim)

@@ -26,6 +26,7 @@ shell:
     nano: micro
     s: kitten ssh
     tre: tre -a
+    wsc: wt switch --create -x claude
     y: yazi
 
   functions:
