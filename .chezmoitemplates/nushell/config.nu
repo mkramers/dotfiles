@@ -51,33 +51,55 @@ def {{ $name }} [] {
 
 {{ end -}}
 # worktrunk (wt) shell integration for nushell
-# Enables wt switch/remove/merge to change directories
+# Intercepts -x/--execute to run commands with proper nushell TTY
 def --env --wrapped wt [...rest] {
+  let x_matches = ($rest | enumerate | where {|it| $it.item == "-x" or $it.item == "--execute"})
+  let x_idx = if ($x_matches | is-empty) { null } else { $x_matches | first | get index }
+  let execute_cmd = if $x_idx != null {
+    if ($x_idx + 1) < ($rest | length) { $rest | get ($x_idx + 1) } else { null }
+  } else {
+    null
+  }
+  let wt_args = if $execute_cmd != null {
+    $rest | enumerate | where {|it| $it.index != $x_idx and $it.index != ($x_idx + 1)} | get item
+  } else {
+    $rest
+  }
+  let original_dir = $env.PWD
+
   let directive_file = (mktemp)
   try {
     with-env { WORKTRUNK_DIRECTIVE_FILE: $directive_file } {
-      ^wt ...$rest
+      ^wt ...$wt_args
     }
   } catch {
     rm -f $directive_file
     return
   }
-  if ($directive_file | path exists) {
-    let directives = (open $directive_file --raw | str trim)
-    rm -f $directive_file
-    if ($directives | is-not-empty) {
-      let parsed = ($directives | parse "cd '{path}'")
-      if ($parsed | is-not-empty) {
-        cd ($parsed | get path | first)
-      }
+
+  let directives = if ($directive_file | path exists) {
+    open $directive_file --raw | str trim
+  } else {
+    ""
+  }
+  rm -f $directive_file
+
+  if ($directives | is-not-empty) {
+    let parsed = ($directives | parse "cd '{path}'")
+    if ($parsed | is-not-empty) {
+      cd ($parsed | get path | first)
     }
+  }
+
+  if $execute_cmd != null {
+    try { nu -c $execute_cmd }
+    cd $original_dir
   }
 }
 
 # create worktree and open claude in it
-def --env --wrapped wsc [...rest] {
-  wt switch --create ...$rest
-  claude
+def --env --wrapped wtc [...rest] {
+  wt switch --create ...$rest -x claude
 }
 
 # ----------------------------------------------------
