@@ -74,7 +74,11 @@ def --env --wrapped wt [...rest] {
   }
 }
 
-
+# create worktree and open claude in it
+def --env --wrapped wsc [...rest] {
+  wt switch --create ...$rest
+  claude
+}
 
 # ----------------------------------------------------
 # ----- alias -----------------------------------------
