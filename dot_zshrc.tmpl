@@ -86,7 +86,7 @@ alias {{ $name }}='{{ $cmd }}'
 {{ end }}
 
 # edit zshrc chezmoi source
-alias configzsh='${EDITOR:-nano} $(chezmoi source-path)/dot_zshrc.tmpl'
+alias configzsh='$EDITOR $(chezmoi source-path)/dot_zshrc.tmpl'
 
 # ----------------------------------------------------
 # ----- colors ----------------------------------------

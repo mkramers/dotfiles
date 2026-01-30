@@ -18,7 +18,7 @@ path add "{{ .path }}"
 # ----------------------------------------------------
 
 $env.config.show_banner = false
-$env.config.buffer_editor = if (which micro | is-empty) { "nano" } else { "micro" }
+$env.config.buffer_editor = $env.EDITOR
 $env.SHELL = $env.HOME | path join ".local/bin/nu"
 
 {{ range $name, $val := .shell.env -}}
@@ -111,7 +111,7 @@ alias {{ $name }} = {{ $cmd }}
 {{ end }}
 
 # allows us to edit the config.nu chezmoi source file instead of the real one
-alias confignu = nano (chezmoi source-path | decode utf-8 | str trim | path join "dot_config/nushell/config.nu.tmpl")
+alias confignu = $env.EDITOR (chezmoi source-path | decode utf-8 | str trim | path join "dot_config/nushell/config.nu.tmpl")
 
 # ----------------------------------------------------
 # ----- mise (tool version manager) -------------------
