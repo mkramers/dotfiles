@@ -111,7 +111,9 @@ alias {{ $name }} = {{ $cmd }}
 {{ end }}
 
 # allows us to edit the config.nu chezmoi source file instead of the real one
-alias confignu = $env.EDITOR (chezmoi source-path | decode utf-8 | str trim | path join "dot_config/nushell/config.nu.tmpl")
+def confignu [] {
+  ^$env.EDITOR (chezmoi source-path | decode utf-8 | str trim | path join "dot_config/nushell/config.nu.tmpl")
+}
 
 # ----------------------------------------------------
 # ----- mise (tool version manager) -------------------
