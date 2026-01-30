@@ -1,10 +1,5 @@
 {{ if ne .chezmoi.os "darwin" }}
-Library/Application Support/nushell/config.nu
-Library/Application Support/nushell/modules/fnm.nu
-{{ end }}
-{{ if ne .chezmoi.os "linux" }}
-.config/nushell/config.nu
-.config/nushell/modules/fnm.nu
+Library/Application Support/nushell
 {{ end }}
 
 README.md

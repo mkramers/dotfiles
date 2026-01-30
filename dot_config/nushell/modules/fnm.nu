@@ -5,19 +5,19 @@ export-env {
     def fnm-env [] {
         # Create a mutable empty record to store environment variables
         mut env_vars = {}
-        
+
         # Get fnm environment variable settings under PowerShell
         # Parse the output into key-value pairs through pipeline processing
         let pwsh_vars = (
-            ^fnm env --version-file-strategy=recursive --corepack-enabled --shell powershell | 
-            lines | 
+            ^fnm env --version-file-strategy=recursive --corepack-enabled --shell powershell |
+            lines |
             parse "$env:{key} = \"{value}\""
         )
 
         # Process fnm-related environment variables
         # Iterate through all variables except the first element (PATH) and add them to env_vars
-        for v in ($pwsh_vars | slice 1..) { 
-            $env_vars = ($env_vars | insert $v.key $v.value) 
+        for v in ($pwsh_vars | slice 1..) {
+            $env_vars = ($env_vars | insert $v.key $v.value)
         }
 
         # Special handling for PATH environment variable
