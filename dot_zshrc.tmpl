@@ -13,7 +13,7 @@ setopt PROMPT_SUBST
     arrows=""
     (( ahead > 0 )) && arrows+="↑"
     (( behind > 0 )) && arrows+="↓"
-    [[ -n "$arrows" ]] && hook_com[misc]+=" $arrows"
+    [[ -n "$arrows" ]] && hook_com[misc]+="$arrows"
 }
 
 zstyle ':vcs_info:*' enable git

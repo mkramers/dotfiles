@@ -26,8 +26,7 @@ shell:
     nano: micro
     s: kitten ssh
     tre: tre -a
-    wtm: wt switch main
-    wtt: wtc select
+    wtt: wc select
     y: yazi
 
   functions:

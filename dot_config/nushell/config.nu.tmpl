@@ -142,10 +142,6 @@ def --env --wrapped wtc [...rest] {
 alias {{ $name }} = {{ $cmd }}
 {{ end }}
 
-# allows us to edit the config.nu chezmoi source file instead of the real one
-def confignu [] {
-  ^$env.EDITOR (chezmoi source-path | decode utf-8 | str trim | path join "dot_config/nushell/config.nu.tmpl")
-}
 {{- if eq .chezmoi.os "darwin" }}
 
 alias typora = ^open -a Typora
