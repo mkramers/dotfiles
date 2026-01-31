@@ -119,11 +119,6 @@ eval "$(~/.local/bin/mise activate zsh)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
-# create worktree and open claude in it
-wtc() {
-    wt switch --create "$@" -x claude
-}
-
 {{- if eq .chezmoi.os "linux" }}
 
 # ----------------------------------------------------
