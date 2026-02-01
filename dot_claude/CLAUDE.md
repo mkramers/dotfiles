@@ -10,7 +10,7 @@
 - Do NOT include co-authorship attributions (Co-Authored-By) in commits, PR descriptions, or any git metadata. Ever.
 - Generally commit your work, but when in doubt, ask.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
-- Git worktrees may be in use — be aware of the working directory context.
+- Git worktrees may be in use — be aware of the working directory context. Before you start to create a worktree, check if you are already in one. When in doubt ask
 
 # Code Style
 
