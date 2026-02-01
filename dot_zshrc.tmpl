@@ -68,6 +68,7 @@ setopt SHARE_HISTORY
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
+WORDCHARS='*?_[]~=&;!#$%^(){}<>'
 
 # ----------------------------------------------------
 # ----- completion ------------------------------------
@@ -75,7 +76,26 @@ SAVEHIST=10000
 
 autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-zstyle ':completion:*' menu select
+
+# ----------------------------------------------------
+# ----- plugins ----------------------------------------
+# ----------------------------------------------------
+
+source ~/.zsh/fzf-tab/fzf-tab.plugin.zsh
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# fzf-tab: preview directories with eza, files with bat
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --color=always -la $realpath'
+zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza --color=always -la $realpath'
+zstyle ':fzf-tab:complete:(cat|bat|less|head|tail|nano|micro|vim|nvim):*' fzf-preview 'bat --color=always --style=numbers --line-range=:100 $realpath 2>/dev/null || eza --color=always $realpath'
+
+# up/down search history filtered by current input
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
 
 # ----------------------------------------------------
 # ----- funcs -----------------------------------------
