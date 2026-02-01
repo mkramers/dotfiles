@@ -1,28 +1,4 @@
 # ----------------------------------------------------
-# ----- prompt ----------------------------------------
-# ----------------------------------------------------
-
-autoload -Uz vcs_info
-precmd() { vcs_info }
-setopt PROMPT_SUBST
-
-+vi-git-arrows() {
-    local ahead behind arrows
-    ahead=$(command git rev-list --count @{upstream}..HEAD 2>/dev/null)
-    behind=$(command git rev-list --count HEAD..@{upstream} 2>/dev/null)
-    arrows=""
-    (( ahead > 0 )) && arrows+="↑"
-    (( behind > 0 )) && arrows+="↓"
-    [[ -n "$arrows" ]] && hook_com[misc]+="$arrows"
-}
-
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:git*+set-message:*' hooks git-arrows
-zstyle ':vcs_info:git:*' formats '%F{magenta}(%b%m)%f '
-
-PROMPT='%F{141}%~%f ${vcs_info_msg_0_}%F{183}❯%f '
-
-# ----------------------------------------------------
 # ----- path ------------------------------------------
 # ----------------------------------------------------
 
@@ -39,6 +15,12 @@ path=(
 {{- end }}
     $path
 )
+
+# ----------------------------------------------------
+# ----- prompt (starship) -----------------------------
+# ----------------------------------------------------
+
+eval "$(starship init zsh)"
 
 # ----------------------------------------------------
 # ----- env -------------------------------------------

@@ -82,4 +82,5 @@ packages:
 - name: gruntwork-io/terragrunt@v0.97.1
 - name: opentofu/opentofu@v1.11.1
 - name: iann0036/iamlive@v1.1.27
+- name: starship/starship@v1.24.2
 - name: twistedpair/google-cloud-sdk@552.0.0

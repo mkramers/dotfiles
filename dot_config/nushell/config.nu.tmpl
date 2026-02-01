@@ -1,34 +1,9 @@
 # ----------------------------------------------------
-# ----- prompt ----------------------------------------
+# ----- prompt (starship) -----------------------------
 # ----------------------------------------------------
 
-def git_prompt [] {
-    let branch = (do { ^git branch --show-current } | complete)
-    if $branch.exit_code != 0 { return "" }
-    let name = ($branch.stdout | str trim)
-    if ($name | is-empty) { return "" }
-
-    mut arrows = ""
-    let upstream = (do { ^git rev-list --left-right --count 'HEAD...@{upstream}' } | complete)
-    if $upstream.exit_code == 0 {
-        let counts = ($upstream.stdout | str trim | split row "\t")
-        if ($counts | get 0 | into int) > 0 { $arrows = $"($arrows)↑" }
-        if ($counts | get 1 | into int) > 0 { $arrows = $"($arrows)↓" }
-    }
-
-    $"(ansi magenta)\(($name)($arrows)\)(ansi reset) "
-}
-
-$env.PROMPT_COMMAND = {||
-    let dir = ($env.PWD | str replace $env.HOME '~')
-    let git = (git_prompt)
-    if ($git | is-empty) {
-        $"(ansi -e '38;5;141')($dir)(ansi reset) ❯ "
-    } else {
-        $"(ansi -e '38;5;141')($dir)(ansi reset) ($git)❯ "
-    }
-}
-$env.PROMPT_INDICATOR = ""
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 
 # ----------------------------------------------------
 # ----- path -----------------------------------------
