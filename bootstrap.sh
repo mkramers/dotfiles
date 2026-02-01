@@ -6,9 +6,13 @@ set -euo pipefail
 # Usage: curl -fsSL https://raw.githubusercontent.com/mkramers/dotfiles/main/bootstrap.sh | bash
 # =============================================================================
 
-# Pinned versions
-NUSHELL_VERSION="0.110.0"
-CHEZMOI_VERSION="2.69.3"
+# Resolve latest release versions from GitHub
+resolve_latest() {
+    curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/$1/releases/latest" | grep -o '[^/]*$'
+}
+
+NUSHELL_VERSION=$(resolve_latest "nushell/nushell")
+CHEZMOI_VERSION=$(resolve_latest "twpayne/chezmoi" | sed 's/^v//')
 
 # Paths
 LOCAL_BIN="$HOME/.local/bin"
@@ -60,7 +64,7 @@ mkdir -p "$LOCAL_BIN"
 # =============================================================================
 step "2/5" "Installing nushell $NUSHELL_VERSION..."
 
-if [[ -x "$LOCAL_BIN/nu" ]] && "$LOCAL_BIN/nu" --version 2>/dev/null | grep -q "$NUSHELL_VERSION"; then
+if [[ -x "$LOCAL_BIN/nu" ]] && [[ "$("$LOCAL_BIN/nu" --version 2>/dev/null)" == "$NUSHELL_VERSION" ]]; then
     skip
 else
     case "$OS" in
@@ -84,7 +88,7 @@ fi
 # =============================================================================
 step "3/5" "Installing chezmoi v$CHEZMOI_VERSION..."
 
-if [[ -x "$LOCAL_BIN/chezmoi" ]] && "$LOCAL_BIN/chezmoi" --version 2>/dev/null | grep -q "$CHEZMOI_VERSION"; then
+if [[ -x "$LOCAL_BIN/chezmoi" ]] && "$LOCAL_BIN/chezmoi" --version 2>/dev/null | grep -q "v${CHEZMOI_VERSION}"; then
     skip
     echo "      Applying dotfiles..."
     "$LOCAL_BIN/chezmoi" apply
