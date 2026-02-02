@@ -3,57 +3,59 @@ $directory\
 $git_branch\
 $git_status\
 $aws\
-$kubernetes\
-$terraform\
-$python\
-$nodejs\
-$docker_context\
-$cmd_duration\
-$line_break\
 $character"""
 
 [directory]
-style = "bold purple"
-truncation_length = 5
+style = "bold #bd93f9"
+truncation_length = 0
+truncate_to_repo = false
+fish_style_pwd_dir_length = 0
 
 [git_branch]
-style = "bold magenta"
+format = '[$symbol$branch(:$remote_branch)]($style) '
+symbol = " "
+style = "bold #ff79c6"
 
 [git_status]
-style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold #ff5555"
 
 [aws]
 format = '[$symbol($profile)(\($region\))]($style) '
-symbol = "aws "
-style = "bold yellow"
+symbol = " "
+style = "bold #ffb86c"
 
 [kubernetes]
 disabled = true
 format = '[$symbol$context(/$namespace)]($style) '
-symbol = "k8s "
-style = "bold blue"
+symbol = "󱃾 "
+style = "bold #8be9fd"
 
 [terraform]
 format = '[$symbol$workspace]($style) '
-symbol = "tf "
+symbol = "󱁢 "
+style = "bold #bd93f9"
 
 [python]
 format = '[$symbol$version(\($virtualenv\))]($style) '
-symbol = "py "
+symbol = " "
+style = "bold #50fa7b"
 
 [nodejs]
 format = '[$symbol$version]($style) '
-symbol = "node "
+symbol = " "
+style = "bold #50fa7b"
 
 [docker_context]
 format = '[$symbol$context]($style) '
-symbol = "docker "
+symbol = " "
+style = "bold #8be9fd"
 
 [cmd_duration]
 min_time = 3000
 format = '[$duration]($style) '
-style = "bold yellow"
+style = "bold #f1fa8c"
 
 [character]
-success_symbol = "[❯](bold purple)"
-error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold #bd93f9)"
+error_symbol = "[❯](bold #ff5555)"
