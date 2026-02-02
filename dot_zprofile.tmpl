@@ -1,0 +1,14 @@
+# PATH setup in .zprofile so login shells (and GUI apps like JetBrains IDEs) inherit it
+typeset -U path
+path=(
+{{- range .shell.paths }}
+{{-   if or (not (hasKey . "os")) (eq .os $.chezmoi.os) }}
+{{-     if and (hasKey . "relative") .relative }}
+    $HOME/{{ .path }}
+{{-     else }}
+    {{ .path }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+    $path
+)
