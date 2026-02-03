@@ -23,7 +23,8 @@ shell:
     k9s-kflow: aws-vault exec admin-kflow -- k9s
     ll: eza -la
     ls: eza
-    lzg: lazygit
+    gs: git status
+    lz: lazygit
     nano: micro
     s: kitten ssh
     tre: tre -a
