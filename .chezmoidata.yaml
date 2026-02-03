@@ -24,7 +24,7 @@ shell:
     ll: eza -la
     ls: eza
     gs: git status
-    lz: lazygit
+    lg: lazygit
     nano: micro
     s: kitten ssh
     tre: tre -a
