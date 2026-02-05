@@ -2,5 +2,11 @@
     {
         "keys": ["alt+f12"],
         "command": "toggle_terminus_panel"
+    },
+    {
+        "keys": ["super+k"],
+        "command": "terminus_send_string",
+        "args": {"string": "\u000c"},
+        "context": [{"key": "terminus_view"}]
     }
 ]
