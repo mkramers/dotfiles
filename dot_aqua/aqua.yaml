@@ -84,3 +84,4 @@ packages:
 - name: iann0036/iamlive@v1.1.27
 - name: starship/starship@v1.24.2
 - name: twistedpair/google-cloud-sdk@552.0.0
+- name: dlvhdr/diffnav@v0.8.1

@@ -1,0 +1,10 @@
+ui:
+  showFileTree: true
+  fileTreeWidth: 40
+  searchTreeWidth: 50
+  icons: unicode
+  colorFileNames: true
+  showDiffStats: true
+  sideBySide: false
+  hideHeader: false
+  hideFooter: false

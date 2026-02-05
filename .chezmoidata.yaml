@@ -38,6 +38,10 @@ shell:
       description: cd to git root
       nu: cd (git rev-parse --show-toplevel)
       zsh: cd "$(git rev-parse --show-toplevel)"
+    dff:
+      description: diff current branch against target (default main)
+      nu: git diff $"($in | default main)...HEAD" | diffnav
+      zsh: git diff "${1:-main}"...HEAD | diffnav
     paws:
       description: print AWS env vars
       nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
