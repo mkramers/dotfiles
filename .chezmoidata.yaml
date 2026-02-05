@@ -19,7 +19,7 @@ shell:
       fallback: less
 
   aliases:
-    cat: bat
+    cat: bat --paging=never
     k9s-kflow: aws-vault exec admin-kflow -- k9s
     ll: eza -la
     ls: eza
@@ -39,9 +39,15 @@ shell:
       nu: cd (git rev-parse --show-toplevel)
       zsh: cd "$(git rev-parse --show-toplevel)"
     dff:
-      description: diff current branch against target (default main)
+      description: diff current branch against base (auto-detects default branch), or --local for uncommitted changes
       nu: git diff $"($in | default main)...HEAD" | diffnav
-      zsh: git diff "${1:-main}"...HEAD | diffnav
+      zsh: |
+        if [[ "$1" == "--local" || "$1" == "-l" ]]; then
+            git diff HEAD | diffnav
+        else
+            local base="${1:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
+            git diff "${base:-main}...HEAD" | diffnav
+        fi
     paws:
       description: print AWS env vars
       nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text

@@ -26,6 +26,8 @@ export {{ $name }}="{{ $val }}"
 # ----- opts ------------------------------------------
 # ----------------------------------------------------
 
+stty -ixon  # disable XON/XOFF flow control (frees Ctrl+S/Q)
+
 setopt AUTO_CD
 setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY

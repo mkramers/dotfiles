@@ -57,10 +57,10 @@ _prompt_precmd() {
         git_info=" %F{${_prompt_pink}} ${branch}%f%F{${_prompt_red}}${dirty}%f${git_info}"
     fi
 
-    # AWS section
+    # AWS section (aws-vault sets AWS_VAULT, not AWS_PROFILE)
     local aws_info=""
-    if [[ -n "$AWS_PROFILE" ]]; then
-        aws_info=" %F{${_prompt_orange}} ${AWS_PROFILE}%f"
+    if [[ -n "$AWS_VAULT" ]]; then
+        aws_info=" %F{${_prompt_orange}} ${AWS_VAULT}%f"
     fi
 
     # Character color based on last exit code
