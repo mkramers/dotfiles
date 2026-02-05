@@ -1,0 +1,6 @@
+[
+    {
+        "keys": ["alt+f12"],
+        "command": "toggle_terminus_panel"
+    }
+]
