@@ -1,0 +1,29 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"1337 Color Scheme",
+		"AdvancedNewFile",
+		"Agila Theme",
+		"ayu",
+		"Catppuccin color schemes",
+		"Darkula Color Scheme",
+		"Dracula Color Scheme",
+		"FileIcons",
+		"FileIcons Mono",
+		"GitHub Theme",
+		"GitSavvy",
+		"JsPrettier",
+		"Just",
+		"Material Theme",
+		"Monokai++",
+		"Package Control",
+		"Pretty JSON",
+		"Solarized Color Scheme",
+		"Terminus",
+		"Terraform",
+	],
+}
