@@ -27,7 +27,7 @@ _prompt_precmd() {
             dir_display=" ${repo_name}"
         fi
     else
-        dir_display=" ${PWD/#$HOME/\~}"
+        dir_display=" ${PWD/#$HOME/~}"
     fi
 
     # Git section (only inside git repos)
