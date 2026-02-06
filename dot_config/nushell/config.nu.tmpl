@@ -182,6 +182,16 @@ alias typora = ^open -a Typora
 {{- end }}
 
 # ----------------------------------------------------
+# ----- fnm (node version manager) --------------------
+# ----------------------------------------------------
+
+if not (which fnm | is-empty) {
+    let fnm_env = (^fnm env --json | from json)
+    $fnm_env | load-env
+    $env.PATH = ($env.PATH | prepend ($fnm_env.FNM_MULTISHELL_PATH | path join "bin"))
+}
+
+# ----------------------------------------------------
 # ----- mise (tool version manager) -------------------
 # ----------------------------------------------------
 

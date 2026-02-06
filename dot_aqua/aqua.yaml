@@ -79,9 +79,10 @@ packages:
 - name: Byron/dua-cli@v2.32.2
 - name: F1bonacc1/process-compose@v1.78.0
   registry: local
-- name: gruntwork-io/terragrunt@v0.97.1
-- name: opentofu/opentofu@v1.11.1
+- name: gruntwork-io/terragrunt@v0.99.1
+- name: opentofu/opentofu@v1.11.4
 - name: iann0036/iamlive@v1.1.27
 - name: starship/starship@v1.24.2
 - name: twistedpair/google-cloud-sdk@552.0.0
 - name: dlvhdr/diffnav@v0.8.1
+- name: ahmetb/kubectx@v0.9.5
