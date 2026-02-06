@@ -6,5 +6,5 @@ ui:
   colorFileNames: true
   showDiffStats: true
   sideBySide: false
-  hideHeader: false
+  hideHeader: true
   hideFooter: false
