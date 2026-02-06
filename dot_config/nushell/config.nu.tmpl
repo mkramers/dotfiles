@@ -1,9 +1,72 @@
 # ----------------------------------------------------
-# ----- prompt (starship) -----------------------------
+# ----- prompt -----------------------------------------
 # ----------------------------------------------------
 
-mkdir ($nu.data-dir | path join "vendor/autoload")
-starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+def create_left_prompt [] {
+    # Colors (256-color ANSI escape codes)
+    let green = (ansi -e '38;5;84m')
+    let pink = (ansi -e '38;5;212m')
+    let red = (ansi -e '38;5;203m')
+    let orange = (ansi -e '38;5;215m')
+    let reset = (ansi reset)
+
+    let dir_display = if (do { git rev-parse --is-inside-work-tree } | complete).exit_code == 0 {
+        let repo_root = (git rev-parse --show-toplevel | str trim)
+        let repo_name = ($repo_root | path basename)
+        let rel_path = ($env.PWD | str replace $repo_root "" | str trim --left --char "/")
+        if ($rel_path | is-empty) {
+            $" ($green)($repo_name)($reset)"
+        } else {
+            $" ($green)($repo_name)/($rel_path)($reset)"
+        }
+    } else {
+        let home = $env.HOME
+        $" ($green)($env.PWD | str replace $home '~')($reset)"
+    }
+
+    let git_info = if (do { git rev-parse --is-inside-work-tree } | complete).exit_code == 0 {
+        let branch = (do { git branch --show-current } | complete).stdout | str trim
+        let branch = if ($branch | is-empty) {
+            (git rev-parse --short HEAD | str trim)
+        } else {
+            $branch
+        }
+
+        let dirty = if (git status --porcelain | str trim | is-not-empty) { " *" } else { "" }
+
+        let ahead_behind = do {
+            let counts = (do { git rev-list --left-right --count "HEAD...@{u}" } | complete)
+            if $counts.exit_code == 0 {
+                let parts = ($counts.stdout | str trim | split row "\t")
+                let ahead = ($parts | get 0 | into int)
+                let behind = ($parts | get 1 | into int)
+                let ahead_str = if $ahead > 0 { $" ($red)⇡($ahead)($reset)" } else { "" }
+                let behind_str = if $behind > 0 { $" ($red)⇣($behind)($reset)" } else { "" }
+                $"($ahead_str)($behind_str)"
+            } else {
+                ""
+            }
+        }
+
+        $" ($pink)\u{e0a0} ($branch)($reset)($red)($dirty)($reset)($ahead_behind)"
+    } else {
+        ""
+    }
+
+    let aws_info = if ($env.AWS_VAULT? | default "" | is-not-empty) {
+        $" ($orange)\u{f270} ($env.AWS_VAULT)($reset)"
+    } else {
+        ""
+    }
+
+    $"($dir_display)($git_info)($aws_info)"
+}
+
+def create_right_prompt [] { "" }
+
+$env.PROMPT_COMMAND = {|| create_left_prompt }
+$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+$env.PROMPT_INDICATOR = {|| $" (if $env.LAST_EXIT_CODE == 0 { ansi -e '38;5;84m' } else { ansi -e '38;5;203m' })❯(ansi reset) " }
 
 # ----------------------------------------------------
 # ----- path -----------------------------------------

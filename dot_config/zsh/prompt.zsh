@@ -27,7 +27,7 @@ _prompt_precmd() {
             dir_display=" ${repo_name}"
         fi
     else
-        dir_display=${PWD/#$HOME/\~}
+        dir_display=" ${PWD/#$HOME/\~}"
     fi
 
     # Git section (only inside git repos)
@@ -54,13 +54,13 @@ _prompt_precmd() {
             [[ "$behind" -gt 0 ]] && git_info+=" %F{${_prompt_red}}⇣${behind}%f"
         fi
 
-        git_info=" %F{${_prompt_pink}} ${branch}%f%F{${_prompt_red}}${dirty}%f${git_info}"
+        git_info=" %F{${_prompt_pink}}"$'\ue0a0'" ${branch}%f%F{${_prompt_red}}${dirty}%f${git_info}"
     fi
 
     # AWS section (aws-vault sets AWS_VAULT, not AWS_PROFILE)
     local aws_info=""
     if [[ -n "$AWS_VAULT" ]]; then
-        aws_info=" %F{${_prompt_orange}} ${AWS_VAULT}%f"
+        aws_info=" %F{${_prompt_orange}}"$'\uf270'" ${AWS_VAULT}%f"
     fi
 
     # Character color based on last exit code
