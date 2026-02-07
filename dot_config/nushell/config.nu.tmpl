@@ -59,7 +59,13 @@ def create_left_prompt [] {
         ""
     }
 
-    $"($dir_display)($git_info)($aws_info)"
+    let ssh_info = if ($env.SSH_CONNECTION? | default "" | is-not-empty) {
+        $"($orange)⌁($reset)"
+    } else {
+        ""
+    }
+
+    $"($ssh_info)($dir_display)($git_info)($aws_info)"
 }
 
 def create_right_prompt [] { "" }

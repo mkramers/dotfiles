@@ -71,8 +71,14 @@ _prompt_precmd() {
         char_color=$_prompt_red
     fi
 
+    # SSH indicator
+    local ssh_info=""
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        ssh_info="%F{${_prompt_orange}}⌁%f"
+    fi
+
     # Build prompt
-    PROMPT="%F{${_prompt_purple}}${dir_display}%f${git_info}${aws_info} %F{${char_color}}❯%f "
+    PROMPT="${ssh_info}%F{${_prompt_purple}}${dir_display}%f${git_info}${aws_info} %F{${char_color}}❯%f "
 }
 
 # Register precmd hook
