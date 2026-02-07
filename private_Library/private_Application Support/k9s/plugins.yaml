@@ -1,0 +1,34 @@
+plugins:
+  stern:
+    shortCut: Ctrl-L
+    confirm: false
+    description: "Logs (stern)"
+    scopes:
+      - pod
+    command: sh
+    background: false
+    args:
+      - -c
+      - "stern $NAME -n $NAMESPACE --context $CONTEXT --container '.*' --since 1h"
+  sternd:
+    shortCut: Ctrl-L
+    confirm: false
+    description: "Logs (stern)"
+    scopes:
+      - deployment
+    command: sh
+    background: false
+    args:
+      - -c
+      - "stern $NAME -n $NAMESPACE --context $CONTEXT --container '.*' --since 1h"
+  sterns:
+    shortCut: Ctrl-L
+    confirm: false
+    description: "Logs (stern)"
+    scopes:
+      - service
+    command: sh
+    background: false
+    args:
+      - -c
+      - "stern $NAME -n $NAMESPACE --context $CONTEXT --container '.*' --since 1h"

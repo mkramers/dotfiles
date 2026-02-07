@@ -86,3 +86,4 @@ packages:
 - name: twistedpair/google-cloud-sdk@552.0.0
 - name: dlvhdr/diffnav@v0.8.1
 - name: ahmetb/kubectx@v0.9.5
+- name: stern/stern@v1.33.1

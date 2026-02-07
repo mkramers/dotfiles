@@ -1,0 +1,20 @@
+views:
+  v1/nodes@:
+    sortColumn: TYPE:desc
+    columns:
+      - NAME
+      - NCPU:.metadata.labels.karpenter\.k8s\.aws/instance-cpu
+      - TYPE:.metadata.labels.node\.kubernetes\.io/instance-type
+      - NGPU:.metadata.labels.karpenter\.k8s\.aws/instance-gpu-count
+      - GPU:.metadata.labels.karpenter\.k8s\.aws/instance-gpu-name
+      - CPU/R
+  v1/pods@:
+    sortColumn: AGE:desc
+    columns:
+      - AGE
+  networking.istio.io/v1/gateways:
+    sortColumn: NAME:asc
+    columns:
+      - NAME
+      - hosts:.spec.servers[*].hosts[*]
+      - tlsname:.spec.servers[*].tls.credentialName
