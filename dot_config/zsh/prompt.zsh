@@ -74,7 +74,7 @@ _prompt_precmd() {
     # SSH indicator
     local ssh_info=""
     if [[ -n "$SSH_CONNECTION" ]]; then
-        ssh_info="%F{${_prompt_orange}}⌁%f"
+        ssh_info="%F{${_prompt_orange}}[$(hostname)]%f"
     fi
 
     # Build prompt

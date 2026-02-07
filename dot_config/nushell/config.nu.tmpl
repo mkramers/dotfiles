@@ -60,7 +60,7 @@ def create_left_prompt [] {
     }
 
     let ssh_info = if ($env.SSH_CONNECTION? | default "" | is-not-empty) {
-        $"($orange)⌁($reset)"
+        $"($orange)[(sys host | get hostname)]($reset)"
     } else {
         ""
     }
