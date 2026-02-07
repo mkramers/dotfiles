@@ -27,14 +27,14 @@
     context = 30
 
 [core]
-    pager = delta
+    pager = sh -c 'if [ "$(tput cols)" -ge 120 ]; then delta --side-by-side; else delta; fi'
 
 [interactive]
     diffFilter = delta --color-only
 
 [delta]
     navigate = true
-    side-by-side = true
+    side-by-side = false
     line-numbers = true
     dark = true
     tabs = 2
