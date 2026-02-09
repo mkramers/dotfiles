@@ -62,7 +62,7 @@
     minus-emph-style = syntax "#45221c"
 
 [alias]
-    diffs = -c core.pager="delta --side-by-side" diff
+    diffs = !DELTA_FEATURES=+side-by-side git diff
 
 [rerere]
     enabled = true
