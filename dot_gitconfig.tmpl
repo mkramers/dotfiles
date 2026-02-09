@@ -27,7 +27,7 @@
     context = 30
 
 [core]
-    pager = sh -c 'if [ "$(tput cols)" -ge 120 ]; then delta --side-by-side; else delta; fi'
+    pager = delta
 
 [interactive]
     diffFilter = delta --color-only
