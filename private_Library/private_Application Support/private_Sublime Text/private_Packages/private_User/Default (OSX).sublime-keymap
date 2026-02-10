@@ -8,5 +8,9 @@
         "command": "terminus_send_string",
         "args": {"string": "\u000c"},
         "context": [{"key": "terminus_view"}]
+    },
+    {
+        "keys": ["super+shift+1"],
+        "command": "reveal_in_side_bar"
     }
 ]
