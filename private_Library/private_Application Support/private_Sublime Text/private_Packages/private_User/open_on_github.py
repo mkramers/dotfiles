@@ -37,7 +37,8 @@ class OpenOnGithubCommand(sublime_plugin.TextCommand):
         # Convert remote URL to HTTPS base
         if remote_url.startswith("git@"):
             remote_url = re.sub(r"^git@(.+?):", r"https://\1/", remote_url)
-        remote_url = remote_url.removesuffix(".git")
+        if remote_url.endswith(".git"):
+            remote_url = remote_url[:-4]
 
         rel_path = file_path[len(repo_root) + 1:]
 
