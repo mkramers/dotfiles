@@ -63,6 +63,7 @@
 
 [alias]
     diffs = !DELTA_FEATURES=+side-by-side git diff
+    lg = log --graph --abbrev-commit --format=format:'%C(bold blue)%<(16,trunc)%an%C(reset)%C(auto)%d%C(reset) %s  %C(dim)%cr%C(reset)  %C(dim)%h%C(reset)' --all -40
 
 [rerere]
     enabled = true
