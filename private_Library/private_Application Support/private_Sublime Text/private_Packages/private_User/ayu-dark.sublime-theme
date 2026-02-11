@@ -31,5 +31,33 @@
         "class": "icon_folder",
         "parents": [{"class": "tree_row", "attributes": ["selected"]}],
         "layer1.tint": "#565b66bf"
+    },
+    {
+        "class": "overlay_control",
+        "layer2.tint": "#151717"
+    },
+    {
+        "class": "quick_panel",
+        "layer0.tint": "#151717"
+    },
+    {
+        "class": "quick_panel",
+        "parents": [{"class": "overlay_control"}],
+        "layer0.tint": "#151717"
+    },
+    {
+        "class": "quick_panel_label",
+        "fg": "#a0a3aa",
+        "selected_fg": "#bfbdb6"
+    },
+    {
+        "class": "quick_panel_label",
+        "parents": [{"class": "overlay_control"}],
+        "fg": "#a0a3aa",
+        "selected_fg": "#bfbdb6"
+    },
+    {
+        "class": "quick_panel_path_label",
+        "fg": "#757880"
     }
 ]
