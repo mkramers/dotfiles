@@ -1,0 +1,35 @@
+[
+    {
+        "class": "sidebar_container",
+        "layer0.tint": "#131515"
+    },
+    {
+        "class": "sidebar_label",
+        "fg": "#a0a3aa"
+    },
+    {
+        "class": "sidebar_label",
+        "parents": [{"class": "file_system_entry", "attributes": ["ignored"]}],
+        "fg": "#565b6680"
+    },
+    {
+        "class": "icon_folder",
+        "parents": [{"class": "tree_row", "attributes": ["expanded"]}],
+        "layer2.tint": "#565b66bf"
+    },
+    {
+        "class": "icon_folder",
+        "parents": [{"class": "tree_row", "attributes": ["hover"]}],
+        "layer1.tint": "#7ab88f"
+    },
+    {
+        "class": "icon_folder",
+        "parents": [{"class": "tree_row", "attributes": ["expanded", "hover"]}],
+        "layer2.tint": "#7ab88f"
+    },
+    {
+        "class": "icon_folder",
+        "parents": [{"class": "tree_row", "attributes": ["selected"]}],
+        "layer1.tint": "#565b66bf"
+    }
+]
