@@ -14,6 +14,7 @@ shell:
     FZF_DEFAULT_COMMAND: fd --type file --color=always
     FZF_DEFAULT_OPTS: --ansi
     FZF_CTRL_T_COMMAND: $FZF_DEFAULT_COMMAND
+    FZF_ALT_C_COMMAND: fd --type d --color=always
     GIT_PAGER:
       value: delta
       check: delta
