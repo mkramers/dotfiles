@@ -10,21 +10,35 @@ def create_left_prompt [] {
     let orange = (ansi -e '38;5;215m')
     let reset = (ansi reset)
 
-    let dir_display = if (do { git rev-parse --is-inside-work-tree } | complete).exit_code == 0 {
+    let in_git = (do { git rev-parse --is-inside-work-tree } | complete).exit_code == 0
+
+    let dir_display = if $in_git {
         let repo_root = (git rev-parse --show-toplevel | str trim)
         let repo_name = ($repo_root | path basename)
         let rel_path = ($env.PWD | str replace $repo_root "" | str trim --left --char "/")
-        if ($rel_path | is-empty) {
-            $" ($green)($repo_name)($reset)"
+        let branch = (do { git branch --show-current } | complete).stdout | str trim
+
+        # Worktree detection
+        let git_dir = (git rev-parse --git-dir | str trim)
+        let is_worktree = ($git_dir | str contains "/worktrees/")
+        let worktree_icon = if $is_worktree { "\u{f1bb} " } else { "" }
+        let repo_name = if $is_worktree and ($repo_name | str ends-with $".($branch)") {
+            $repo_name | str replace $".($branch)" ""
         } else {
-            $" ($green)($repo_name)/($rel_path)($reset)"
+            $repo_name
+        }
+
+        if ($rel_path | is-empty) {
+            $" ($green)($worktree_icon)($repo_name)($reset)"
+        } else {
+            $" ($green)($worktree_icon)($repo_name)/($rel_path)($reset)"
         }
     } else {
         let home = $env.HOME
         $" ($green)($env.PWD | str replace $home '~')($reset)"
     }
 
-    let git_info = if (do { git rev-parse --is-inside-work-tree } | complete).exit_code == 0 {
+    let git_info = if $in_git {
         let branch = (do { git branch --show-current } | complete).stdout | str trim
         let branch = if ($branch | is-empty) {
             (git rev-parse --short HEAD | str trim)
