@@ -30,7 +30,7 @@ shell:
     lg: lazygit
     nano: micro
     s: kitten ssh
-    tre: tre -a
+    tre: eza --tree -a --git-ignore
     wtc: wt switch --create
     wts: wt switch
     wtl: wt list
