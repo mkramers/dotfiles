@@ -7,10 +7,11 @@
 # Git & Workflow
 
 - Use conventional commit messages (feat:, fix:, chore:, etc.).
-- Do NOT include co-authorship attributions (Co-Authored-By) in commits, PR descriptions, or any git metadata. Ever.
+- Do NOT include co-authorship attributions (Co-Authored-By) in commits, PRs, PR descriptions, or any git metadata. Ever.
 - Generally commit your work, but when in doubt, ask.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
-- Git worktrees may be in use — be aware of the working directory context. Before you start to create a worktree, check if you are already in one. When in doubt ask
+- Git worktrees may be in use — be aware of the working directory context. Before you start to create a worktree, check if you are already in one. When in doubt ask.
+- Do not commit plans to git repos. Plans should be written to a gitignored location (e.g., `docs/plans/`). If no suitable gitignored path exists, confirm with the user before writing and offer to add it to `.gitignore`.
 
 # Code Style
 
@@ -31,3 +32,6 @@
 # Tooling
 
 - Use `just` for repo-wide commands (fmt, lint, test, run, etc.). Suggest adding a justfile if one doesn't exist. Keep it lean — don't bloat it.
+- Always use `uv` for Python (package management, venvs, running scripts).
+- Use `mise` for projects that need their own tool binaries (e.g., pods, node, etc.).
+- Python CLIs: use `typer` + `rich`.
