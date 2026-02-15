@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(aqua:*)",
+      "Bash(brew:*)",
+      "Bash(chezmoi:*)",
+      "Bash(stern:*)",
+      "Bash(wt:*)",
+      "WebFetch(domain:forum.sublimetext.com)",
+      "WebFetch(domain:mise.jdx.dev)",
+      "WebFetch(domain:starship.rs)",
+      "WebFetch(domain:www.chezmoi.io)",
+      "WebFetch(domain:www.sublimetext.com)"
+    ]
+  }
+}
