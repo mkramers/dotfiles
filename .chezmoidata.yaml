@@ -25,6 +25,8 @@ shell:
     k9s-kflow: aws-vault exec admin-kflow -- k9s
     ll: eza -la
     ls: eza
+    gaa: git add -A
+    gc: git commit
     gd: git diff
     gs: git status
     gg: lazygit
@@ -34,6 +36,7 @@ shell:
     wtc: wt switch --create
     wts: wt switch
     wtl: wt list
+    wtm: wts ^
     y: yazi
 
   functions:
