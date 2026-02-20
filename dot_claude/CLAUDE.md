@@ -11,7 +11,7 @@
 - Always commit your work. Do not leave unstaged/uncommitted changes — the user reviews via branch diffs (PyCharm, `gdd`), which only see committed state. WIP commits are fine; they'll be squashed on merge.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
 - Git worktrees are the standard workflow. Each task/branch gets its own worktree; the main repo directory stays on the default branch and is not used for development. Before creating a worktree, check if you are already in one. Use `wt switch` (`wts`) to create/switch worktrees.
-- Do not commit plans to git repos. Plans should be written to a gitignored location (e.g., `docs/plans/`). If no suitable gitignored path exists, confirm with the user before writing and offer to add it to `.gitignore`.
+- Do not commit plans to code repos. Plans live in a separate repo at `../plans/<project-name>/` relative to the current repo. Write plans there (e.g., `../plans/myproject/some-feature.md`). The `docs/plans/` directory in each repo is a symlink to this location.
 
 # Code Style
 

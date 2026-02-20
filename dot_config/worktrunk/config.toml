@@ -202,4 +202,4 @@
 
 [post-create]
 claude = 'test -f "{{ primary_worktree_path }}/.claude/settings.local.json" && mkdir -p "{{ worktree_path }}/.claude" && ln -sf "{{ primary_worktree_path }}/.claude/settings.local.json" "{{ worktree_path }}/.claude/settings.local.json" || true'
-plans = 'test -d "{{ primary_worktree_path }}/docs/plans" && mkdir -p "{{ worktree_path }}/docs" && ln -sf "{{ primary_worktree_path }}/docs/plans" "{{ worktree_path }}/docs/plans" || true'
+plans = 'plans_dir="{{ primary_worktree_path }}/../plans/{{ repo }}" && mkdir -p "$plans_dir" && mkdir -p "{{ worktree_path }}/docs" && ln -sf "$plans_dir" "{{ worktree_path }}/docs/plans" || true'

@@ -64,6 +64,16 @@ shell:
             fzf --ansi --preview "git diff ${base}...HEAD -- {} | delta" \
                 --preview-window=right:70% \
                 --bind 'enter:execute(git diff '"${base}"'...HEAD -- {} | delta | less -R)'
+    init-plans:
+      description: "symlink docs/plans to ../plans/<repo> for the current repo"
+      nu: "echo 'init-plans is not supported in nushell'"
+      zsh: |
+        local root="$(git rev-parse --show-toplevel)"
+        local repo="$(basename "$root")"
+        local plans_dir="$root/../plans/$repo"
+        mkdir -p "$plans_dir" "$root/docs"
+        ln -sf "$plans_dir" "$root/docs/plans"
+        echo "docs/plans -> $plans_dir"
     paws:
       description: print AWS env vars
       nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
