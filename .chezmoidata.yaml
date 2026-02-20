@@ -21,7 +21,7 @@ shell:
       fallback: less
 
   aliases:
-    cat: bat --paging=never
+    cat: bat
     k9s-kflow: aws-vault exec admin-kflow -- k9s
     ll: eza -la
     ls: eza
@@ -41,7 +41,7 @@ shell:
       description: cd to git root
       nu: cd (git rev-parse --show-toplevel)
       zsh: cd "$(git rev-parse --show-toplevel)"
-    dff:
+    dfg:
       description: diff current branch against base (auto-detects default branch), or --local for uncommitted changes
       nu: git diff $"($in | default main)...HEAD" | diffnav
       zsh: |
@@ -51,7 +51,7 @@ shell:
             local base="${1:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
             git diff "${base:-main}...HEAD" | diffnav
         fi
-    gdd:
+    dff:
       description: "interactive diff browser with fzf + delta (usage: gdd [ref], default main)"
       nu: "echo 'gdd is not supported in nushell'"
       zsh: |
