@@ -27,7 +27,7 @@ shell:
     ls: eza
     gd: git diff
     gs: git status
-    lg: lazygit
+    gg: lazygit
     nano: micro
     s: kitten ssh
     tre: eza --tree -a --git-ignore
@@ -51,6 +51,16 @@ shell:
             local base="${1:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
             git diff "${base:-main}...HEAD" | diffnav
         fi
+    gdd:
+      description: "interactive diff browser with fzf + delta (usage: gdd [ref], default main)"
+      nu: "echo 'gdd is not supported in nushell'"
+      zsh: |
+        local base="${1:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
+        base="${base:-main}"
+        git diff --name-only "${base}...HEAD" | \
+            fzf --ansi --preview "git diff ${base}...HEAD -- {} | delta" \
+                --preview-window=right:70% \
+                --bind 'enter:execute(git diff '"${base}"'...HEAD -- {} | delta | less -R)'
     paws:
       description: print AWS env vars
       nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
