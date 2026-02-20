@@ -8,9 +8,9 @@
 
 - Use conventional commit messages (feat:, fix:, chore:, etc.).
 - Do NOT include co-authorship attributions (Co-Authored-By) in commits, PRs, PR descriptions, or any git metadata. Ever.
-- Generally commit your work, but when in doubt, ask.
+- Always commit your work. Do not leave unstaged/uncommitted changes — the user reviews via branch diffs (PyCharm, `gdd`), which only see committed state. WIP commits are fine; they'll be squashed on merge.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
-- Git worktrees may be in use — be aware of the working directory context. Before you start to create a worktree, check if you are already in one. When in doubt ask.
+- Git worktrees are the standard workflow. Each task/branch gets its own worktree; the main repo directory stays on the default branch and is not used for development. Before creating a worktree, check if you are already in one. Use `wt switch` (`wts`) to create/switch worktrees.
 - Do not commit plans to git repos. Plans should be written to a gitignored location (e.g., `docs/plans/`). If no suitable gitignored path exists, confirm with the user before writing and offer to add it to `.gitignore`.
 
 # Code Style
