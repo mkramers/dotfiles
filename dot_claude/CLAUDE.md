@@ -22,6 +22,7 @@
 # Code Style
 
 - Follow whatever linters, formatters, and conventions the repo already has configured.
+- Python: put imports at the top of the file (PEP 8). Do not use function-local imports unless there is a concrete reason (circular import, optional dependency).
 - Variable and function names should be complete words, concise, and understandable by someone unfamiliar with the codebase.
 - Only add code comments when:
   - The purpose of a block of code is not obvious.
