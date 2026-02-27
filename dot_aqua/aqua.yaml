@@ -9,7 +9,7 @@
 #   - all
 registries:
 - type: standard
-  ref: v4.474.0 # renovate: depName=aquaproj/aqua-registry
+  ref: v4.476.0 # renovate: depName=aquaproj/aqua-registry
 - name: local
   type: local
   path: registry.yaml
@@ -17,27 +17,27 @@ packages:
 - name: zyedidia/micro@v2.0.15
 - name: BurntSushi/ripgrep@15.1.0
 - name: antonmedv/fx@39.2.0
-- name: TomWright/dasel@v3.2.2
+- name: TomWright/dasel@v3.3.1
 - name: sharkdp/bat@v0.26.1
 - name: carvel-dev/ytt@v0.53.2
 - name: sachaos/viddy@v1.3.0
 - name: junegunn/fzf@v0.68.0
 - name: casey/just@1.46.0
 - name: twpayne/chezmoi@v2.69.4
-- name: astral-sh/uv@0.10.4
+- name: astral-sh/uv@0.10.7
 - name: ogham/exa@v0.10.1
 - name: duckdb/duckdb@v1.4.4
 - name: sharkdp/fd@v10.3.0
 - name: derailed/k9s@v0.50.18
 - name: charmbracelet/glow@v2.1.1
 - name: Orange-OpenSource/hurl@7.1.0
-- name: astral-sh/ruff@0.15.2
-- name: aws/aws-cli@2.33.27
+- name: astral-sh/ruff@0.15.4
+- name: aws/aws-cli@2.33.31
 - name: 1password/cli@v2.30.3
 - name: 99designs/aws-vault@v7.2.0
-- name: cli/cli@v2.87.2
-- name: oven-sh/bun@bun-v1.3.9
-- name: openobserve/openobserve@v0.60.0
+- name: cli/cli@v2.87.3
+- name: oven-sh/bun@bun-v1.3.10
+- name: openobserve/openobserve@v0.60.1
   registry: local
 - name: ClementTsang/bottom@0.12.3
 - name: sxyazi/yazi@v26.1.22
@@ -45,18 +45,18 @@ packages:
 - name: jesseduffield/lazydocker@v0.24.4
 - name: johnkerl/miller@v6.17.0
 - name: Schniz/fnm@v1.38.1
-- name: kubernetes/kubectl@v1.35.1
+- name: kubernetes/kubectl@v1.35.2
 - name: terraform-linters/tflint@v0.61.0
-- name: hashicorp/terraform@v1.14.5
+- name: hashicorp/terraform@v1.14.6
 - name: amacneil/dbmate@v2.31.0
 - name: vectordotdev/vector@v0.53.0
   registry: local
-- name: carapace-sh/carapace-bin@v1.6.2
-- name: hasura/graphql-engine@v2.48.11
+- name: carapace-sh/carapace-bin@v1.6.3
+- name: hasura/graphql-engine@v2.48.12
 - name: maddyblue/sqlfmt@v0.5.0
 - name: jorgerojas26/lazysql@v0.4.8
 - name: golang-migrate/migrate@v4.19.1
-- name: theseus-rs/postgresql-binaries@18.2.0
+- name: theseus-rs/postgresql-binaries@18.3.0
 - name: kashav/fsql@v0.5.2
 - name: noborus/trdsql@v1.1.0
 - name: Wilfred/difftastic@0.67.0
@@ -68,7 +68,7 @@ packages:
 - name: hashicorp/packer@v1.15.0
 - name: nektos/act@v0.2.84
 - name: mikefarah/yq@v4.52.4
-- name: devspace-sh/devspace@v6.3.18
+- name: devspace-sh/devspace@v6.3.20
 - name: charmbracelet/gum@v0.17.0
 - name: aquasecurity/trivy@v0.69.1
 - name: ms-jpq/sad@v0.4.32
@@ -78,8 +78,8 @@ packages:
 - name: gruntwork-io/terragrunt@v0.99.4
 - name: opentofu/opentofu@v1.11.5
 - name: starship/starship@v1.24.2
-- name: twistedpair/google-cloud-sdk@557.0.0
+- name: twistedpair/google-cloud-sdk@558.0.0
 - name: dlvhdr/diffnav@v0.10.0
 - name: ahmetb/kubectx@v0.9.5
 - name: stern/stern@v1.33.1
-- name: denoland/deno@v2.6.10
+- name: denoland/deno@v2.7.1
