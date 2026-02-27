@@ -83,6 +83,9 @@ alias {{ $name }}='{{ $cmd }}'
 
 # edit zshrc chezmoi source
 alias configzsh='$EDITOR $(chezmoi source-path)/dot_zshrc.tmpl'
+# pipe -h/--help through bat for syntax-highlighted help
+alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 {{- if eq .chezmoi.os "darwin" }}
 
 alias typora='open -a typora'
