@@ -83,3 +83,4 @@ packages:
 - name: ahmetb/kubectx@v0.9.5
 - name: stern/stern@v1.33.1
 - name: denoland/deno@v2.7.1
+- name: neovim/neovim@v0.11.6
