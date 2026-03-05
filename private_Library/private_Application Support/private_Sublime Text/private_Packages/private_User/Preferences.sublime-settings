@@ -10,7 +10,7 @@
 	"highlight_line": true,
 	"caret_style": "phase",
 	"theme": "VoidPastel.sublime-theme",
-	"color_scheme": "VoidPastel.sublime-color-scheme",
+	"color_scheme": "Packages/Agila Theme/Agila Neon Monocyanide.tmTheme",
 	"trim_trailing_white_space_on_save": "all",
 	"preview_on_click": false,
 	"spell_check": true,

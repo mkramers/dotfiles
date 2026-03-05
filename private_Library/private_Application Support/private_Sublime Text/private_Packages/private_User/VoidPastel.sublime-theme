@@ -25,7 +25,7 @@
     },
     {
       "class": "sidebar_label",
-      "fg": "#545454"
+      "fg": "#787878"
     },
     {
       "class": "sidebar_label",
@@ -40,7 +40,7 @@
     {
       "class": "sidebar_label",
       "parents": [{"class": "tree_row", "attributes": ["expandable"]}],
-      "fg": "#545454"
+      "fg": "#787878"
     },
     {
       "class": "sidebar_label",
@@ -50,6 +50,11 @@
     {
       "class": "sidebar_label",
       "parents": [{"class": "tree_row", "attributes": ["expanded"]}],
+      "fg": "#787878"
+    },
+    {
+      "class": "sidebar_label",
+      "parents": [{"class": "tree_row", "attributes": ["expanded", "hover"]}],
       "fg": "#bbbbbb"
     },
     {
@@ -83,16 +88,20 @@
       "layer0.tint": "#ffffff10"
     },
 
-    // Folder icons - coral-orange accent
+    // Folder icons - same gray for both states, accent on hover/selected
     {
       "class": "icon_folder",
-      "layer1.tint": "#54545480",
-      "layer2.tint": "#ff8a65"
+      "layer1.tint": "#787878",
+      "layer1.opacity": 1,
+      "layer2.tint": "#787878",
+      "layer2.opacity": 0
     },
     {
       "class": "icon_folder",
       "parents": [{"class": "tree_row", "attributes": ["expanded"]}],
-      "layer2.tint": "#ff8a65"
+      "layer1.opacity": 0,
+      "layer2.opacity": 1,
+      "layer2.tint": "#787878"
     },
     {
       "class": "icon_folder",
@@ -110,12 +119,17 @@
       "layer1.tint": "#ff8a65"
     },
     {
+      "class": "icon_folder",
+      "parents": [{"class": "tree_row", "attributes": ["expanded", "selected"]}],
+      "layer2.tint": "#ff8a65"
+    },
+    {
       "class": "icon_folder_loading",
       "layer1.tint": "#ff8a65"
     },
     {
       "class": "icon_folder_dup",
-      "layer0.tint": "#545454"
+      "layer0.tint": "#787878"
     },
     {
       "class": "icon_folder_dup",
@@ -125,6 +139,11 @@
     {
       "class": "icon_folder_dup",
       "parents": [{"class": "tree_row", "attributes": ["expanded"]}],
+      "layer0.tint": "#787878"
+    },
+    {
+      "class": "icon_folder_dup",
+      "parents": [{"class": "tree_row", "attributes": ["selected"]}],
       "layer0.tint": "#ff8a65"
     },
 

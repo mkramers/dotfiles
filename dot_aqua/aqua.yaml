@@ -84,3 +84,5 @@ packages:
 - name: stern/stern@v1.33.1
 - name: denoland/deno@v2.7.1
 - name: neovim/neovim@v0.11.6
+- name: helmfile/helmfile@v1.4.1
+- name: Tyrrrz/FFmpegBin@8.0.1

@@ -1,0 +1,34 @@
+{
+  "rules": [
+    {
+      "name": "YAML mapping key",
+      "scope": "source.yaml meta.mapping.key string.unquoted, source.yaml meta.mapping.key string.quoted",
+      "foreground": "#66d9ef"
+    },
+    {
+      "name": "YAML tag/anchor",
+      "scope": "source.yaml entity.name.tag, source.yaml punctuation.definition.anchor, source.yaml punctuation.definition.alias",
+      "foreground": "#ae81ff"
+    },
+    {
+      "name": "YAML block scalar",
+      "scope": "source.yaml keyword.control.flow.block-scalar",
+      "foreground": "#f92672"
+    },
+    {
+      "name": "JSON key",
+      "scope": "source.json meta.mapping.key string, source.json meta.mapping.key punctuation.definition.string",
+      "foreground": "#66d9ef"
+    },
+    {
+      "name": "TOML table header",
+      "scope": "source.toml meta.tag.table entity.name.tag, source.toml meta.tag.table punctuation.definition.tag, source.toml entity.name.tag",
+      "foreground": "#66d9ef"
+    },
+    {
+      "name": "TOML key",
+      "scope": "source.toml meta.mapping.key string.unquoted",
+      "foreground": "#ae81ff"
+    }
+  ]
+}
