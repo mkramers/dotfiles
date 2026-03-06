@@ -5,3 +5,4 @@ Library/Application Support/nushell
 README.md
 bootstrap.sh
 docs/
+.claude/skills/*/history.md
