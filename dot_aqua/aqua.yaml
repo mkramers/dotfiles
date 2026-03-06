@@ -79,7 +79,6 @@ packages:
 - name: opentofu/opentofu@v1.11.5
 - name: starship/starship@v1.24.2
 - name: twistedpair/google-cloud-sdk@558.0.0
-- name: dlvhdr/diffnav@v0.10.0
 - name: ahmetb/kubectx@v0.9.5
 - name: stern/stern@v1.33.1
 - name: denoland/deno@v2.7.1
