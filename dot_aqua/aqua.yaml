@@ -70,7 +70,7 @@ packages:
 - name: mikefarah/yq@v4.52.4
 - name: devspace-sh/devspace@v6.3.20
 - name: charmbracelet/gum@v0.17.0
-- name: aquasecurity/trivy@v0.69.1
+- name: aquasecurity/trivy@v0.69.3
 - name: ms-jpq/sad@v0.4.32
 - name: dandavison/delta@0.18.2
 - name: Byron/dua-cli@v2.34.0
