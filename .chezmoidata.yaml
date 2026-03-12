@@ -74,6 +74,10 @@ shell:
             local base="${ref:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
             git diff "${base:-main}...HEAD" | diffnav
         fi
+    rcp:
+      description: copy realpath to clipboard
+      nu: realpath ($in | default .) | pbcopy
+      zsh: realpath "${1:-.}" | tr -d '\n' | pbcopy
     paws:
       description: print AWS env vars
       nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text

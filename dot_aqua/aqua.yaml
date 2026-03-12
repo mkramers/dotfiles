@@ -85,3 +85,4 @@ packages:
 - name: neovim/neovim@v0.11.6
 - name: helmfile/helmfile@v1.4.1
 - name: Tyrrrz/FFmpegBin@8.0.1
+- name: gitleaks/gitleaks@v8.30.0

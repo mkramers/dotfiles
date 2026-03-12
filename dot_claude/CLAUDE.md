@@ -10,7 +10,7 @@
 - Do NOT include co-authorship attributions (Co-Authored-By) in commits, PRs, PR descriptions, or any git metadata. Ever.
 - Always commit your work. Do not leave unstaged/uncommitted changes — the user reviews via branch diffs (PyCharm, `gdd`), which only see committed state. WIP commits are fine; they'll be squashed on merge.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
-- Git worktrees are the standard workflow. Each task/branch gets its own worktree; the main repo directory stays on the default branch and is not used for development. Before creating a worktree, check if you are already in one. Use `wt switch` (`wts`) to create/switch worktrees.
+- Default to plain feature branches. Git worktrees are available as an option — use `wt switch` (`wts`) to create/switch worktrees when isolation is needed, but don't assume worktrees unless asked.
 - Do not commit plans to code repos. Plans live in a separate repo at `../plans/<project-name>/` relative to the current repo. Write plans there (e.g., `../plans/myproject/some-feature.md`). The `docs/plans/` directory in each repo is a symlink to this location. New worktrees get the symlink automatically via worktrunk hook. For the primary worktree, set it up once:
   ```sh
   mkdir -p ../plans/$(basename $(git rev-parse --show-toplevel)) docs
