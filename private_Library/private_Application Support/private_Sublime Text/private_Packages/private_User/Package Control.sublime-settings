@@ -24,6 +24,9 @@
 		"Pretty JSON",
 		"Solarized Color Scheme",
 		"Terminus",
+		"LSP",
+		"LSP-pyright",
+		"LSP-typescript",
 		"Terraform",
 	],
 }
