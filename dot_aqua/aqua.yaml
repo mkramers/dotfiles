@@ -86,3 +86,4 @@ packages:
 - name: helmfile/helmfile@v1.4.1
 - name: Tyrrrz/FFmpegBin@8.0.1
 - name: gitleaks/gitleaks@v8.30.0
+- name: dlvhdr/gh-dash@v4.23.2
