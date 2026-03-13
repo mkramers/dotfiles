@@ -2,6 +2,9 @@
 # Fuzzy tab switcher for kitty using fzf
 # Launched as an overlay window so fzf renders inline
 
+# Overlay shell may not have full PATH — source profile
+source ~/.zprofile 2>/dev/null
+
 kitty_sock="unix:/tmp/kitty-${KITTY_PID}"
 
 selected=$(
