@@ -85,5 +85,7 @@ packages:
 - name: Tyrrrz/FFmpegBin@8.0.1
 - name: gitleaks/gitleaks@v8.30.0
 - name: dlvhdr/gh-dash@v4.23.2
+- name: openobserve/openobserve@v0.14.7
+  registry: local
 - name: eth-p/bat-extras@v2024.08.24
   registry: local
