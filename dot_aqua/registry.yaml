@@ -381,3 +381,23 @@ packages:
       - version_constraint: "true"
         asset: bat-extras-{{trimV .Version}}.zip
         format: zip
+  - type: github_release
+    repo_owner: tmux
+    repo_name: tmux-builds
+    description: Terminal multiplexer
+    asset: tmux-{{trimV .Version}}-{{.OS}}-{{.Arch}}.tar.gz
+    format: tar.gz
+    version_constraint: "false"
+    replacements:
+      darwin: macos
+      amd64: x86_64
+    supported_envs:
+      - darwin
+      - linux
+    files:
+      - name: tmux
+        src: tmux
+    version_overrides:
+      - version_constraint: "true"
+        asset: tmux-{{trimV .Version}}-{{.OS}}-{{.Arch}}.tar.gz
+        format: tar.gz

@@ -89,3 +89,5 @@ packages:
   registry: local
 - name: eth-p/bat-extras@v2024.08.24
   registry: local
+- name: tmux/tmux-builds@v3.6a
+  registry: local
