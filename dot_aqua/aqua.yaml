@@ -37,8 +37,6 @@ packages:
 - name: 99designs/aws-vault@v7.2.0
 - name: cli/cli@v2.87.3
 - name: oven-sh/bun@bun-v1.3.10
-- name: openobserve/openobserve@v0.60.1
-  registry: local
 - name: ClementTsang/bottom@0.12.3
 - name: sxyazi/yazi@v26.1.22
 - name: jesseduffield/lazygit@v0.59.0
@@ -87,3 +85,5 @@ packages:
 - name: Tyrrrz/FFmpegBin@8.0.1
 - name: gitleaks/gitleaks@v8.30.0
 - name: dlvhdr/gh-dash@v4.23.2
+- name: eth-p/bat-extras@v2024.08.24
+  registry: local

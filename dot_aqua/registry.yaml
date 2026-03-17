@@ -93,79 +93,6 @@ packages:
           - goos: windows
             format: zip
   - type: github_release
-    repo_owner: openobserve
-    repo_name: openobserve
-    description: "10x easier,  140x lower storage cost,  high performance,   petabyte scale - Elasticsearch/Splunk/Datadog alternative for  (logs, metrics, traces, RUM, Error tracking, Session replay)"
-    version_constraint: "false"
-    version_overrides:
-      - version_constraint: Version == "v0.6.4"
-        asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}.{{.Format}}
-        format: tar.gz
-        windows_arm_emulation: true
-        checksum:
-          type: github_release
-          asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}-simd.tar.gz.sha256sum
-          algorithm: sha256
-        overrides:
-          - goos: linux
-            goarch: amd64
-            asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}-musl.{{.Format}}
-          - goos: windows
-            format: zip
-      - version_constraint: semver("<= 0.2.0")
-        asset: zincobserve-{{.Version}}-{{.OS}}-{{.Arch}}.{{.Format}}
-        format: tar.gz
-        windows_arm_emulation: true
-        checksum:
-          type: github_release
-          asset: zincobserve-{{.Version}}-{{.OS}}-{{.Arch}}.tar.gz.sha256sum
-          algorithm: sha256
-        overrides:
-          - goos: windows
-            format: zip
-      - version_constraint: semver("<= 0.4.5")
-        asset: zincobserve-{{.Version}}-{{.OS}}-{{.Arch}}.{{.Format}}
-        format: tar.gz
-        windows_arm_emulation: true
-        checksum:
-          type: github_release
-          asset: zincobserve-{{.Version}}-{{.OS}}-{{.Arch}}.tar.gz.sha256sum
-          algorithm: sha256
-        overrides:
-          - goos: linux
-            goarch: amd64
-            asset: zincobserve-{{.Version}}-{{.OS}}-{{.Arch}}-musl.{{.Format}}
-          - goos: windows
-            format: zip
-      - version_constraint: semver("<= 0.6.3")
-        asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}.{{.Format}}
-        format: tar.gz
-        windows_arm_emulation: true
-        checksum:
-          type: github_release
-          asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}.zip.sha256sum
-          algorithm: sha256
-        overrides:
-          - goos: linux
-            goarch: amd64
-            asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}-musl.{{.Format}}
-          - goos: windows
-            format: zip
-      - version_constraint: "true"
-        asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}.{{.Format}}
-        format: tar.gz
-        windows_arm_emulation: true
-        checksum:
-          type: github_release
-          asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}.tar.gz.sha256sum
-          algorithm: sha256
-        overrides:
-          - goos: linux
-            goarch: amd64
-            asset: openobserve-{{.Version}}-{{.OS}}-{{.Arch}}-musl.{{.Format}}
-          - goos: windows
-            format: zip
-  - type: github_release
     repo_owner: vectordotdev
     repo_name: vector
     description: A high-performance observability data pipeline
@@ -353,3 +280,31 @@ packages:
         overrides:
           - goos: windows
             format: zip
+  - type: github_release
+    repo_owner: eth-p
+    repo_name: bat-extras
+    description: Bash scripts that integrate bat with various command line tools
+    asset: bat-extras-{{trimV .Version}}.zip
+    format: zip
+    version_constraint: "false"
+    supported_envs:
+      - all
+    files:
+      - name: batdiff
+        src: bin/batdiff
+      - name: batgrep
+        src: bin/batgrep
+      - name: batman
+        src: bin/batman
+      - name: batpipe
+        src: bin/batpipe
+      - name: batwatch
+        src: bin/batwatch
+      - name: prettybat
+        src: bin/prettybat
+      - name: bat-modules
+        src: bin/bat-modules
+    version_overrides:
+      - version_constraint: "true"
+        asset: bat-extras-{{trimV .Version}}.zip
+        format: zip

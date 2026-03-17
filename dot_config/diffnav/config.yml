@@ -2,9 +2,9 @@ ui:
   showFileTree: true
   fileTreeWidth: 40
   searchTreeWidth: 50
-  icons: unicode
+  icons: nerd-fonts-filetype
   colorFileNames: true
-  showDiffStats: true
+  showDiffStats: false
   sideBySide: false
   hideHeader: true
   hideFooter: false
