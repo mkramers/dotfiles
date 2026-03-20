@@ -42,7 +42,6 @@ shell:
     wtm: wts ^
     y: yazi
     fzp: fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"
-    op: /opt/homebrew/bin/op
 
   functions:
     cdg:
