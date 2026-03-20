@@ -21,6 +21,7 @@ shell:
       value: delta
       check: delta
       fallback: less
+    OP_BIOMETRIC_UNLOCK_ENABLED: "true"
 
   aliases:
     cat: bat
@@ -41,39 +42,14 @@ shell:
     wtm: wts ^
     y: yazi
     fzp: fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"
+    op: /opt/homebrew/bin/op
 
   functions:
     cdg:
       description: cd to git root
       nu: cd (git rev-parse --show-toplevel)
       zsh: cd "$(git rev-parse --show-toplevel)"
-    dg:
-      description: "diff in diffnav: dg (branch vs base), dg -a/--all (working tree incl staged), dg -l/--local (unstaged only), dg [ref]"
-      nu: git diff $"($in | default main)...HEAD" | diffnav
-      zsh: |
-        local all=false local_only=false ref=""
-        while [[ $# -gt 0 ]]; do
-            case "$1" in
-                -h|"--help")
-                    printf "\033[1mdg\033[0m - diff in diffnav\n\n"
-                    printf "  \033[1m%-20s\033[0m %s\n" "dg" "Branch diff vs auto-detected base (main/master)"
-                    printf "  \033[1m%-20s\033[0m %s\n" "dg <ref>" "Branch diff vs <ref>"
-                    printf "  \033[1m%-20s\033[0m %s\n" "dg -a, --all" "All changes vs HEAD (staged + unstaged)"
-                    printf "  \033[1m%-20s\033[0m %s\n" "dg -l, --local" "Unstaged changes only"
-                    return 0 ;;
-                -a|--all) all=true; shift ;;
-                -l|--local) local_only=true; shift ;;
-                *) ref="$1"; shift ;;
-            esac
-        done
-        if $all; then
-            git diff HEAD | diffnav
-        elif $local_only; then
-            git diff | diffnav
-        else
-            local base="${ref:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')}"
-            git diff "${base:-main}...HEAD" | diffnav
-        fi
+    # dg: disabled — causing zshrc parse errors, fix later
     rcp:
       description: copy realpath to clipboard
       nu: realpath ($in | default .) | pbcopy
