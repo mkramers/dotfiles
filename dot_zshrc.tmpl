@@ -68,7 +68,7 @@ bindkey '^[[F' end-of-line
 {{ range $name, $func := .shell.functions -}}
 # {{ $func.description }}
 {{ $name }}() {
-    {{ $func.zsh }}
+{{ $func.zsh | indent 4 }}
 }
 
 {{ end }}
