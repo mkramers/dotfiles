@@ -55,7 +55,7 @@ shell:
         while [[ $# -gt 0 ]]; do
             case "$1" in
                 -h|"--help")
-                    printf "\033[1mdg\033[0m — diff in diffnav\n\n"
+                    printf "\033[1mdg\033[0m - diff in diffnav\n\n"
                     printf "  \033[1m%-20s\033[0m %s\n" "dg" "Branch diff vs auto-detected base (main/master)"
                     printf "  \033[1m%-20s\033[0m %s\n" "dg <ref>" "Branch diff vs <ref>"
                     printf "  \033[1m%-20s\033[0m %s\n" "dg -a, --all" "All changes vs HEAD (staged + unstaged)"
