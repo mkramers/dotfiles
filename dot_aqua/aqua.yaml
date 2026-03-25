@@ -91,3 +91,5 @@ packages:
   registry: local
 - name: tmux/tmux-builds@v3.6a
   registry: local
+- name: 1password/cli
+  version: "[SET PACKAGE VERSION]"
