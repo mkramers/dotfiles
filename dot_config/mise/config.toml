@@ -1,7 +1,4 @@
 [tools]
-node = "lts"
-bun = "latest"
-"github:F1bonacc1/process-compose" = "latest"
 eza = "latest"
 
 [settings]
