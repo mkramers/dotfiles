@@ -1,0 +1,189 @@
+# VoidPastel — based on flexoki-dark, adapted to kitty VoidPastel palette
+# ---
+# black       "#000000" bg
+# dim-bg      "#1a1a1a" bg-2
+# border      "#2a2a2a" ui
+# border-2    "#3a3a3a" ui-2
+# muted       "#5a5753" ui-3
+# dim-text    "#716d69" tx-3
+# text-2      "#a7a39c" tx-2
+# text        "#fefbe9" tx
+# yellow      "#f7b63e" ye
+# blue        "#7fb5e1" bl
+# lime        "#d6da24" gr
+# green       "#489d48" gr-2
+# purple      "#b295c5" pu
+# pink        "#f4bed6" ma
+
+[app]
+overall = { bg = "#000000" }
+
+[mgr]
+cwd = { fg = "#fefbe9", bold = true }
+
+# Find
+find_keyword = { fg = "#f4bed6", reversed = true }
+find_position = { fg = "#f4bed6", bold = true, italic = true }
+
+# Marker
+marker_copied = { fg = "#d6da24", bg = "#d6da24" }
+marker_cut = { fg = "#f7b63e", bg = "#f7b63e" }
+marker_marked = { fg = "#7fb5e1", bg = "#7fb5e1" }
+marker_selected = { fg = "#b295c5", bg = "#b295c5" }
+
+# Count
+count_copied = { fg = "#d6da24", bold = true, reversed = true }
+count_cut = { fg = "#f7b63e", bold = true, reversed = true }
+count_selected = { fg = "#b295c5", bold = true, reversed = true }
+
+# Border
+border_symbol = "│"
+border_style = { fg = "#2a2a2a" }
+
+[indicator]
+parent = { underline = true }
+current = { fg = "#fefbe9", bg = "#2a2a2a" }
+preview = { underline = true }
+padding = { open = "█", close = "█" }
+
+[tabs]
+active = { fg = "#fefbe9", bg = "#3a3a3a", bold = true }
+inactive = { fg = "#a7a39c", bg = "#2a2a2a" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#fefbe9", bg = "#3a3a3a", bold = true }
+normal_alt = { fg = "#a7a39c", bg = "#2a2a2a" }
+
+select_main = { fg = "#000000", bg = "#b295c5", bold = true }
+select_alt = { fg = "#b295c5", bg = "#2a2a2a" }
+
+unset_main = { fg = "#000000", bg = "#b295c5", bold = true }
+unset_alt = { fg = "#b295c5", bg = "#2a2a2a" }
+
+[status]
+overall = { fg = "#fefbe9" }
+
+perm_type = { fg = "#7fb5e1" }
+perm_read = { fg = "#f7b63e" }
+perm_write = { fg = "#f4bed6" }
+perm_exec = { fg = "#489d48" }
+perm_sep = { fg = "#a7a39c" }
+
+progress_label = { fg = "#000000" }
+progress_normal = { fg = "#b295c5", bg = "#5a5753" }
+progress_error = { bg = "#f7b63e" }
+
+[which]
+cols = 3
+mask = { bg = "#1a1a1a" }
+cand = { fg = "#b295c5", bold = true }
+rest = { fg = "#b295c5", italic = true }
+desc = { fg = "#716d69" }
+separator = " "
+separator_style = { }
+
+[confirm]
+border = { fg = "#3a3a3a" }
+title = { fg = "#716d69", bold = true }
+body = { fg = "#fefbe9", bold = true }
+list = { fg = "#fefbe9" }
+btn_yes = { fg = "#fefbe9", bg = "#3a3a3a", bold = true }
+btn_no = { fg = "#a7a39c", bg = "#2a2a2a" }
+
+[spot]
+border = { fg = "#3a3a3a" }
+title = { fg = "#716d69", bold = true }
+tbl_col = { fg = "#a7a39c" }
+tbl_cell = { fg = "#fefbe9", bg = "#2a2a2a" }
+
+[notify]
+title_info = { fg = "#7fb5e1" }
+title_warn = { fg = "#f7b63e" }
+title_error = { fg = "#f4bed6" }
+
+[pick]
+border = { fg = "#3a3a3a", bold = true }
+active = { fg = "#fefbe9" }
+inactive = { fg = "#a7a39c" }
+
+[input]
+border = { fg = "#3a3a3a" }
+title = { fg = "#716d69", bold = true }
+value = { fg = "#fefbe9" }
+selected = { bg = "#1a1a1a" }
+
+[cmp]
+border = { fg = "#3a3a3a", bold = true }
+active = { fg = "#fefbe9", bg = "#2a2a2a" }
+inactive = { fg = "#a7a39c" }
+
+[tasks]
+border = { fg = "#3a3a3a" }
+title = { fg = "#716d69", bold = true }
+hovered = { fg = "#fefbe9", bg = "#2a2a2a" }
+
+[help]
+on = { fg = "#7fb5e1" }
+run = { fg = "#b295c5" }
+desc = { fg = "#716d69", italic = true }
+hovered = { bg = "#2a2a2a" }
+footer = { fg = "#000000", bg = "#b295c5", bold = true }
+
+[filetype]
+rules = [
+  # Empty files
+  { mime = "inode/empty", fg = "#575653" }, # tx-3
+
+  # Special files
+  { url = "*", is = "orphan", fg = "#575653" }, # tx-3
+  { url = "*/", is = "orphan", fg = "#575653" }, # tx-3
+  { url = "*", is = "link", fg = "#3AA99F" }, # cy
+  { url = "*/", is = "link", fg = "#3AA99F" }, # cy
+  { url = "*", is = "block", fg = "#CECDC3" }, # tx
+  { url = "*", is = "char", fg = "#CECDC3" }, # tx
+  { url = "*", is = "fifo", fg = "#CE5D97" }, # ma
+  { url = "*", is = "sock", fg = "#CE5D97" }, # ma
+  { url = "*", is = "sticky", fg = "#CECDC3" }, # tx
+  { url = "*", is = "dummy", fg = "#575653" }, # tx-3
+
+  # Fallback
+  { url = "*/", fg = "#CECDC3" }, # tx
+  { url = "*", is = "exec", fg = "#879A39" }, # gr
+  { url = "*", fg = "#878580" } # tx-2
+]
+
+[icon]
+dirs = [
+  { name = ".config", text = "", fg = "#489d48" }, # gr
+  { name = ".git", text = "", fg = "#489d48" }, # gr
+  { name = ".github", text = "", fg = "#489d48" }, # gr
+  { name = ".npm", text = "", fg = "#489d48" }, # gr
+  { name = "Desktop", text = "", fg = "#489d48" }, # gr
+  { name = "Development", text = "", fg = "#489d48" }, # gr
+  { name = "Documents", text = "", fg = "#489d48" }, # gr
+  { name = "Downloads", text = "", fg = "#489d48" }, # gr
+  { name = "Library", text = "", fg = "#489d48" }, # gr
+  { name = "Movies", text = "", fg = "#489d48" }, # gr
+  { name = "Music", text = "", fg = "#489d48" }, # gr
+  { name = "Pictures", text = "", fg = "#489d48" }, # gr
+  { name = "Public", text = "", fg = "#489d48" }, # gr
+  { name = "Videos", text = "", fg = "#489d48" } # gr
+]
+conds = [
+  # Special files
+  { if = "orphan", text = "", fg = "#575653" }, # tx-3
+  { if = "link", text = "", fg = "#3AA99F" }, # cy
+  { if = "block", text = "", fg = "#CECDC3" }, # tx
+  { if = "char", text = "", fg = "#CECDC3" }, # tx
+  { if = "fifo", text = "", fg = "#CE5D97" }, # ma
+  { if = "sock", text = "", fg = "#CE5D97" }, # ma
+  { if = "sticky", text = "", fg = "#CECDC3" }, # tx
+  { if = "dummy", text = "", fg = "#575653" }, # tx-3
+
+  # Fallback
+  { if = "dir", text = "", fg = "#489d48" }, # gr
+  { if = "exec", text = "", fg = "#879A39" }, # gr
+  { if = "!dir", text = "", fg = "#878580" } # tx-2
+]
