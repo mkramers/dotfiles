@@ -1,7 +1,7 @@
 # dotfiles
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply mkramers/dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply mkramers/dotfiles
 ```
 
 ## Chezmoi Conventions
