@@ -46,14 +46,10 @@ shell:
   functions:
     cdg:
       description: cd to git root
-      nu: cd (git rev-parse --show-toplevel)
-      zsh: cd "$(git rev-parse --show-toplevel)"
-    # dg: disabled — causing zshrc parse errors, fix later
+      body: cd "$(git rev-parse --show-toplevel)"
     rcp:
       description: copy realpath to clipboard
-      nu: realpath ($in | default .) | pbcopy
-      zsh: realpath "${1:-.}" | tr -d '\n' | pbcopy
+      body: realpath "${1:-.}" | tr -d '\n' | pbcopy
     paws:
       description: print AWS env vars
-      nu: $env | transpose key value | where key =~ "AWS" | format pattern '{key}={value}' | to text
-      zsh: env | grep AWS
+      body: env | grep AWS

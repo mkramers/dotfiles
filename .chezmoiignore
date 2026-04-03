@@ -4,3 +4,28 @@ docs/
 todo.md
 .claude/skills/*/history.md
 Library/Application Support/k9s/clusters/
+
+{{ if eq .profile "minimal" }}
+# zsh-specific
+.zshrc
+.zprofile
+.config/zsh/
+.zsh/
+
+# GUI/desktop apps
+.config/kitty/
+.config/lazygit/
+.config/yazi/
+.config/obsidian/
+.config/nvim/
+.config/diffnav/
+.config/gh-dash/
+Library/
+.tmux.conf
+{{ end }}
+
+{{ if eq .profile "full" }}
+# bash (full profile uses zsh)
+.bashrc
+.bash_profile
+{{ end }}
