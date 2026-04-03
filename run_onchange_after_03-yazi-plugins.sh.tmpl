@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # yazi package hash: {{ include "dot_config/yazi/package.toml" | sha256sum }}
 
@@ -7,4 +8,4 @@ if ! command -v ya &>/dev/null; then
 fi
 
 echo "Installing yazi plugins..."
-ya pkg install || true
+ya pkg install
