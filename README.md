@@ -1,5 +1,5 @@
 # dotfiles
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mkramers/dotfiles/main/bootstrap.sh | bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply mkramers/dotfiles
 ```
