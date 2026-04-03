@@ -12,16 +12,19 @@ Library/Application Support/k9s/clusters/
 .config/zsh/
 .zsh/
 
-# GUI/desktop apps
+# desktop/GUI only
 .config/kitty/
 .config/lazygit/
-.config/yazi/
 .config/obsidian/
 .config/nvim/
 .config/diffnav/
 .config/gh-dash/
 Library/
 .tmux.conf
+
+# claude code
+.claude/
+CLAUDE.md
 {{ end }}
 
 {{ if eq .profile "full" }}
