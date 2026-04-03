@@ -26,11 +26,6 @@ Workaround: Create chezmoi-managed symlinks from Application Support to `.config
 - Prompt tilde: use `${PWD/#$HOME/~}` (no backslash escape needed)
 - Unicode glyphs: use `$'\uXXXX'` syntax (e.g., `$'\ue0a0'` for git branch icon)
 
-### Nushell
-- 256 colors: `ansi -e '38;5;XXXm'` (the record syntax `ansi { fg: "141" }` doesn't support arbitrary 256 colors)
-- Prompt config: `$env.PROMPT_COMMAND` and `$env.PROMPT_INDICATOR`
-- Check `~/.config/nushell/vendor/autoload/` for files that may override settings
-
 ## Tool Integrations
 
 ### lazygit + delta

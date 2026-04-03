@@ -11,7 +11,6 @@ resolve_latest() {
     curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/$1/releases/latest" | grep -o '[^/]*$'
 }
 
-NUSHELL_VERSION=$(resolve_latest "nushell/nushell")
 CHEZMOI_VERSION=$(resolve_latest "twpayne/chezmoi" | sed 's/^v//')
 
 # Paths
@@ -56,37 +55,13 @@ error() {
 # =============================================================================
 # Step 1: Create directories
 # =============================================================================
-step "1/5" "Creating directories..."
+step "1/4" "Creating directories..."
 mkdir -p "$LOCAL_BIN"
 
 # =============================================================================
-# Step 2: Install nushell
+# Step 2: Install chezmoi and apply dotfiles
 # =============================================================================
-step "2/5" "Installing nushell $NUSHELL_VERSION..."
-
-if [[ -x "$LOCAL_BIN/nu" ]] && [[ "$("$LOCAL_BIN/nu" --version 2>/dev/null)" == "$NUSHELL_VERSION" ]]; then
-    skip
-else
-    case "$OS" in
-        darwin) NU_PLATFORM="${ARCH}-apple-darwin" ;;
-        linux)  NU_PLATFORM="${ARCH}-unknown-linux-gnu" ;;
-        *)      error "Unsupported OS: $OS" ;;
-    esac
-
-    NU_URL="https://github.com/nushell/nushell/releases/download/${NUSHELL_VERSION}/nu-${NUSHELL_VERSION}-${NU_PLATFORM}.tar.gz"
-
-    TMPDIR=$(mktemp -d)
-    trap "rm -rf $TMPDIR" EXIT
-
-    curl -fsSL "$NU_URL" | tar -xzf - -C "$TMPDIR" --strip-components=1
-    mv "$TMPDIR/nu" "$LOCAL_BIN/nu"
-    chmod +x "$LOCAL_BIN/nu"
-fi
-
-# =============================================================================
-# Step 3: Install chezmoi and apply dotfiles
-# =============================================================================
-step "3/5" "Installing chezmoi v$CHEZMOI_VERSION..."
+step "2/4" "Installing chezmoi v$CHEZMOI_VERSION..."
 
 if [[ -x "$LOCAL_BIN/chezmoi" ]] && "$LOCAL_BIN/chezmoi" --version 2>/dev/null | grep -q "v${CHEZMOI_VERSION}"; then
     skip
@@ -97,9 +72,9 @@ else
 fi
 
 # =============================================================================
-# Step 4: Install mise
+# Step 3: Install mise
 # =============================================================================
-step "4/5" "Installing mise..."
+step "3/4" "Installing mise..."
 
 if [[ -x "$LOCAL_BIN/mise" ]]; then
     skip
@@ -108,9 +83,9 @@ else
 fi
 
 # =============================================================================
-# Step 5: Post-install setup
+# Step 4: Post-install setup
 # =============================================================================
-step "5/5" "Running post-install setup..."
+step "4/4" "Running post-install setup..."
 
 # Add mise to PATH for this session
 export PATH="$LOCAL_BIN:$PATH"
@@ -123,16 +98,8 @@ if command -v ya &>/dev/null; then
     ya pack -i &>/dev/null
 fi
 
-echo "      - Setting up carapace completions..."
-if command -v carapace &>/dev/null; then
-    mkdir -p ~/.cache/carapace
-    carapace _carapace nushell > ~/.cache/carapace/init.nu
-fi
-
 # =============================================================================
 # Done
 # =============================================================================
 echo ""
 echo -e "${GREEN}✓ Bootstrap complete!${NC}"
-echo ""
-echo "Run 'nu' to start nushell."

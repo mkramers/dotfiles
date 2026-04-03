@@ -66,7 +66,7 @@ textarea,
 div.code-tooltip-content {
     color: #f8f8f2;
     border-color: transparent;
-    font-family: "JetBrains Mono", "SF Pro", "Helvetica Neue", sans-serif;
+    font-family: "SF Pro", "Helvetica Neue", -apple-system, sans-serif;
 }
 
 div.code-tooltip,

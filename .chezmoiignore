@@ -1,8 +1,6 @@
-{{ if ne .chezmoi.os "darwin" }}
-Library/Application Support/nushell
-{{ end }}
-
 README.md
 bootstrap.sh
 docs/
+todo.md
 .claude/skills/*/history.md
+Library/Application Support/k9s/clusters/
