@@ -1,19 +1,16 @@
 # dotfiles
 
+Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io/).
+
+- Two profiles: **full** (macOS, zsh, GUI apps) and **minimal** (bash, no sudo)
+- Tools via [aqua](https://aquaproj.github.io/) (JIT single binaries) and [mise](https://mise.jdx.dev/) (eza)
+- Shared shell config (aliases, env, paths, functions) across zsh and bash via chezmoi templates
+- macOS app configs in `~/.config/` with symlinks from `~/Library/Application Support/`
+
+## Install
+
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply mkramers/dotfiles
 ```
 
-Prompts for profile on first init:
-
-- **full** — zsh, GUI apps, all aqua packages (macOS workstation)
-- **minimal** — bash, core CLI tools only (e.g. slurm login nodes, no sudo)
-
-## macOS App Config
-
-Configs live in `~/.config/`, with symlinks from `~/Library/Application Support/` for apps that require it:
-
-| App | Symlink |
-|-----|---------|
-| k9s | `Library/Application Support/k9s` → `../../.config/k9s` |
-| lazygit | `Library/Application Support/lazygit` → `../../.config/lazygit` |
+Prompts for profile on first init.
