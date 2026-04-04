@@ -53,3 +53,9 @@ shell:
     paws:
       description: print AWS env vars
       body: env | grep AWS
+    mkcd:
+      description: mkdir and cd into it
+      body: mkdir -p "$1" && cd "$1"
+    ports:
+      description: show listening TCP ports
+      body: lsof -iTCP -sTCP:LISTEN -nP
