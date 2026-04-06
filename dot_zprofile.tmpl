@@ -1,3 +1,10 @@
+# Restore stderr after suppression in .zshenv (silences bash Modules init errors)
+if [ -n "$STDERR_SUPPRESSED" ]; then
+    exec 2>&1
+    rm -f /tmp/.zsh-init-stderr-$$
+    unset STDERR_SUPPRESSED
+fi
+
 # PATH setup in .zprofile so login shells (and GUI apps like JetBrains IDEs) inherit it
 typeset -U path
 path=(
