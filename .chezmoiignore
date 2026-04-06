@@ -6,12 +6,6 @@ todo.md
 Library/Application Support/k9s/clusters/
 
 {{ if eq .profile "minimal" }}
-# zsh-specific
-.zshrc
-.zprofile
-.config/zsh/
-.zsh/
-
 # desktop/GUI only
 .config/kitty/
 .config/lazygit/
@@ -27,8 +21,6 @@ Library/
 CLAUDE.md
 {{ end }}
 
-{{ if eq .profile "full" }}
-# bash (full profile uses zsh)
+# bash (unused — both profiles use zsh)
 .bashrc
 .bash_profile
-{{ end }}
