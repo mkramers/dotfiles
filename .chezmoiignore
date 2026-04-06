@@ -21,6 +21,7 @@ Library/
 CLAUDE.md
 {{ end }}
 
-# bash (unused — both profiles use zsh)
-.bashrc
+# .bash_profile used on minimal to exec zsh from bash login shells
+{{ if eq .profile "full" }}
 .bash_profile
+{{ end }}
