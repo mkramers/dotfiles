@@ -1,4 +1,5 @@
-# Redirect stderr during system init to suppress bash Modules errors
-# /etc/zprofile sources /etc/profile which sources bash-only Modules init
-exec 2>/tmp/.zsh-init-stderr-$$
-STDERR_SUPPRESSED=1
+# Suppress bash Modules init errors on systems that source it via /etc/zprofile
+if [ -f /global/software/Modules/5.5.0/init/bash ]; then
+    exec 2>/tmp/.zsh-init-stderr-$$
+    STDERR_SUPPRESSED=1
+fi
