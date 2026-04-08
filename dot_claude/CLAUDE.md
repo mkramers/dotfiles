@@ -12,7 +12,7 @@
 - Always commit your work. Do not leave unstaged/uncommitted changes — the user reviews via branch diffs (PyCharm, `gdd`), which only see committed state. WIP commits are fine; they'll be squashed on merge.
 - Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
 - Default to plain feature branches. Git worktrees are available as an option — use `wt switch` (`wts`) to create/switch worktrees when isolation is needed, but don't assume worktrees unless asked.
-- When working from Linear tickets, use the ticket ID as the branch name prefix (e.g., `ALT-123-some-feature`). If Linear provides a branch name, use it as-is. Do not add directory prefixes or modify it.
+- Branch names start with the ticket ID (e.g., `ALT-123-some-feature`). Do not add directory prefixes.
 - Do not commit plans to code repos. Plans live in a separate repo at `../plans/<project-name>/` relative to the current repo. Write plans there (e.g., `../plans/myproject/some-feature.md`). The `docs/plans/` directory in each repo is a symlink to this location. New worktrees get the symlink automatically via worktrunk hook. For the primary worktree, set it up once:
   ```sh
   mkdir -p ../plans/$(basename $(git rev-parse --show-toplevel)) docs
