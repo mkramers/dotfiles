@@ -154,16 +154,17 @@ keybinds clear-defaults=true {
         bind "Alt 7" { GoToTab 7; SwitchToMode "normal"; }
         bind "Alt 8" { GoToTab 8; SwitchToMode "normal"; }
         bind "Alt 9" { GoToTab 9; SwitchToMode "normal"; }
-        bind "Alt Shift [" { GoToPreviousTab; }
-        bind "Alt Shift ]" { GoToNextTab; }
-        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt {" { GoToPreviousTab; }
+        bind "Alt }" { GoToNextTab; }
+        bind "Alt Shift f" { ToggleFloatingPanes; }
         bind "Ctrl g" { SwitchToMode "locked"; }
         bind "Alt Shift i" { SwitchToMode "renametab"; TabNameInput 0; }
         bind "Alt n" { NewPane; SwitchToMode "normal"; }
-        bind "Alt Shift -" { NewPane "down"; SwitchToMode "normal"; }
-        bind "Alt Shift \\" { NewPane "right"; SwitchToMode "normal"; }
-        bind "Alt Shift d" { CloseFocus; SwitchToMode "normal"; }
-        bind "Alt F2" { ToggleFocusFullscreen; SwitchToMode "normal"; }
+        bind "Alt Enter" { NewPane; SwitchToMode "normal"; }
+        bind "Alt _" { NewPane "down"; SwitchToMode "normal"; }
+        bind "Alt |" { NewPane "right"; SwitchToMode "normal"; }
+        bind "Alt D" { CloseFocus; SwitchToMode "normal"; }
+        bind "F2" { ToggleFocusFullscreen; SwitchToMode "normal"; }
         bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
@@ -324,7 +325,7 @@ default_mode "normal"
 // The name of the default layout to load on startup
 // Default: "default"
 // 
-// default_layout "compact"
+default_layout "minimal"
  
 // The folder in which Zellij will look for layouts
 // (Requires restart)
@@ -350,7 +351,7 @@ default_mode "normal"
 //   - true (default, enabled)
 //   - false
 // 
-// pane_frames false
+pane_frames false
  
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
@@ -470,7 +471,7 @@ default_mode "normal"
 // (Requires restart)
 // Default: true (if the host terminal supports it)
 // 
-// support_kitty_keyboard_protocol false
+support_kitty_keyboard_protocol false
 // Whether to make sure a local web server is running when a new Zellij session starts.
 // This web server will allow creating new sessions and attaching to existing ones that have
 // opted in to being shared in the browser.
@@ -535,11 +536,11 @@ show_startup_tips false
  
 // Whether to enable mouse hover effects and pane grouping functionality
 // default is true
-// advanced_mouse_actions false
+advanced_mouse_actions false
  
 // Whether to enable mouse hover visual effects (frame highlight and help text)
 // default is true
-// mouse_hover_effects false
+mouse_hover_effects false
  
 // Whether to show visual bell indicators (pane/tab frame flash and [!] suffix)
 // default is true

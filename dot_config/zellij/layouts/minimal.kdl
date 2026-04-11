@@ -1,0 +1,26 @@
+layout {
+    pane
+    pane size=1 borderless=true {
+        plugin location="https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm" {
+            format_left  "{mode}{tabs}"
+            format_right "#[fg=#333333,bg=#000000]#[fg=#7acaca,bg=#333333,bold] {datetime}"
+            format_space "#[bg=#000000]"
+
+            mode_normal  "#[bg=#4c52f8,fg=#000000,bold]  #[fg=#4c52f8,bg=#000000]"
+            mode_locked  "#[bg=#cc5555,fg=#000000,bold]  #[fg=#cc5555,bg=#000000]"
+            mode_default_to_mode "normal"
+
+            tab_normal              "#[fg=#333333,bg=#000000]#[fg=#888888,bg=#333333]  {name} #[fg=#333333,bg=#000000] "
+            tab_active              "#[fg=#4c52f8,bg=#000000]#[fg=#eeeeee,bg=#4c52f8,bold]  {name} #[fg=#4c52f8,bg=#000000] "
+            tab_normal_fullscreen   "#[fg=#333333,bg=#000000]#[fg=#888888,bg=#333333]  {name}  #[fg=#333333,bg=#000000] "
+            tab_active_fullscreen   "#[fg=#4c52f8,bg=#000000]#[fg=#eeeeee,bg=#4c52f8,bold]  {name}  #[fg=#4c52f8,bg=#000000] "
+            tab_normal_sync         "#[fg=#333333,bg=#000000]#[fg=#888888,bg=#333333]  {name}  #[fg=#333333,bg=#000000] "
+            tab_active_sync         "#[fg=#4c52f8,bg=#000000]#[fg=#eeeeee,bg=#4c52f8,bold]  {name}  #[fg=#4c52f8,bg=#000000] "
+            tab_separator           ""
+
+            datetime          "{format}"
+            datetime_format   "%H:%M"
+            datetime_timezone "America/Toronto"
+        }
+    }
+}
