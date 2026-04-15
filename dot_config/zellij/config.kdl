@@ -168,7 +168,6 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
-        bind "Ctrl q" { Quit; }
         bind "Alt t" { NewTab; SwitchToMode "normal"; }
         bind "Alt w" { CloseTab; SwitchToMode "normal"; }
     }
