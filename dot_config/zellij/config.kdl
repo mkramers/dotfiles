@@ -170,6 +170,11 @@ keybinds clear-defaults=true {
         bind "Alt Shift p" { ToggleGroupMarking; }
         bind "Alt t" { NewTab; SwitchToMode "normal"; }
         bind "Alt w" { CloseTab; SwitchToMode "normal"; }
+        // Pane navigation (no prefix needed)
+        bind "Ctrl Shift left" { MoveFocus "left"; }
+        bind "Ctrl Shift right" { MoveFocus "right"; }
+        bind "Ctrl Shift up" { MoveFocus "up"; }
+        bind "Ctrl Shift down" { MoveFocus "down"; }
     }
     shared_except "locked" "move" {
         bind "Ctrl h" { SwitchToMode "move"; }
@@ -181,7 +186,6 @@ keybinds clear-defaults=true {
         bind "Ctrl b" { SwitchToMode "tmux"; }
     }
     shared_except "locked" "scroll" "search" {
-        bind "Ctrl s" { SwitchToMode "scroll"; }
     }
     shared_except "locked" "tab" {
         bind "Ctrl t" { SwitchToMode "tab"; }
