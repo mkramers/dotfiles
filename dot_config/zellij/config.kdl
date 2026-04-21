@@ -165,7 +165,8 @@ keybinds clear-defaults=true {
         bind "Alt |" { NewPane "right"; SwitchToMode "normal"; }
         bind "Alt D" { CloseFocus; SwitchToMode "normal"; }
         bind "F2" { ToggleFocusFullscreen; SwitchToMode "normal"; }
-        bind "Alt o" { MoveTab "right"; }
+        bind "Alt <" { MoveTab "left"; }
+        bind "Alt >" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
         bind "Alt t" { NewTab; SwitchToMode "normal"; }
