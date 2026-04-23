@@ -9,7 +9,7 @@ gui:
 customCommands:
   - key: 'W'
     description: 'Create worktree'
-    command: 'git worktree add -b {{.Form.Branch}} "../$(basename $(git rev-parse --show-toplevel)).worktrees/{{.Form.Branch}}" origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'
+    command: 'git worktree add -b {{.Form.Branch}} "$(git rev-parse --show-toplevel)/.claude/worktrees/{{.Form.Branch}}" origin/$(git symbolic-ref refs/remotes/origin/HEAD | sed "s@refs/remotes/origin/@@")'
     context: 'global'
     prompts:
       - type: 'input'
