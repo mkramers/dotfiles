@@ -1,3 +1,11 @@
+# Restore stderr after suppression in .zshenv (silences bash Modules init errors).
+# Lives here (not .zprofile) so non-login interactive shells like zellij panes restore too.
+if [ -n "$STDERR_SUPPRESSED" ]; then
+    exec 2>/dev/tty
+    rm -f /tmp/.zsh-init-stderr-$$
+    unset STDERR_SUPPRESSED
+fi
+
 # ----------------------------------------------------
 # ----- prompt -----------------------------------------
 # ----------------------------------------------------
