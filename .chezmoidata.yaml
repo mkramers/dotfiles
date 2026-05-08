@@ -36,10 +36,7 @@ shell:
     nano: micro
     s: kitten ssh
     tre: eza --tree -a --git-ignore
-    wtc: wt switch --create
-    wts: wt switch
-    wtl: wt list
-    wtm: wts ^
+    wtl: git worktree list
     y: yazi
     zj: zellij attach --create
     fzp: fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"
@@ -60,9 +57,19 @@ shell:
     ports:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
-    wtf:
+    wts:
       description: fzf picker to cd into a git worktree
       body: |
         local sel
         sel=$(git worktree list | fzf --height=40% --reverse --prompt='worktree> ') || return
         cd "$(echo "$sel" | awk '{print $1}')"
+    wth:
+      description: cd to the primary worktree root (head of the repo)
+      body: cd "$(git worktree list | head -1 | awk '{print $1}')"
+    wtr:
+      description: fzf picker to remove a git worktree
+      body: |
+        local sel path
+        sel=$(git worktree list | tail -n +2 | fzf --height=40% --reverse --prompt='remove worktree> ') || return
+        path=$(echo "$sel" | awk '{print $1}')
+        git worktree remove "$path"
