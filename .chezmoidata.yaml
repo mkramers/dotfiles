@@ -69,7 +69,7 @@ shell:
     wtr:
       description: fzf picker to remove a git worktree
       body: |
-        local sel path
+        local sel target
         sel=$(git worktree list | tail -n +2 | fzf --height=40% --reverse --prompt='remove worktree> ') || return
-        path=$(echo "$sel" | awk '{print $1}')
-        git worktree remove "$path"
+        target=$(echo "$sel" | awk '{print $1}')
+        git worktree remove "$target"
