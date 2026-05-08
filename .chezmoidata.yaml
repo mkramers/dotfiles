@@ -22,6 +22,7 @@ shell:
       check: delta
       fallback: less
     OP_BIOMETRIC_UNLOCK_ENABLED: "true"
+    DOCKER_CLI_HINTS: "false"
 
   aliases:
     cat: bat
