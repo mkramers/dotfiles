@@ -1,5 +1,0 @@
-# Suppress bash Modules init errors on systems that source it via /etc/zprofile
-if [ -f /global/software/Modules/5.5.0/init/bash ]; then
-    exec 2>/tmp/.zsh-init-stderr-$$
-    STDERR_SUPPRESSED=1
-fi

@@ -1,0 +1,21 @@
+# PATH setup in .zshenv so it applies to all shell types (login, non-login,
+# interactive, non-interactive — including zellij/tmux panes and GUI app inheritance).
+typeset -U path
+path=(
+{{- range .shell.paths }}
+{{-   if or (not (hasKey . "os")) (eq .os $.chezmoi.os) }}
+{{-     if and (hasKey . "relative") .relative }}
+    $HOME/{{ .path }}
+{{-     else }}
+    {{ .path }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+    $path
+)
+
+# Suppress bash Modules init errors on systems that source it via /etc/zprofile
+if [ -f /global/software/Modules/5.5.0/init/bash ]; then
+    exec 2>/tmp/.zsh-init-stderr-$$
+    STDERR_SUPPRESSED=1
+fi
