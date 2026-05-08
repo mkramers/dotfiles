@@ -60,3 +60,9 @@ shell:
     ports:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
+    wtf:
+      description: fzf picker to cd into a git worktree
+      body: |
+        local sel
+        sel=$(git worktree list | fzf --height=40% --reverse --prompt='worktree> ') || return
+        cd "$(echo "$sel" | awk '{print $1}')"
