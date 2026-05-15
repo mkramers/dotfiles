@@ -62,8 +62,9 @@ shell:
       description: fzf picker to cd into a git worktree
       body: |
         local sel
-        sel=$(git worktree list | fzf --height=40% --reverse --prompt='worktree> ') || return
-        cd "$(echo "$sel" | awk '{print $1}')"
+        sel=$(git worktree list | awk '{n=split($1,p,"/"); print p[n]"\t"$1}' \
+              | fzf --height=40% --reverse --prompt='worktree> ' --with-nth=1 --delimiter='\t') || return
+        cd "$(echo "$sel" | awk -F'\t' '{print $2}')"
     wth:
       description: cd to the primary worktree root (head of the repo)
       body: cd "$(git worktree list | head -1 | awk '{print $1}')"

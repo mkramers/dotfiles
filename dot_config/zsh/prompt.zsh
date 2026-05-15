@@ -16,9 +16,9 @@ _prompt_precmd() {
     # Directory + Git section
     local dir_display git_info=""
     if git rev-parse --is-inside-work-tree &>/dev/null; then
-        local repo_root repo_name rel_path branch dirty
+        local repo_root worktree_name rel_path branch dirty
         repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
-        repo_name=${repo_root:t}
+        worktree_name=${repo_root:t}
         rel_path=${PWD#$repo_root}
         rel_path=${rel_path#/}
 
@@ -26,24 +26,34 @@ _prompt_precmd() {
         branch=$(git branch --show-current 2>/dev/null)
         [[ -z "$branch" ]] && branch=$(git rev-parse --short HEAD 2>/dev/null)
 
+        # Primary repo name (always the actual repo, even from inside a worktree)
+        local primary_root primary_name
+        primary_root=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+        primary_root=${primary_root%/.git}
+        primary_name=${primary_root:t}
+
         # Worktree detection
         local is_worktree=false
         local git_dir=$(git rev-parse --git-dir 2>/dev/null)
         [[ "$git_dir" == *"/worktrees/"* ]] && is_worktree=true
 
         local worktree_icon=""
+        local display_name="$primary_name"
         if [[ "$is_worktree" == true ]]; then
-            worktree_icon=$'\uf1bb'" "
-            # Condense <repo>.<branch> → <repo> when branch matches
-            if [[ "$repo_name" == *".${branch}" ]]; then
-                repo_name=${repo_name%.${branch}}
+            worktree_icon=$''" "
+            # Only show the worktree dir name if it differs from the branch
+            if [[ "$worktree_name" != "$branch" ]]; then
+                display_name="${primary_name}/${worktree_name}"
             fi
         fi
 
+        # Bold the repo segment to highlight which repo we're in
+        display_name="%B${display_name}%b"
+
         if [[ -n "$rel_path" ]]; then
-            dir_display=" ${worktree_icon}${repo_name}/${rel_path}"
+            dir_display=" ${worktree_icon}${display_name}/${rel_path}"
         else
-            dir_display=" ${worktree_icon}${repo_name}"
+            dir_display=" ${worktree_icon}${display_name}"
         fi
 
         # Dirty check (staged, modified, or untracked)
@@ -61,7 +71,7 @@ _prompt_precmd() {
             [[ "$behind" -gt 0 ]] && git_info+=" %F{${_prompt_red}}⇣${behind}%f"
         fi
 
-        git_info=" %F{${_prompt_pink}}"$'\ue0a0'" ${branch}%f%F{${_prompt_red}}${dirty}%f${git_info}"
+        git_info=" %F{${_prompt_pink}}"$''" ${branch}%f%F{${_prompt_red}}${dirty}%f${git_info}"
     else
         dir_display=" ${PWD/#$HOME/~}"
     fi
@@ -69,7 +79,7 @@ _prompt_precmd() {
     # AWS section (aws-vault sets AWS_VAULT, not AWS_PROFILE)
     local aws_info=""
     if [[ -n "$AWS_VAULT" ]]; then
-        aws_info=" %F{${_prompt_orange}}"$'\uf270'" ${AWS_VAULT}%f"
+        aws_info=" %F{${_prompt_orange}}"$''" ${AWS_VAULT}%f"
     fi
 
     # Character color based on last exit code
