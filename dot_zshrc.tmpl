@@ -12,6 +12,11 @@ fi
 
 source ~/.config/zsh/prompt.zsh
 
+# auto-launch zellij on uofc ssh; detach drops back to a normal shell
+if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && "$HOST" == altis* ]]; then
+    zellij attach --create default
+fi
+
 # ----------------------------------------------------
 # ----- env -------------------------------------------
 # ----------------------------------------------------
