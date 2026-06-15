@@ -118,7 +118,9 @@ export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 # ----- fnm (node version manager) --------------------
 # ----------------------------------------------------
 
-eval "$(fnm env --use-on-cd)"
+if command -v fnm &>/dev/null && { [[ -z "$XDG_RUNTIME_DIR" ]] || [[ -d "$XDG_RUNTIME_DIR" ]]; }; then
+    eval "$(fnm env --use-on-cd)"
+fi
 
 # ----------------------------------------------------
 # ----- mise (tool version manager) -------------------
