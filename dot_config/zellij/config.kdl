@@ -312,6 +312,29 @@ web_client {
 // Default: default
 // 
 // theme "dracula"
+theme "stacked"
+
+themes {
+    stacked {
+        // orange pane title text for stacked panes
+        frame_unselected {
+            base       255 165 0
+            background 0 0 0
+            emphasis_0 255 53 94
+            emphasis_1 255 255 255
+            emphasis_2 0 217 227
+            emphasis_3 255 0 255
+        }
+        frame_selected {
+            base       0 217 227
+            background 0 0 0
+            emphasis_0 255 53 94
+            emphasis_1 255 255 255
+            emphasis_2 0 217 227
+            emphasis_3 255 0 255
+        }
+    }
+}
  
 // Choose the base input mode of zellij.
 // Default: normal
