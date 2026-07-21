@@ -119,7 +119,7 @@ export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 # ----------------------------------------------------
 
 if command -v fnm &>/dev/null && { [[ -z "$XDG_RUNTIME_DIR" ]] || [[ -d "$XDG_RUNTIME_DIR" ]]; }; then
-    eval "$(fnm env --use-on-cd)"
+    eval "$(fnm env --use-on-cd --shell zsh)"
 fi
 
 # ----------------------------------------------------
