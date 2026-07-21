@@ -1,0 +1,9 @@
+# Personal global recipes. Runs from ~ as `just <recipe>`, or anywhere as `just -g <recipe>`.
+
+# hidden default: list recipes
+_default:
+    @just --list
+
+# launch an interactive zsh login shell
+shell:
+    @exec zsh -l
