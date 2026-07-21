@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -x "$HOME/.local/share/aquaproj-aqua/bin/aqua" ]; then
+    exit 0
+fi
+
+echo "Installing aqua..."
+curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/main/aqua-installer | bash

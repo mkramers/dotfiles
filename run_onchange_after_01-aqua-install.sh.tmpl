@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# aqua manifest hash: {{ include "dot_aqua/aqua.yaml.tmpl" | sha256sum }}
+
+# JIT: create links only; each binary downloads on first use.
+echo "Linking aqua packages..."
+"$HOME/.local/share/aquaproj-aqua/bin/aqua" -c "$HOME/.aqua/aqua.yaml" install --only-link --all
