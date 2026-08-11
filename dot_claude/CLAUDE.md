@@ -10,15 +10,13 @@
 - Use conventional commit messages (feat:, fix:, chore:, etc.).
 - Do NOT include co-authorship attributions (Co-Authored-By) in commits, PRs, PR descriptions, or any git metadata. Ever.
 - Always commit your work. Do not leave unstaged/uncommitted changes — the user reviews via branch diffs (PyCharm, `gdd`), which only see committed state. WIP commits are fine; they'll be squashed on merge.
-- Always work on feature branches. Create PRs for review. Do not push directly to main/master without explicit confirmation.
-- Default to plain feature branches. Git worktrees are available as an option — use `wt switch` (`wts`) to create/switch worktrees when isolation is needed, but don't assume worktrees unless asked.
+- Always work on feature branches; create PRs for review. Do not push to main/master without explicit confirmation. Exception: dotfiles/config repos (e.g. chezmoi) — commit straight to `main`, no branch or PR.
+- Git worktrees are available but not the default — use `wt switch` (`wts`) when isolation is needed; don't assume worktrees unless asked.
 - Branch names start with the ticket ID (e.g., `ALT-123-some-feature`). Do not add directory prefixes.
-- Do not commit plans to code repos. Plans live in a separate repo at `../plans/<project-name>/` relative to the current repo. Write plans there (e.g., `../plans/myproject/some-feature.md`). The `docs/plans/` directory in each repo is a symlink to this location. New worktrees get the symlink automatically via worktrunk hook. For the primary worktree, set it up once:
+- Do not commit plans to code repos. Plans live at `../plans/<project-name>/`; each repo's `docs/plans/` is a symlink there. New worktrees get the symlink via worktrunk hook; for a primary worktree, create it once:
   ```sh
   mkdir -p ../plans/$(basename $(git rev-parse --show-toplevel)) docs
   ln -sf $(realpath ../plans/$(basename $(git rev-parse --show-toplevel))) docs/plans
-  # if docs/plans already exists as a real dir, move it first:
-  # mv docs/plans docs/plans-old && ln -sf ... && mv docs/plans-old/* ../plans/<name>/ && rmdir docs/plans-old
   ```
 
 # Code Style
@@ -40,7 +38,7 @@
 
 # Tooling
 
-- Use `just` for repo-wide commands (fmt, lint, test, run, etc.). Suggest adding a justfile if one doesn't exist. Keep it lean — don't bloat it.
+- Use `just` for repo-wide commands (fmt, lint, test, run, etc.). Suggest adding a justfile if one doesn't exist. Keep it lean — don't bloat it. Give new justfiles a hidden default recipe (`_default:` running `@just --list`).
 - Always use `uv` for Python (package management, venvs, running scripts).
 - Use `mise` for projects that need their own tool binaries (e.g., pods, node, etc.).
 - Python CLIs: use `typer` + `rich`.
