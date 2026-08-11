@@ -38,10 +38,10 @@ Incidental findings ("oh by the way…") must not compete with the mainline work
 - Always work on feature branches; create PRs for review. Do not push to main/master without explicit confirmation. Exception: dotfiles/config repos (e.g. chezmoi) — commit straight to `main`, no branch or PR.
 - Git worktrees are available but not the default — use `wt switch` (`wts`) when isolation is needed; don't assume worktrees unless asked.
 - Branch names start with the ticket ID (e.g., `ALT-123-some-feature`). Do not add directory prefixes.
-- Do not commit plans to code repos. Plans live at `../plans/<project-name>/`; each repo's `docs/plans/` is a symlink there. New worktrees get the symlink via worktrunk hook; for a primary worktree, create it once:
+- Do not commit plans to code repos. Plans live in the plans repo at `~/altis/plans/<project-name>/` — always this absolute path, never a `../plans` relative guess (that breaks for repos outside `~/altis`, e.g. chezmoi). Each repo's `docs/plans/` is a gitignored symlink there. New worktrees get it via worktrunk hook; for a primary worktree, create it once:
   ```sh
-  mkdir -p ../plans/$(basename $(git rev-parse --show-toplevel)) docs
-  ln -sf $(realpath ../plans/$(basename $(git rev-parse --show-toplevel))) docs/plans
+  mkdir -p ~/altis/plans/$(basename $(git rev-parse --show-toplevel)) docs
+  ln -sf ~/altis/plans/$(basename $(git rev-parse --show-toplevel)) docs/plans
   ```
 
 # Code Style
