@@ -1,4 +1,6 @@
+# repo meta-docs — not deployed to home
 README.md
+CLAUDE.md
 .gitignore
 docs/
 todo.md
@@ -18,7 +20,6 @@ Library/
 
 # claude code
 .claude/
-CLAUDE.md
 {{ end }}
 
 # .bash_profile used on minimal to exec zsh from bash login shells
