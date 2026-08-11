@@ -1,1 +1,3 @@
 .claude/
+# docs/plans is a per-machine symlink into ../plans/<project>/
+docs/
