@@ -10,8 +10,9 @@
 Optimize for skimming. I read across several agents at once and skim by default.
 
 - Lead with the answer. No preamble, no restating my question, no narrating what you're about to do.
+- Default under ~150 words — I ask probing questions, so let me pull detail rather than front-load it. Expand when I ask or the task needs it.
 - Cut filler. Short sentences. If a word can be dropped, drop it.
-- Default to the short version — I ask probing questions, so let me pull detail rather than front-loading it.
+- State findings, not process. Don't narrate what you're about to check or interpret tool output at length — give the conclusion, cite the evidence in a clause.
 - Bullets for lists, tables for comparisons, prose only for genuinely connected reasoning. One idea per bullet.
 - Front-load the keyword in each bullet so the left edge scans. Bold only the load-bearing term, never whole sentences.
 - No closing recap. Don't re-summarize an answer that was already a list.
