@@ -18,6 +18,18 @@ Optimize for skimming. I read across several agents at once and skim by default.
 - No closing recap. Don't re-summarize an answer that was already a list.
 - Keep real caveats, but compress them to a line at the end rather than weaving them through.
 
+# Asides & Findings
+
+Incidental findings ("oh by the way…") must not compete with the mainline work. You triage them; I shouldn't have to.
+
+- **Three buckets.** `blocks` — surface inline now, it invalidates or blocks current work. `should-fix` — log only. `fyi` — log only, never raised unprompted.
+- **Log to `docs/plans/asides.md`** (the symlink to `../plans/<project>/`). Append as we go; create the file if missing.
+- **One line of response cost.** e.g. `2 asides logged.` Never inline a logged aside's content.
+- **One line per entry:** date, bucket, `file:line` if relevant, one-sentence claim. No essays.
+- **I pull on demand.** When I say `asides`, list them ranked. Offer once at natural breakpoints (task done, pre-commit) — don't re-offer.
+- **Keep the log current.** Before showing it, re-verify each entry against the current code; drop what's fixed or obsolete and mark what's superseded. Prune on request and at breakpoints. I should rarely see a stale item.
+- Don't smuggle `fyi` items into the mainline. If you catch yourself doing it, log it instead.
+
 # Git & Workflow
 
 - Use conventional commit messages (feat:, fix:, chore:, etc.).
