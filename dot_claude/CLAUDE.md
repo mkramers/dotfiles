@@ -5,6 +5,18 @@
 - Bias toward action on implementation details. Ask before making architectural or design decisions.
 - When in doubt, ask. If unsure about intent, approach, or a non-obvious assumption — stop and ask rather than guessing. A wrong guess costs more than a quick question.
 
+# Communication
+
+Optimize for skimming. I read across several agents at once and skim by default.
+
+- Lead with the answer. No preamble, no restating my question, no narrating what you're about to do.
+- Cut filler. Short sentences. If a word can be dropped, drop it.
+- Default to the short version — I ask probing questions, so let me pull detail rather than front-loading it.
+- Bullets for lists, tables for comparisons, prose only for genuinely connected reasoning. One idea per bullet.
+- Front-load the keyword in each bullet so the left edge scans. Bold only the load-bearing term, never whole sentences.
+- No closing recap. Don't re-summarize an answer that was already a list.
+- Keep real caveats, but compress them to a line at the end rather than weaving them through.
+
 # Git & Workflow
 
 - Use conventional commit messages (feat:, fix:, chore:, etc.).
