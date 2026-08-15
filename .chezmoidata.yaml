@@ -38,6 +38,9 @@ shell:
     gg: lazygit
     nano: micro
     s: kitten ssh
+    sc: sandy c ml-serve
+    sw: sandy cw ml-serve
+    sn: sandy new ml-serve
     wtl: git worktree list
     y: yazi
     zj: zellij attach --create
