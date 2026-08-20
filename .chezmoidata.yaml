@@ -27,7 +27,6 @@ shell:
   aliases:
     cat: bat
     ccc: pbcopy
-    k9s-kflow: aws-vault exec admin-kflow -- k9s
     ll: eza -la
     ls: eza
     tre: eza -lT --total-size -a
@@ -54,9 +53,17 @@ shell:
     rcp:
       description: copy realpath to clipboard
       body: realpath "${1:-.}" | tr -d '\n' | pbcopy
-    paws:
-      description: print AWS env vars
-      body: env | grep AWS
+    av:
+      description: aws-vault session with self-refreshing credentials
+      body: |
+        local profile="$1"
+        if [[ -z "$profile" ]]; then
+          profile=$(aws-vault list --profiles \
+                    | fzf --height=40% --reverse --prompt='aws profile> ') || return
+        else
+          shift
+        fi
+        aws-vault exec "$profile" -s "$@"
     mkcd:
       description: mkdir and cd into it
       body: mkdir -p "$1" && cd "$1"
