@@ -53,17 +53,29 @@ shell:
     rcp:
       description: copy realpath to clipboard
       body: realpath "${1:-.}" | tr -d '\n' | pbcopy
+    _aws_profile:
+      description: fzf picker over aws-vault profiles
+      body: aws-vault list --profiles | fzf --height=40% --reverse --prompt='aws profile> '
     av:
       description: aws-vault session with self-refreshing credentials
       body: |
         local profile="$1"
         if [[ -z "$profile" ]]; then
-          profile=$(aws-vault list --profiles \
-                    | fzf --height=40% --reverse --prompt='aws profile> ') || return
+          profile=$(_aws_profile) || return
         else
           shift
         fi
         aws-vault exec "$profile" -s "$@"
+    avl:
+      description: open the AWS console for a profile
+      body: |
+        local profile="$1"
+        if [[ -z "$profile" ]]; then
+          profile=$(_aws_profile) || return
+        else
+          shift
+        fi
+        aws-vault login "$profile" "$@"
     mkcd:
       description: mkdir and cd into it
       body: mkdir -p "$1" && cd "$1"
