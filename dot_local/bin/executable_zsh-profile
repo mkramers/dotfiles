@@ -1,0 +1,143 @@
+#!/usr/bin/env zsh
+# Profile interactive zsh startup. Reads the real dotfiles but never modifies them:
+# a throwaway ZDOTDIR sources them under xtrace with timestamps in PS4, and awk
+# aggregates the trace into per-location totals.
+#
+# Only dependency beyond zsh is awk, so this runs on a bare login node.
+
+emulate -L zsh
+
+runs=5
+top=20
+keep=0
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n) runs=$2; shift 2 ;;
+        -t) top=$2; shift 2 ;;
+        -k) keep=1; shift ;;
+        -h|--help)
+            print -r -- "usage: zsh-profile [-n runs] [-t top-entries] [-k]"
+            print -r -- "  -n  wall-clock samples to average (default 5)"
+            print -r -- "  -t  slowest locations to show (default 20)"
+            print -r -- "  -k  keep the raw xtrace instead of deleting it"
+            exit 0 ;;
+        *) print -ru2 -- "unknown option: $1"; exit 2 ;;
+    esac
+done
+
+real_zdotdir=${ZDOTDIR:-$HOME}
+tmp=$(mktemp -d) || exit 1
+trace=$tmp/trace
+[[ $keep -eq 1 ]] && trace=${${TMPDIR:-/tmp}%/}/zsh-profile-trace.$$
+trap 'rm -rf "$tmp"' EXIT
+
+zmodload zsh/datetime
+
+# ZELLIJ is set so the ssh auto-launch in .zshrc doesn't grab the session and hang.
+common_env=(ZELLIJ=zsh-profile)
+
+sample() {
+    local -F start=$EPOCHREALTIME
+    env $common_env "$@" >/dev/null 2>&1
+    print -r -- $(( (EPOCHREALTIME - start) * 1000 ))
+}
+
+average() {
+    local -F sum=0 t
+    local i
+    for i in {1..$runs}; do
+        t=$(sample "$@")
+        sum=$(( sum + t ))
+    done
+    printf "%.0f" $(( sum / runs ))
+}
+
+print -r -- "zsh $ZSH_VERSION on $(uname -s), averaging $runs runs"
+print -r -- ""
+printf "  %-28s %5s ms\n" "bare zsh (-f, no rc files)" "$(average zsh -f -i -c exit)"
+printf "  %-28s %5s ms\n" "your interactive startup" "$(average zsh -i -c exit)"
+print -r -- ""
+
+# The stub ZDOTDIR needs its own .zshenv, since setting ZDOTDIR makes zsh read
+# .zshenv from there too, which would otherwise skip the real PATH setup.
+cat >"$tmp/.zshenv" <<'STUB_ENV'
+[[ -f "$ZSH_PROFILE_REAL/.zshenv" ]] && source "$ZSH_PROFILE_REAL/.zshenv"
+STUB_ENV
+
+# STDERR_SUPPRESSED is unset so the real .zshrc skips its `exec 2>/dev/tty` restore,
+# which would otherwise clobber the trace redirect partway through and dump the rest
+# of the trace onto the terminal.
+cat >"$tmp/.zshrc" <<'STUB_RC'
+unset STDERR_SUPPRESSED
+zmodload zsh/datetime
+PS4='+%D{%s.%6.} %N:%i> '
+exec 2>"$ZSH_PROFILE_TRACE"
+setopt xtrace
+source "$ZSH_PROFILE_REAL/.zshrc"
+unsetopt xtrace
+rm -f /tmp/.zsh-init-stderr-$$
+STUB_RC
+
+env $common_env \
+    ZDOTDIR="$tmp" \
+    ZSH_PROFILE_REAL="$real_zdotdir" \
+    ZSH_PROFILE_TRACE="$trace" \
+    zsh -i -c exit >/dev/null 2>&1
+
+if [[ ! -s "$trace" ]]; then
+    print -ru2 -- "no trace captured at $trace"
+    exit 1
+fi
+
+awk -v LIMIT="$top" '
+match($0, /^\+[0-9]+\.[0-9]+ /) {
+    ts = substr($0, 2, RLENGTH - 2) + 0
+    rest = substr($0, RLENGTH + 1)
+
+    if (have) {
+        d = ts - prev_ts
+        total[prev_loc] += d
+        count[prev_loc]++
+        cmd_of[prev_loc] = prev_cmd
+    }
+
+    i = index(rest, "> ")
+    prev_loc = (i ? substr(rest, 1, i - 1) : rest)
+    prev_cmd = (i ? substr(rest, i + 2) : "")
+    prev_ts = ts
+    have = 1
+    if (!start) start = ts
+    end = ts
+}
+
+END {
+    if (!have) { print "trace contained no timestamped lines"; exit 1 }
+    printf "  %-28s %5.0f ms  (traced)\n\n", "sourcing .zshrc", (end - start) * 1000
+
+    n = 0
+    for (loc in total) arr[++n] = sprintf("%014.6f\t%s", total[loc], loc)
+    for (i = 2; i <= n; i++) {
+        v = arr[i]
+        for (j = i - 1; j >= 1 && arr[j] < v; j--) arr[j + 1] = arr[j]
+        arr[j + 1] = v
+    }
+
+    printf "%8s  %6s  %s\n", "ms", "calls", "location"
+    for (i = 1; i <= n && i <= LIMIT; i++) {
+        split(arr[i], p, "\t")
+        loc = p[2]
+        printf "%8.1f  %6d  %s\n", total[loc] * 1000, count[loc], loc
+        c = cmd_of[loc]
+        gsub(/[[:space:]]+/, " ", c)
+        if (length(c) > 88) c = substr(c, 1, 88) "..."
+        if (length(c)) printf "%18s%s\n", "", c
+    }
+}
+' "$trace"
+
+if [[ $keep -eq 1 ]]; then
+    print -r -- ""
+    print -r -- "raw trace: $trace"
+fi
+exit 0
