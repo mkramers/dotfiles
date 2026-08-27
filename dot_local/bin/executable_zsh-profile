@@ -69,6 +69,10 @@ STUB_ENV
 # which would otherwise clobber the trace redirect partway through and dump the rest
 # of the trace onto the terminal.
 cat >"$tmp/.zshrc" <<'STUB_RC'
+# Point ZDOTDIR back at the real one now that zsh has finished picking rc files.
+# compinit derives its dumpfile from ${ZDOTDIR:-$HOME}, so leaving it on the temp
+# dir would hide the cached dump and time a full regeneration every run.
+ZDOTDIR="$ZSH_PROFILE_REAL"
 unset STDERR_SUPPRESSED
 zmodload zsh/datetime
 PS4='+%D{%s.%6.} %N:%i> '
