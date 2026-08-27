@@ -65,8 +65,14 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 source <(fzf --zsh)
 source ~/.zsh/fzf-tab/fzf-tab.plugin.zsh
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# autosuggestions rewraps ~200 ZLE widgets on every precmd by default, which measured
+# 226ms per prompt on the uofc login node. MANUAL_REBIND binds once at load instead,
+# and requires this plugin to be sourced last so it wraps the highlighting widgets
+# rather than being wrapped by them.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # up/down search history filtered by current input
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search

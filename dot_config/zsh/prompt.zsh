@@ -13,28 +13,42 @@ typeset -g _prompt_orange=215
 _prompt_precmd() {
     local exit_code=$?
 
-    # Directory + Git section
+    # Directory + Git section.
+    #
+    # Every git fork costs ~10ms on an NFS home, so this section is written to use as
+    # few as possible: one rev-parse for all the path info, HEAD read straight off disk
+    # for the branch, and -uno on the dirty check so git doesn't walk the whole
+    # worktree hunting untracked files. That took a prompt render on the uofc login
+    # node from 724ms to roughly 30ms.
     local dir_display git_info=""
-    if git rev-parse --is-inside-work-tree &>/dev/null; then
-        local repo_root worktree_name rel_path branch dirty
-        repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+    local -a git_facts
+    git_facts=("${(@f)$(git rev-parse --is-inside-work-tree --path-format=absolute \
+                            --show-toplevel --git-dir --git-common-dir 2>/dev/null)}")
+    if [[ $git_facts[1] == true ]]; then
+        local repo_root=$git_facts[2] git_dir=$git_facts[3]
+        local worktree_name rel_path branch dirty
         worktree_name=${repo_root:t}
         rel_path=${PWD#$repo_root}
         rel_path=${rel_path#/}
 
-        # Branch name
-        branch=$(git branch --show-current 2>/dev/null)
-        [[ -z "$branch" ]] && branch=$(git rev-parse --short HEAD 2>/dev/null)
+        # Branch from HEAD directly. A file read beats another fork, and this handles
+        # detached HEAD (raw sha) and commit-less repos, which rev-parse chokes on.
+        local head_ref
+        if read -r head_ref <$git_dir/HEAD 2>/dev/null; then
+            if [[ $head_ref == ref:* ]]; then
+                branch=${head_ref#ref: refs/heads/}
+            else
+                branch=${head_ref[1,7]}
+            fi
+        fi
 
         # Primary repo name (always the actual repo, even from inside a worktree)
         local primary_root primary_name
-        primary_root=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
-        primary_root=${primary_root%/.git}
+        primary_root=${git_facts[4]%/.git}
         primary_name=${primary_root:t}
 
         # Worktree detection
         local is_worktree=false
-        local git_dir=$(git rev-parse --git-dir 2>/dev/null)
         [[ "$git_dir" == *"/worktrees/"* ]] && is_worktree=true
 
         local worktree_icon=""
@@ -56,8 +70,8 @@ _prompt_precmd() {
             dir_display=" ${worktree_icon}${display_name}"
         fi
 
-        # Dirty check (staged, modified, or untracked)
-        if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
+        # Dirty check (staged or modified; untracked files are skipped, see above)
+        if [[ -n $(git status --porcelain -uno 2>/dev/null) ]]; then
             dirty=" *"
         fi
 
@@ -93,7 +107,7 @@ _prompt_precmd() {
     # SSH indicator
     local ssh_info=""
     if [[ -n "$SSH_CONNECTION" ]]; then
-        ssh_info="%F{${_prompt_orange}}[$(hostname)]%f"
+        ssh_info="%F{${_prompt_orange}}[${HOST}]%f"
     fi
 
     # Build prompt
