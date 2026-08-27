@@ -70,8 +70,10 @@ _prompt_precmd() {
             dir_display=" ${worktree_icon}${display_name}"
         fi
 
-        # Dirty check (staged or modified; untracked files are skipped, see above)
-        if [[ -n $(git status --porcelain -uno 2>/dev/null) ]]; then
+        # Dirty check (staged or modified; untracked files are skipped, see above).
+        # --no-optional-locks stops git rewriting the index as a side effect, which is
+        # a slow write on NFS and pointless for a read-only status poll.
+        if [[ -n $(git --no-optional-locks status --porcelain -uno 2>/dev/null) ]]; then
             dirty=" *"
         fi
 
