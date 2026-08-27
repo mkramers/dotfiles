@@ -10,15 +10,21 @@ emulate -L zsh
 runs=5
 top=20
 keep=0
+mode=startup
+reps=10
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -n) runs=$2; shift 2 ;;
         -t) top=$2; shift 2 ;;
         -k) keep=1; shift ;;
+        -p) mode=prompt; shift ;;
+        -r) reps=$2; shift 2 ;;
         -h|--help)
-            print -r -- "usage: zsh-profile [-n runs] [-t top-entries] [-k]"
-            print -r -- "  -n  wall-clock samples to average (default 5)"
+            print -r -- "usage: zsh-profile [-p] [-n runs] [-r reps] [-t top-entries] [-k]"
+            print -r -- "  -p  profile one prompt render instead of startup, in the current directory"
+            print -r -- "  -n  wall-clock samples to average (default 5, startup mode)"
+            print -r -- "  -r  prompt renders to time and trace (default 10, -p mode)"
             print -r -- "  -t  slowest locations to show (default 20)"
             print -r -- "  -k  keep the raw xtrace instead of deleting it"
             exit 0 ;;
@@ -53,10 +59,14 @@ average() {
     printf "%.0f" $(( sum / runs ))
 }
 
-print -r -- "zsh $ZSH_VERSION on $(uname -s), averaging $runs runs"
-print -r -- ""
-printf "  %-28s %5s ms\n" "bare zsh (-f, no rc files)" "$(average zsh -f -i -c exit)"
-printf "  %-28s %5s ms\n" "your interactive startup" "$(average zsh -i -c exit)"
+if [[ $mode == prompt ]]; then
+    print -r -- "zsh $ZSH_VERSION on $(uname -s), $reps prompt renders in $PWD"
+else
+    print -r -- "zsh $ZSH_VERSION on $(uname -s), averaging $runs runs"
+    print -r -- ""
+    printf "  %-28s %5s ms\n" "bare zsh (-f, no rc files)" "$(average zsh -f -i -c exit)"
+    printf "  %-28s %5s ms\n" "your interactive startup" "$(average zsh -i -c exit)"
+fi
 print -r -- ""
 
 # The stub ZDOTDIR needs its own .zshenv, since setting ZDOTDIR makes zsh read
@@ -65,13 +75,36 @@ cat >"$tmp/.zshenv" <<'STUB_ENV'
 [[ -f "$ZSH_PROFILE_REAL/.zshenv" ]] && source "$ZSH_PROFILE_REAL/.zshenv"
 STUB_ENV
 
+# Two things the stub .zshrc has to do before sourcing the real one. ZDOTDIR goes back
+# to the real dir because compinit derives its dumpfile from ${ZDOTDIR:-$HOME}, and
+# leaving it here would hide the cached dump and time a full regeneration. And
 # STDERR_SUPPRESSED is unset so the real .zshrc skips its `exec 2>/dev/tty` restore,
-# which would otherwise clobber the trace redirect partway through and dump the rest
-# of the trace onto the terminal.
-cat >"$tmp/.zshrc" <<'STUB_RC'
-# Point ZDOTDIR back at the real one now that zsh has finished picking rc files.
-# compinit derives its dumpfile from ${ZDOTDIR:-$HOME}, so leaving it on the temp
-# dir would hide the cached dump and time a full regeneration every run.
+# which would otherwise clobber the trace redirect and dump the rest onto the terminal.
+if [[ $mode == prompt ]]; then
+    cat >"$tmp/.zshrc" <<'STUB_RC'
+ZDOTDIR="$ZSH_PROFILE_REAL"
+unset STDERR_SUPPRESSED
+source "$ZSH_PROFILE_REAL/.zshrc"
+rm -f /tmp/.zsh-init-stderr-$$
+builtin cd -q "$ZSH_PROFILE_CWD"
+zmodload zsh/datetime
+
+_zp_render() { local f; for f in $precmd_functions; do "$f"; done }
+
+# One untimed render first, so cold git and NFS caches land on the warm-up.
+_zp_render
+typeset -F _zp_start=$EPOCHREALTIME
+repeat $ZSH_PROFILE_REPS _zp_render
+print -r -- $(( (EPOCHREALTIME - _zp_start) * 1000 / ZSH_PROFILE_REPS )) >| "$ZSH_PROFILE_TIMING"
+
+PS4='+%D{%s.%6.} %N:%i> '
+exec 2>"$ZSH_PROFILE_TRACE"
+setopt xtrace
+repeat $ZSH_PROFILE_REPS _zp_render
+unsetopt xtrace
+STUB_RC
+else
+    cat >"$tmp/.zshrc" <<'STUB_RC'
 ZDOTDIR="$ZSH_PROFILE_REAL"
 unset STDERR_SUPPRESSED
 zmodload zsh/datetime
@@ -82,19 +115,33 @@ source "$ZSH_PROFILE_REAL/.zshrc"
 unsetopt xtrace
 rm -f /tmp/.zsh-init-stderr-$$
 STUB_RC
+fi
 
 env $common_env \
     ZDOTDIR="$tmp" \
     ZSH_PROFILE_REAL="$real_zdotdir" \
     ZSH_PROFILE_TRACE="$trace" \
+    ZSH_PROFILE_TIMING="$tmp/timing" \
+    ZSH_PROFILE_CWD="$PWD" \
+    ZSH_PROFILE_REPS="$reps" \
     zsh -i -c exit >/dev/null 2>&1
+
+if [[ $mode == prompt ]]; then
+    label="precmd hooks"
+    [[ -s "$tmp/timing" ]] &&
+        printf "  %-28s %5.0f ms\n\n" "one prompt render" "$(<"$tmp/timing")"
+else
+    label="sourcing .zshrc"
+fi
 
 if [[ ! -s "$trace" ]]; then
     print -ru2 -- "no trace captured at $trace"
     exit 1
 fi
 
-awk -v LIMIT="$top" '
+[[ $mode == prompt ]] && divisor=$reps || divisor=1
+
+awk -v LIMIT="$top" -v LABEL="$label" -v DIV="$divisor" '
 match($0, /^\+[0-9]+\.[0-9]+ /) {
     ts = substr($0, 2, RLENGTH - 2) + 0
     rest = substr($0, RLENGTH + 1)
@@ -117,7 +164,7 @@ match($0, /^\+[0-9]+\.[0-9]+ /) {
 
 END {
     if (!have) { print "trace contained no timestamped lines"; exit 1 }
-    printf "  %-28s %5.0f ms  (traced)\n\n", "sourcing .zshrc", (end - start) * 1000
+    printf "  %-28s %5.0f ms  (traced)\n\n", LABEL, (end - start) * 1000 / DIV
 
     n = 0
     for (loc in total) arr[++n] = sprintf("%014.6f\t%s", total[loc], loc)
@@ -131,7 +178,7 @@ END {
     for (i = 1; i <= n && i <= LIMIT; i++) {
         split(arr[i], p, "\t")
         loc = p[2]
-        printf "%8.1f  %6d  %s\n", total[loc] * 1000, count[loc], loc
+        printf "%8.1f  %6d  %s\n", total[loc] * 1000 / DIV, count[loc], loc
         c = cmd_of[loc]
         gsub(/[[:space:]]+/, " ", c)
         if (length(c) > 88) c = substr(c, 1, 88) "..."
