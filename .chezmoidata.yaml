@@ -1,5 +1,9 @@
 shell:
   paths:
+    # mise runs in shims mode: no `mise activate` in .zshrc, so this dir is the only
+    # thing putting mise-managed tools on PATH. First, so it wins over system copies.
+    - path: .local/share/mise/shims
+      relative: true
     - path: /usr/local/bin
     - path: .local/bin
       relative: true

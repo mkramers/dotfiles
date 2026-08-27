@@ -111,19 +111,9 @@ alias typora='open -a typora'
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
-# ----------------------------------------------------
-# ----- fnm (node version manager) --------------------
-# ----------------------------------------------------
-
-if command -v fnm &>/dev/null && { [[ -z "$XDG_RUNTIME_DIR" ]] || [[ -d "$XDG_RUNTIME_DIR" ]]; }; then
-    eval "$(fnm env --use-on-cd --shell zsh)"
-fi
-
-# ----------------------------------------------------
-# ----- mise (tool version manager) -------------------
-# ----------------------------------------------------
-
-eval "$(~/.local/bin/mise activate zsh)"
+# mise provides node and the rest of its tools through its shims dir, which .zshenv
+# puts on PATH. Deliberately no `mise activate` here: the hook cost 120ms on the slow
+# login node, and nothing in the mise configs uses [env], which is what activate adds.
 
 gbb() {
     command gbb "$@"
