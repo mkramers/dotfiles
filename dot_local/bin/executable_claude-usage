@@ -77,9 +77,12 @@ fi
 #
 # The title carries {pct} only. The other placeholders are not presentable:
 # {reset} prints UTC while the rest of the display is in local time, and {cost}
-# prints a raw float (61.434493999999994). zellij picks the OSC title up as the
-# pane name, so the usage figure shows in the pane list without the monitor
-# being visible.
+# prints a raw float (61.434493999999994).
+#
+# This only shows in a bare terminal. zellij 0.44 ignores OSC titles: an
+# OSC-set title never reaches `zellij action dump-layout`, and panes keep their
+# "Pane #N" default. Naming a zellij pane needs `zellij action rename-pane`,
+# which is why sandy uses that instead.
 args=(--plan custom --view realtime --data-paths "$paths"
       --set-terminal-title --title-format 'claude {pct}%')
 
