@@ -69,7 +69,12 @@ fi
 # aggregated stores they all read 100% and cry about an exceeded cost limit.
 # The ceilings only scale the local-estimate bars; with --api the limit
 # percentages come from the API either way.
-args=(--plan custom --data-paths "$paths")
+#
+# --view is pinned because claude-monitor remembers the last view you used in
+# ~/.claude-monitor/last_used.json and silently reuses it. One `--view daily`
+# run otherwise changes what plain `cu` does from then on. Arguments passed to
+# this script land after these and still win.
+args=(--plan custom --view realtime --data-paths "$paths")
 
 token=$(read_token)
 if [ -n "$token" ]; then
