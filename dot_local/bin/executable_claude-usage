@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# Aggregated Claude usage across the host and every sandy profile.
+#
+# Wraps claude-monitor around two things it does not get right on this machine:
+#
+#   1. It scans ~/.claude/projects only. Most transcripts live under sandy's
+#      per-profile mounts, so the default view covers roughly a seventh of
+#      actual usage.
+#
+#   2. Its --api mode reads the OAuth token from ~/.claude/.credentials.json.
+#      macOS does not use that file; Claude Code keeps the token in the
+#      Keychain. Finding no file, the tool falls back to local token estimates
+#      and reports no weekly figure at all, without saying so. read_oauth_token
+#      checks CLAUDE_CODE_OAUTH_TOKEN first, so exporting it from the Keychain
+#      restores the real /usage percentages.
+#
+# Degrades on purpose: no token means local estimates and a warning on stderr,
+# never a silent downgrade. Extra arguments are passed through to
+# claude-monitor and override the defaults set here.
+
+set -uo pipefail
+
+KEYCHAIN_SERVICE="Claude Code-credentials"
+
+# The token rotates every few hours, so it is read fresh on each run. An expired
+# one is treated as absent: passing it would earn a 401 and the same silent
+# fallback this script exists to prevent.
+read_token() {
+    security find-generic-password -s "$KEYCHAIN_SERVICE" -w 2>/dev/null | python3 -c '
+import json, sys, time
+
+try:
+    oauth = json.load(sys.stdin).get("claudeAiOauth") or {}
+except ValueError:
+    sys.exit(1)
+token, expires_ms = oauth.get("accessToken"), oauth.get("expiresAt")
+if token and (not expires_ms or expires_ms / 1000 > time.time()):
+    print(token)
+' 2>/dev/null
+}
+
+# Profiles come and go and each one gets its own transcript store, so the paths
+# are globbed per run rather than listed. Directories with no transcripts are
+# skipped: claude-monitor treats an empty path as a scan target and it is only
+# noise in --debug output.
+data_paths() {
+    local dir found=()
+    for dir in "$HOME/.claude/projects" \
+        "$HOME"/.config/sandy/*/claude/projects \
+        "$HOME"/.config/sandy/*/claude-workspace-projects; do
+        [ -d "$dir" ] || continue
+        # Absolute path on purpose: `find` is a shell function in this login
+        # shell, and it does not understand -print/-quit.
+        [ -n "$(/usr/bin/find "$dir" -name '*.jsonl' -print -quit 2>/dev/null)" ] || continue
+        found+=("$dir")
+    done
+    local IFS=,
+    echo "${found[*]}"
+}
+
+paths=$(data_paths)
+if [ -z "$paths" ]; then
+    echo "claude-usage: found no Claude transcripts to scan." >&2
+    exit 1
+fi
+
+# `custom` derives its ceilings from this history rather than from a per-plan
+# constant. The named plans assume one machine's usage, so against four
+# aggregated stores they all read 100% and cry about an exceeded cost limit.
+# The ceilings only scale the local-estimate bars; with --api the limit
+# percentages come from the API either way.
+args=(--plan custom --data-paths "$paths")
+
+token=$(read_token)
+if [ -n "$token" ]; then
+    export CLAUDE_CODE_OAUTH_TOKEN="$token"
+    args+=(--api)
+else
+    echo "claude-usage: no usable OAuth token in the Keychain (missing or expired)." >&2
+    echo "claude-usage: showing local estimates; weekly limits will be blank." >&2
+fi
+
+exec claude-monitor "${args[@]}" "$@"
