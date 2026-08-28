@@ -74,7 +74,14 @@ fi
 # ~/.claude-monitor/last_used.json and silently reuses it. One `--view daily`
 # run otherwise changes what plain `cu` does from then on. Arguments passed to
 # this script land after these and still win.
-args=(--plan custom --view realtime --data-paths "$paths")
+#
+# The title carries {pct} only. The other placeholders are not presentable:
+# {reset} prints UTC while the rest of the display is in local time, and {cost}
+# prints a raw float (61.434493999999994). zellij picks the OSC title up as the
+# pane name, so the usage figure shows in the pane list without the monitor
+# being visible.
+args=(--plan custom --view realtime --data-paths "$paths"
+      --set-terminal-title --title-format 'claude {pct}%')
 
 token=$(read_token)
 if [ -n "$token" ]; then
