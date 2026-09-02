@@ -1,0 +1,127 @@
+/* Ctrl+Tab switcher restyled as an AltTab-like vertical list: favicon + title
+ * rows, no thumbnails.
+ *
+ * Two constraints from Zen's own code drive the odd bits below:
+ *  - userChrome.css loads at user origin, so overriding ctrlTab.css (author
+ *    origin) needs !important on every contested declaration.
+ *  - browser-ctrlTab.js sets an inline panel width of ~99% of screen width and
+ *    anchors the popup at a screen x derived from that same number. Narrowing
+ *    the panel would leave it pinned near the left screen edge, so the panel
+ *    window stays oversized and transparent and the visible box centers itself
+ *    inside it with auto inline margins. */
+
+/* A user-origin sheet cannot match ::part(), so the panel's own painted box is
+ * out of reach. Instead the panel is made fully transparent through custom
+ * properties (those do inherit into the shadow tree) and the visible surface
+ * moves onto the two real child elements, which sit flush against each other
+ * and share one rounded outline. */
+
+#ctrlTab-panel {
+  --panel-background-color: transparent !important;
+  --panel-border-color: transparent !important;
+  --panel-text-color: light-dark(rgb(21 20 26), rgb(251 251 254)) !important;
+  --panel-padding: 0 !important;
+}
+
+#ctrlTab-previews,
+#ctrlTab-showAll-container {
+  --ctrlTab-surface: light-dark(rgb(252 252 254 / 97%), rgb(34 34 38 / 97%));
+  --ctrlTab-outline: light-dark(rgb(0 0 0 / 14%), rgb(255 255 255 / 14%));
+  width: 720px;
+  max-width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+  background-color: var(--ctrlTab-surface);
+  border-inline: 1px solid var(--ctrlTab-outline);
+}
+
+#ctrlTab-previews {
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border-top: 1px solid var(--ctrlTab-outline);
+  border-start-start-radius: 14px;
+  border-start-end-radius: 14px;
+}
+
+#ctrlTab-showAll-container {
+  padding: 6px 8px 8px;
+  border-top: 1px solid var(--ctrlTab-outline);
+  border-bottom: 1px solid var(--ctrlTab-outline);
+  border-end-start-radius: 14px;
+  border-end-end-radius: 14px;
+}
+
+.ctrlTab-preview {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.ctrlTab-canvas {
+  display: none !important;
+}
+
+.ctrlTab-preview-inner {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0 !important;
+  margin-top: 0 !important;
+  padding: 7px 10px !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+.ctrlTab-favicon-container {
+  flex: 0 0 22px;
+  justify-content: center !important;
+  position: static !important;
+}
+
+.ctrlTab-favicon,
+.ctrlTab-favicon[src] {
+  width: 22px !important;
+  height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.ctrlTab-label {
+  flex: 1 1 auto !important;
+  contain: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  text-align: start !important;
+  font-size: 15px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.ctrlTab-preview:focus > .ctrlTab-preview-inner,
+#ctrlTab-showAll:focus {
+  background-color: AccentColor !important;
+  color: AccentColorText !important;
+  border-color: transparent !important;
+  text-shadow: none !important;
+}
+
+#ctrlTab-showAll {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  background-color: transparent !important;
+  text-shadow: none !important;
+  font-size: 13px !important;
+  opacity: 0.75;
+}

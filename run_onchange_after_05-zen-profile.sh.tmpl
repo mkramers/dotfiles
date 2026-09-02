@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# userChrome.css hash: {{ include "dot_config/zen/userChrome.css" | sha256sum }}
+# user.js hash: {{ include "dot_config/zen/user.js" | sha256sum }}
+
+# Zen's profile directory carries a randomly generated prefix, so chezmoi cannot
+# target it directly. Link the two files in from .config/zen instead.
+zen_root="$HOME/Library/Application Support/zen"
+if [[ ! -d /Applications/Zen.app || ! -f "$zen_root/installs.ini" ]]; then
+    exit 0
+fi
+
+# The profile Zen launches is the install default, which is not necessarily the
+# one flagged Default=1 in profiles.ini.
+rel=$(awk -F= '/^Default=/ { print $2; exit }' "$zen_root/installs.ini")
+profile="$zen_root/$rel"
+if [[ -z "$rel" || ! -d "$profile" ]]; then
+    exit 0
+fi
+
+mkdir -p "$profile/chrome"
+ln -sfn "$HOME/.config/zen/userChrome.css" "$profile/chrome/userChrome.css"
+ln -sfn "$HOME/.config/zen/user.js" "$profile/user.js"
+echo "Linked Zen userChrome.css and user.js into $rel"

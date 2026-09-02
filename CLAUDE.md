@@ -17,5 +17,6 @@ chezmoi-managed and deploys to `~/CLAUDE.md` — edit it here, not there.
 - macOS: configs live in `.config/`; Application Support entries are symlinks
 - `dot_aqua/aqua.yaml.tmpl` — packages above the full-profile block install on every
   profile; those inside it are macOS/GUI tier only
-- `run_*` scripts are numbered and run in order: aqua (00/01) → mise (02/03) → yazi (04).
-  Guard each on its tool being present so minimal boxes skip cleanly
+- `run_*` scripts are numbered and run in order: aqua (00/01) → mise (02/03) →
+  yazi (04) → zen (05). Guard each on its tool being present so minimal boxes
+  skip cleanly
