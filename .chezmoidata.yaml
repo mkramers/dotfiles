@@ -46,7 +46,6 @@ shell:
     sw: sandy cw ml-serve
     sn: sandy new ml-serve
     ss: sandy shared
-    sq: sandy quick ml-serve
     sb: sandy build ml-serve
     wtl: git worktree list
     y: yazi
