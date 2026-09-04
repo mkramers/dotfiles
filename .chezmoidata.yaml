@@ -122,26 +122,45 @@ shell:
         # occurrence marks where a command was typed; the lines up to the next one
         # are that command's output.
         local -a starts labels
-        local -i lineno=0
+        local -i lineno=0 last_content=0
         local line
         while IFS= read -r line; do
           (( lineno++ ))
+          [[ -n "${line//[[:space:]]/}" ]] && last_content=$lineno
           if [[ "$line" == *"❯ "* ]]; then
             starts+=( $lineno )
             labels+=( "${line#*❯ }" )
           fi
         done <"$dump"
-        # The last marker is the prompt cpo was called from, so it has no output
-        # yet and is never offered.
-        if (( ${#starts} < 2 )); then
+        if (( ${#starts} == 0 )); then
+          print -u2 "cpo: no prompts found in this pane's scrollback"
+          rm -f "$dump"
+          return 1
+        fi
+        # Whether the dump reaches the prompt cpo was invoked from depends on
+        # timing, so decide by content rather than assuming: if anything follows
+        # the last marker it is a finished command, otherwise it is the live
+        # prompt and has no output to copy.
+        local -i n=${#starts} nblocks
+        if (( last_content > starts[n] )); then
+          nblocks=$n
+        else
+          nblocks=$(( n - 1 ))
+        fi
+        if (( nblocks < 1 )); then
           print -u2 "cpo: no completed commands in this pane's scrollback"
           rm -f "$dump"
           return 1
         fi
         local -a entries
-        local -i k
-        for (( k = ${#starts} - 1; k >= 1; k-- )); do
-          entries+=( "${starts[k]}:$(( starts[k + 1] - 1 )):${labels[k]}" )
+        local -i k e
+        for (( k = nblocks; k >= 1; k-- )); do
+          if (( k < n )); then
+            e=$(( starts[k + 1] - 1 ))
+          else
+            e=$last_content
+          fi
+          entries+=( "${starts[k]}:${e}:${labels[k]}" )
         done
         local selected
         selected=$(printf '%s\n' "${entries[@]}" | fzf \
@@ -156,7 +175,8 @@ shell:
         fi
         # fzf returns newest-first; sort back to chronological so a multi-select
         # pastes in the order the commands actually ran.
-        local out="" s e label block
+        local -a chunks
+        local s label block
         while IFS= read -r line; do
           s=${line%%:*}
           line=${line#*:}
@@ -165,9 +185,8 @@ shell:
           # Command substitution strips trailing newlines, which drops the blank
           # viewport padding at the end of a block for free.
           block=$(sed -n "$(( s + 1 )),${e}p" "$dump")
-          out+='$ '"${label}"$'\n'"${block}"$'\n'
+          chunks+=( '$ '"${label}"$'\n'"${block}" )
         done < <(printf '%s\n' "$selected" | sort -t: -k1,1n)
-        printf '%s' "$out" | pbcopy
-        local -a blocks=( "${(@f)selected}" )
-        print -u2 "cpo: copied ${#blocks} block(s)"
+        printf '%s\n' "${(pj:\n\n:)chunks}" | pbcopy
+        print -u2 "cpo: copied ${#chunks} block(s)"
         rm -f "$dump"
