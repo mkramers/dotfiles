@@ -105,3 +105,69 @@ shell:
         sel=$(git worktree list | tail -n +2 | fzf --height=40% --reverse --prompt='remove worktree> ') || return
         target=$(echo "$sel" | awk '{print $1}')
         git worktree remove "$target"
+    cpo:
+      description: fzf picker over recent command blocks in the pane, copies command + output
+      body: |
+        if [[ -z "$ZELLIJ" ]]; then
+          print -u2 "cpo: needs a zellij pane (dump-screen reads the focused pane)"
+          return 1
+        fi
+        local dump
+        dump=$(mktemp) || return 1
+        if ! zellij action dump-screen --full >"$dump"; then
+          rm -f "$dump"
+          return 1
+        fi
+        # PROMPT ends in "❯ " and nothing else in it uses that character, so each
+        # occurrence marks where a command was typed; the lines up to the next one
+        # are that command's output.
+        local -a starts labels
+        local -i lineno=0
+        local line
+        while IFS= read -r line; do
+          (( lineno++ ))
+          if [[ "$line" == *"❯ "* ]]; then
+            starts+=( $lineno )
+            labels+=( "${line#*❯ }" )
+          fi
+        done <"$dump"
+        # The last marker is the prompt cpo was called from, so it has no output
+        # yet and is never offered.
+        if (( ${#starts} < 2 )); then
+          print -u2 "cpo: no completed commands in this pane's scrollback"
+          rm -f "$dump"
+          return 1
+        fi
+        local -a entries
+        local -i k
+        for (( k = ${#starts} - 1; k >= 1; k-- )); do
+          entries+=( "${starts[k]}:$(( starts[k + 1] - 1 )):${labels[k]}" )
+        done
+        local selected
+        selected=$(printf '%s\n' "${entries[@]}" | fzf \
+          --multi --delimiter=: --with-nth=3.. --no-sort \
+          --prompt='copy> ' --height=70% --reverse \
+          --header='enter copies, tab selects several' \
+          --preview="sed -n {1},{2}p ${(q)dump}" \
+          --preview-window=right:60%:wrap)
+        if [[ -z "$selected" ]]; then
+          rm -f "$dump"
+          return 1
+        fi
+        # fzf returns newest-first; sort back to chronological so a multi-select
+        # pastes in the order the commands actually ran.
+        local out="" s e label block
+        while IFS= read -r line; do
+          s=${line%%:*}
+          line=${line#*:}
+          e=${line%%:*}
+          label=${line#*:}
+          # Command substitution strips trailing newlines, which drops the blank
+          # viewport padding at the end of a block for free.
+          block=$(sed -n "$(( s + 1 )),${e}p" "$dump")
+          out+='$ '"${label}"$'\n'"${block}"$'\n'
+        done < <(printf '%s\n' "$selected" | sort -t: -k1,1n)
+        printf '%s' "$out" | pbcopy
+        local -a blocks=( "${(@f)selected}" )
+        print -u2 "cpo: copied ${#blocks} block(s)"
+        rm -f "$dump"

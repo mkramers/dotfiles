@@ -83,6 +83,15 @@ bindkey '^[[B' down-line-or-beginning-search
 bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 
+# Alt+Y: pick recent command blocks out of this zellij pane and copy them.
+# cpo is defined further down; the widget only resolves it when the key is hit.
+_cpo_widget() {
+    cpo
+    zle reset-prompt
+}
+zle -N _cpo_widget
+bindkey '^[y' _cpo_widget
+
 # ----------------------------------------------------
 # ----- funcs -----------------------------------------
 # ----------------------------------------------------
