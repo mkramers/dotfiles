@@ -111,10 +111,10 @@ shell:
         local dump
         dump=$(mktemp) || return 1
         # Reads the zellij pane's grid, so it needs a reachable zellij server.
-        # Over ssh there is usually none, and the scrollback being sought lives
-        # in the local pane anyway, not on the remote host.
+        # Works the same on a remote host running its own zellij; what it cannot
+        # see is a pane belonging to some other zellij session.
         if ! command -v zellij >/dev/null 2>&1 || ! zellij action dump-screen --full >"$dump" 2>/dev/null; then
-          print -u2 "cpo: no reachable zellij pane. Over ssh the scrollback is in the local pane, so run cpo there."
+          print -u2 "cpo: no reachable zellij session in this pane"
           rm -f "$dump"
           return 1
         fi
@@ -190,17 +190,26 @@ shell:
         rm -f "$dump"
 
         local payload=${(pj:\n\n:)chunks}
-        local clip
-        for clip in pbcopy wl-copy xclip xsel; do
-          command -v $clip >/dev/null 2>&1 && break
-          clip=""
+        # A headless box often ships xclip with no X server to talk to, so it is
+        # found by command -v yet fails at runtime. Require a display before
+        # trusting one, and fall through to the file if the write fails anyway.
+        local clip="" c
+        for c in pbcopy wl-copy xclip xsel; do
+          command -v $c >/dev/null 2>&1 || continue
+          case $c in
+            wl-copy)    [[ -n "$WAYLAND_DISPLAY" ]] || continue ;;
+            xclip|xsel) [[ -n "$DISPLAY" ]] || continue ;;
+          esac
+          clip=$c
+          break
         done
+        local -i copied=1
         case $clip in
-          pbcopy|wl-copy) printf '%s\n' "$payload" | $clip ;;
-          xclip)          printf '%s\n' "$payload" | xclip -selection clipboard ;;
-          xsel)           printf '%s\n' "$payload" | xsel --clipboard --input ;;
+          pbcopy|wl-copy) printf '%s\n' "$payload" | $clip && copied=0 ;;
+          xclip)          printf '%s\n' "$payload" | xclip -selection clipboard && copied=0 ;;
+          xsel)           printf '%s\n' "$payload" | xsel --clipboard --input && copied=0 ;;
         esac
-        if [[ -n "$clip" ]]; then
+        if (( copied == 0 )); then
           print -u2 "cpo: copied ${#chunks} block(s) via $clip"
           return 0
         fi
