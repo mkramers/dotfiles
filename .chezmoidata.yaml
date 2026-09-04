@@ -108,13 +108,13 @@ shell:
     cpo:
       description: fzf picker over recent command blocks in the pane, copies command + output
       body: |
-        if [[ -z "$ZELLIJ" ]]; then
-          print -u2 "cpo: needs a zellij pane (dump-screen reads the focused pane)"
-          return 1
-        fi
         local dump
         dump=$(mktemp) || return 1
-        if ! zellij action dump-screen --full >"$dump"; then
+        # Reads the zellij pane's grid, so it needs a reachable zellij server.
+        # Over ssh there is usually none, and the scrollback being sought lives
+        # in the local pane anyway, not on the remote host.
+        if ! command -v zellij >/dev/null 2>&1 || ! zellij action dump-screen --full >"$dump" 2>/dev/null; then
+          print -u2 "cpo: no reachable zellij pane. Over ssh the scrollback is in the local pane, so run cpo there."
           rm -f "$dump"
           return 1
         fi
@@ -187,6 +187,32 @@ shell:
           block=$(sed -n "$(( s + 1 )),${e}p" "$dump")
           chunks+=( '$ '"${label}"$'\n'"${block}" )
         done < <(printf '%s\n' "$selected" | sort -t: -k1,1n)
-        printf '%s\n' "${(pj:\n\n:)chunks}" | pbcopy
-        print -u2 "cpo: copied ${#chunks} block(s)"
         rm -f "$dump"
+
+        local payload=${(pj:\n\n:)chunks}
+        local clip
+        for clip in pbcopy wl-copy xclip xsel; do
+          command -v $clip >/dev/null 2>&1 && break
+          clip=""
+        done
+        case $clip in
+          pbcopy|wl-copy) printf '%s\n' "$payload" | $clip ;;
+          xclip)          printf '%s\n' "$payload" | xclip -selection clipboard ;;
+          xsel)           printf '%s\n' "$payload" | xsel --clipboard --input ;;
+        esac
+        if [[ -n "$clip" ]]; then
+          print -u2 "cpo: copied ${#chunks} block(s) via $clip"
+          return 0
+        fi
+        # No clipboard tool. Leave the text in a file that is always readable and
+        # also try OSC 52, which some terminals turn into a real clipboard write.
+        # Zellij is reported not to forward a child process's OSC 52 outward, so
+        # the file is the reliable half and the escape is a bonus.
+        local out=${TMPDIR:-/tmp}/cpo-${UID}.txt
+        printf '%s\n' "$payload" >"$out" || return 1
+        if command -v base64 >/dev/null 2>&1 && [[ -w /dev/tty ]]; then
+          printf '\033]52;c;%s\007' "$(printf '%s' "$payload" | base64 | tr -d '\n')" >/dev/tty 2>/dev/null
+          print -u2 "cpo: no clipboard tool; wrote $out and tried OSC 52"
+        else
+          print -u2 "cpo: no clipboard tool; wrote $out"
+        fi
