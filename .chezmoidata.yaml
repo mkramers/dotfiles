@@ -88,6 +88,23 @@ shell:
     ports:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
+    rr:
+      description: fzf picker to cd into a git repo under ~/altis or ~/mkramers
+      body: |
+        local -a repos
+        local d
+        for d in ~/altis/*(N/) ~/mkramers/*(N/); do
+          # A repo checked out as a worktree has .git as a file, not a directory.
+          [[ -e $d/.git ]] && repos+=( $d )
+        done
+        if (( ${#repos} == 0 )); then
+          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
+          return 1
+        fi
+        local sel
+        sel=$(printf '%s\n' "${repos[@]#$HOME/}" \
+              | fzf --height=40% --reverse --prompt='repo> ') || return
+        cd "$HOME/$sel"
     wts:
       description: fzf picker to cd into a git worktree
       body: |
