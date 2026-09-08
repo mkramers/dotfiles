@@ -89,7 +89,7 @@ shell:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
     rr:
-      description: fzf picker to cd into a git repo under ~/altis or ~/mkramers
+      description: fzf picker to cd into a git repo under ~/altis or ~/mkramers, ranked by frecency
       body: |
         local -a repos
         local d
@@ -101,9 +101,30 @@ shell:
           print -u2 "rr: no repos found in ~/altis or ~/mkramers"
           return 1
         fi
+        local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
+        local histread=$hist
+        [[ -f $hist ]] || histread=/dev/null
+        local now=$(date +%s)
         local sel
-        sel=$(printf '%s\n' "${repos[@]#$HOME/}" \
-              | fzf --height=40% --reverse --prompt='repo> ') || return
+        # Disk decides which repos exist and the log only supplies scores, so
+        # entries for deleted repos drop out without needing to prune the log.
+        sel=$(awk -F'\t' -v now="$now" '
+            NR==FNR { score[$0]=0; next }
+            !($2 in score) { next }
+            {
+              age = now - $1
+              if      (age < 3600)   w = 4
+              else if (age < 86400)  w = 2
+              else if (age < 604800) w = 1
+              else                   w = 0.25
+              score[$2] += w
+            }
+            END { for (r in score) printf "%.4f\t%s\n", score[r], r }
+          ' <(printf '%s\n' "${repos[@]#$HOME/}") "$histread" \
+          | sort -t$'\t' -k1,1rn -k2,2 \
+          | cut -f2 \
+          | fzf --height=40% --reverse --prompt='repo> ' --no-sort) || return
+        mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$sel" >>"$hist"
         cd "$HOME/$sel"
     wts:
       description: fzf picker to cd into a git worktree
