@@ -143,7 +143,7 @@ shell:
           [[ -e $d/.git ]] || continue
           repo=${d:t}
           branch=$(_rw_head $d/.git) || continue
-          rows+=( "${d#$HOME/}"$'\t'"0"$'\t'"$repo"$'\t'"$branch" )
+          rows+=( "${d#$HOME/}"$'\t'"${d#$HOME/}"$'\t'"0"$'\t'"$repo"$'\t'"$branch" )
           for w in $d/.git/worktrees/*(N/); do
             read -r gitdir <$w/gitdir 2>/dev/null || continue
             # A worktree whose checkout is gone is prunable; git still lists it.
@@ -152,7 +152,9 @@ shell:
             name=${w:t}
             # Same rule as the prompt: only name the dir when it differs from the branch.
             [[ $name == $branch ]] && label=$repo || label="$repo/$name"
-            rows+=( "${${gitdir:h}/#$HOME\//}"$'\t'"1"$'\t'"$label"$'\t'"$branch" )
+            # Keyed by the repo, not the worktree: worktrees are ephemeral, so their
+            # visits should credit the repo they belong to.
+            rows+=( "${${gitdir:h}/#$HOME\//}"$'\t'"${d#$HOME/}"$'\t'"1"$'\t'"$label"$'\t'"$branch" )
           done
         done
         unfunction _rw_head
@@ -165,6 +167,8 @@ shell:
         [[ -f $hist ]] || histread=/dev/null
         local now=$(date +%s)
         local sel target
+        # Scores are keyed by repo, so every worktree of a repo shares its rank and
+        # they cluster together in the list.
         # awk measures and pads plain text, then paints, so no width calculation
         # ever has to see through an escape sequence. Colors match the prompt:
         # bold purple for the repo, pink for the branch, dim for the worktree mark.
@@ -173,8 +177,8 @@ shell:
                     wt  = esc "[38;5;245m" sprintf("%c%c%c", 238, 130, 160) " " esc "[0m"
                     br  = sprintf("%c%c%c", 238, 156, 165) }
             NR==FNR {
-              n++; p[n] = $1; mark[n] = $2; lbl[n] = $3; brn[n] = $4
-              w = length($3) + ($2 ? 2 : 0)
+              n++; p[n] = $1; key[n] = $2; mark[n] = $3; lbl[n] = $4; brn[n] = $5
+              w = length($4) + ($3 ? 2 : 0)
               if (w > limit) w = limit
               if (w > max) max = w
               next
@@ -199,17 +203,18 @@ shell:
                   shown = room
                 }
                 shown += (mark[i] ? 2 : 0)
-                printf "%.4f\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
-                  score[p[i]] + 0, p[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
+                printf "%.4f\t%s\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
+                  score[key[i]] + 0, p[i], key[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
               }
             }
           ' <(printf '%s\n' "${rows[@]}") "$histread" \
           | sort -t$'\t' -k1,1rn -k2,2 \
-          | cut -f2,3 \
+          | cut -f2,3,4 \
           | fzf --ansi --height=40% --reverse --prompt='worktree> ' --no-sort \
-                --with-nth=2 --delimiter=$'\t' --select-1) || return
+                --with-nth=3 --delimiter=$'\t' --select-1) || return
         target=${sel%%$'\t'*}
-        mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$target" >>"$hist"
+        local repokey=${${sel#*$'\t'}%%$'\t'*}
+        mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$repokey" >>"$hist"
         # A worktree outside $HOME keeps its absolute path; everything else is
         # stored relative so rr and rw agree on the frecency key for a repo.
         [[ $target == /* ]] && cd "$target" || cd "$HOME/$target"
