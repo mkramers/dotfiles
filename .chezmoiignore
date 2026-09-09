@@ -7,6 +7,11 @@ todo.md
 .claude/skills/*/history.md
 Library/Application Support/k9s/clusters/
 
+{{ if ne .chezmoi.os "darwin" }}
+# Library/ is macOS-only: app configs and the Application Support -> .config bridges
+Library/
+{{ end }}
+
 {{ if eq .profile "minimal" }}
 # desktop/GUI only
 .config/kitty/
