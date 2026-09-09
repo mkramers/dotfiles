@@ -167,8 +167,9 @@ shell:
         [[ -f $hist ]] || histread=/dev/null
         local now=$(date +%s)
         local sel target
-        # Scores are keyed by repo, so every worktree of a repo shares its rank and
-        # they cluster together in the list.
+        # Repo roots come first, ranked by frecency, so the common jump is a few
+        # letters and Enter. Worktrees sort below them all and are found by typing,
+        # since reaching one is the rarer, more deliberate move.
         # awk measures and pads plain text, then paints, so no width calculation
         # ever has to see through an escape sequence. Colors match the prompt:
         # bold purple for the repo, pink for the branch, dim for the worktree mark.
@@ -203,13 +204,13 @@ shell:
                   shown = room
                 }
                 shown += (mark[i] ? 2 : 0)
-                printf "%.4f\t%s\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
-                  score[key[i]] + 0, p[i], key[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
+                printf "%d\t%.4f\t%s\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
+                  mark[i], score[key[i]] + 0, p[i], key[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
               }
             }
           ' <(printf '%s\n' "${rows[@]}") "$histread" \
-          | sort -t$'\t' -k1,1rn -k2,2 \
-          | cut -f2,3,4 \
+          | sort -t$'\t' -k1,1n -k2,2rn -k3,3 \
+          | cut -f3,4,5 \
           | fzf --ansi --height=40% --reverse --prompt='worktree> ' --no-sort \
                 --with-nth=3 --delimiter=$'\t' --select-1) || return
         target=${sel%%$'\t'*}
