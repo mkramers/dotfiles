@@ -108,7 +108,7 @@ shell:
         local sel
         # Disk decides which repos exist and the log only supplies scores, so
         # entries for deleted repos drop out without needing to prune the log.
-        sel=$(awk -F'\t' -v now="$now" '
+        sel=$(awk -F'\t' -v now="$now" -v LIMIT=34 '
             NR==FNR { score[$0]=0; next }
             !($2 in score) { next }
             {
@@ -126,6 +126,93 @@ shell:
           | fzf --height=40% --reverse --prompt='repo> ' --no-sort) || return
         mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$sel" >>"$hist"
         cd "$HOME/$sel"
+    rw:
+      description: fzf picker over every worktree of every repo, styled like the prompt
+      body: |
+        # Reads branch and worktree metadata straight off disk rather than shelling
+        # out to git, the same trade the prompt makes: ~50 rows with zero forks.
+        local -a rows
+        local d w repo name branch gitdir label
+        # Branch from HEAD directly, which also handles detached HEAD (raw sha).
+        _rw_head() {
+          local h
+          read -r h <$1/HEAD 2>/dev/null || return 1
+          if [[ $h == ref:* ]]; then print -r -- ${h#ref: refs/heads/}; else print -r -- ${h[1,7]}; fi
+        }
+        for d in ~/altis/*(N/) ~/mkramers/*(N/); do
+          [[ -e $d/.git ]] || continue
+          repo=${d:t}
+          branch=$(_rw_head $d/.git) || continue
+          rows+=( "${d#$HOME/}"$'\t'"0"$'\t'"$repo"$'\t'"$branch" )
+          for w in $d/.git/worktrees/*(N/); do
+            read -r gitdir <$w/gitdir 2>/dev/null || continue
+            # A worktree whose checkout is gone is prunable; git still lists it.
+            [[ -e $gitdir ]] || continue
+            branch=$(_rw_head $w) || continue
+            name=${w:t}
+            # Same rule as the prompt: only name the dir when it differs from the branch.
+            [[ $name == $branch ]] && label=$repo || label="$repo/$name"
+            rows+=( "${${gitdir:h}/#$HOME\//}"$'\t'"1"$'\t'"$label"$'\t'"$branch" )
+          done
+        done
+        unfunction _rw_head
+        if (( ${#rows} == 0 )); then
+          print -u2 "rw: no repos found in ~/altis or ~/mkramers"
+          return 1
+        fi
+        local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
+        local histread=$hist
+        [[ -f $hist ]] || histread=/dev/null
+        local now=$(date +%s)
+        local sel target
+        # awk measures and pads plain text, then paints, so no width calculation
+        # ever has to see through an escape sequence. Colors match the prompt:
+        # bold purple for the repo, pink for the branch, dim for the worktree mark.
+        sel=$(awk -F'\t' -v now="$now" -v limit=34 '
+            BEGIN { esc = sprintf("%c", 27)
+                    wt  = esc "[38;5;245m" sprintf("%c%c%c", 238, 130, 160) " " esc "[0m"
+                    br  = sprintf("%c%c%c", 238, 156, 165) }
+            NR==FNR {
+              n++; p[n] = $1; mark[n] = $2; lbl[n] = $3; brn[n] = $4
+              w = length($3) + ($2 ? 2 : 0)
+              if (w > limit) w = limit
+              if (w > max) max = w
+              next
+            }
+            { age = now - $1
+              if      (age < 3600)   s = 4
+              else if (age < 86400)  s = 2
+              else if (age < 604800) s = 1
+              else                   s = 0.25
+              score[$2] += s
+            }
+            END {
+              for (i = 1; i <= n; i++) {
+                text = lbl[i]
+                room = limit - (mark[i] ? 2 : 0)
+                shown = length(text)
+                # One very long name would otherwise set the gap for every row.
+                # awk counts bytes, so the multi-byte ellipsis cannot be measured
+                # with length(); a clipped label is exactly `room` columns wide.
+                if (shown > room) {
+                  text = substr(text, 1, room - 1) sprintf("%c%c%c", 226, 128, 166)
+                  shown = room
+                }
+                shown += (mark[i] ? 2 : 0)
+                printf "%.4f\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
+                  score[p[i]] + 0, p[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
+              }
+            }
+          ' <(printf '%s\n' "${rows[@]}") "$histread" \
+          | sort -t$'\t' -k1,1rn -k2,2 \
+          | cut -f2,3 \
+          | fzf --ansi --height=40% --reverse --prompt='worktree> ' --no-sort \
+                --with-nth=2 --delimiter=$'\t' --select-1) || return
+        target=${sel%%$'\t'*}
+        mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$target" >>"$hist"
+        # A worktree outside $HOME keeps its absolute path; everything else is
+        # stored relative so rr and rw agree on the frecency key for a repo.
+        [[ $target == /* ]] && cd "$target" || cd "$HOME/$target"
     wts:
       description: fzf picker to cd into a git worktree
       body: |
