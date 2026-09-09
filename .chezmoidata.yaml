@@ -89,52 +89,14 @@ shell:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
     rr:
-      description: fzf picker to cd into a git repo under ~/altis or ~/mkramers, ranked by frecency
-      body: |
-        local -a repos
-        local d
-        for d in ~/altis/*(N/) ~/mkramers/*(N/); do
-          # A repo checked out as a worktree has .git as a file, not a directory.
-          [[ -e $d/.git ]] && repos+=( $d )
-        done
-        if (( ${#repos} == 0 )); then
-          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
-          return 1
-        fi
-        local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
-        local histread=$hist
-        [[ -f $hist ]] || histread=/dev/null
-        local now=$(date +%s)
-        local sel
-        # Disk decides which repos exist and the log only supplies scores, so
-        # entries for deleted repos drop out without needing to prune the log.
-        sel=$(awk -F'\t' -v now="$now" -v LIMIT=34 '
-            NR==FNR { score[$0]=0; next }
-            !($2 in score) { next }
-            {
-              age = now - $1
-              if      (age < 3600)   w = 4
-              else if (age < 86400)  w = 2
-              else if (age < 604800) w = 1
-              else                   w = 0.25
-              score[$2] += w
-            }
-            END { for (r in score) printf "%.4f\t%s\n", score[r], r }
-          ' <(printf '%s\n' "${repos[@]#$HOME/}") "$histread" \
-          | sort -t$'\t' -k1,1rn -k2,2 \
-          | cut -f2 \
-          | fzf --height=40% --reverse --prompt='repo> ' --no-sort) || return
-        mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$sel" >>"$hist"
-        cd "$HOME/$sel"
-    rw:
-      description: fzf picker over every worktree of every repo, styled like the prompt
+      description: fzf picker over every repo and worktree under ~/altis and ~/mkramers
       body: |
         # Reads branch and worktree metadata straight off disk rather than shelling
         # out to git, the same trade the prompt makes: ~50 rows with zero forks.
         local -a rows
         local d w repo name branch gitdir label
         # Branch from HEAD directly, which also handles detached HEAD (raw sha).
-        _rw_head() {
+        _rr_head() {
           local h
           read -r h <$1/HEAD 2>/dev/null || return 1
           if [[ $h == ref:* ]]; then print -r -- ${h#ref: refs/heads/}; else print -r -- ${h[1,7]}; fi
@@ -142,13 +104,13 @@ shell:
         for d in ~/altis/*(N/) ~/mkramers/*(N/); do
           [[ -e $d/.git ]] || continue
           repo=${d:t}
-          branch=$(_rw_head $d/.git) || continue
+          branch=$(_rr_head $d/.git) || continue
           rows+=( "${d#$HOME/}"$'\t'"${d#$HOME/}"$'\t'"0"$'\t'"$repo"$'\t'"$branch" )
           for w in $d/.git/worktrees/*(N/); do
             read -r gitdir <$w/gitdir 2>/dev/null || continue
             # A worktree whose checkout is gone is prunable; git still lists it.
             [[ -e $gitdir ]] || continue
-            branch=$(_rw_head $w) || continue
+            branch=$(_rr_head $w) || continue
             name=${w:t}
             # Same rule as the prompt: only name the dir when it differs from the branch.
             [[ $name == $branch ]] && label=$repo || label="$repo/$name"
@@ -157,9 +119,9 @@ shell:
             rows+=( "${${gitdir:h}/#$HOME\//}"$'\t'"${d#$HOME/}"$'\t'"1"$'\t'"$label"$'\t'"$branch" )
           done
         done
-        unfunction _rw_head
+        unfunction _rr_head
         if (( ${#rows} == 0 )); then
-          print -u2 "rw: no repos found in ~/altis or ~/mkramers"
+          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
           return 1
         fi
         local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
@@ -211,20 +173,20 @@ shell:
           ' <(printf '%s\n' "${rows[@]}") "$histread" \
           | sort -t$'\t' -k1,1n -k2,2rn -k3,3 \
           | cut -f3,4,5 \
-          | fzf --ansi --height=40% --reverse --prompt='worktree> ' --no-sort \
+          | fzf --ansi --height=40% --reverse --prompt='repo> ' --no-sort \
                 --with-nth=3 --delimiter=$'\t' --select-1) || return
         target=${sel%%$'\t'*}
         local repokey=${${sel#*$'\t'}%%$'\t'*}
         mkdir -p "${hist:h}" && printf '%s\t%s\n' "$now" "$repokey" >>"$hist"
         # A worktree outside $HOME keeps its absolute path; everything else is
-        # stored relative so rr and rw agree on the frecency key for a repo.
+        # stored relative to $HOME so the frecency key is stable.
         [[ $target == /* ]] && cd "$target" || cd "$HOME/$target"
     wts:
       description: fzf picker to cd into a git worktree
       body: |
         local sel
         sel=$(git worktree list | awk '{n=split($1,p,"/"); print p[n]"\t"$1}' \
-              | fzf --height=40% --reverse --prompt='worktree> ' --with-nth=1 --delimiter='\t') || return
+              | fzf --height=40% --reverse --prompt='repo> ' --with-nth=1 --delimiter='\t') || return
         cd "$(echo "$sel" | awk -F'\t' '{print $2}')"
     wth:
       description: cd to the primary worktree root (head of the repo)
