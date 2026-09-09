@@ -16,4 +16,5 @@
 	"spell_check": true,
 	"find_selected_text": true,
 	"show_project_first": true,
+	"hardware_acceleration": "none",
 }
