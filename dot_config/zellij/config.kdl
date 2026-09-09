@@ -569,6 +569,10 @@ advanced_mouse_actions false
 // Whether to enable mouse hover visual effects (frame highlight and help text)
 // default is true
 mouse_hover_effects false
+
+// Mouse scroll inside a pane entering scroll mode is new in 0.45; Alt+S is the
+// deliberate way in here, matching advanced_mouse_actions/mouse_hover_effects off.
+scroll_mode_sync false
  
 // Whether to show visual bell indicators (pane/tab frame flash and [!] suffix)
 // default is true
