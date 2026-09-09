@@ -3,6 +3,18 @@ set -euo pipefail
 
 # aqua manifest hash: {{ include "dot_aqua/aqua.yaml.tmpl" | sha256sum }}
 
+aqua_bin="$HOME/.local/share/aquaproj-aqua/bin/aqua"
+aqua_yaml="$HOME/.aqua/aqua.yaml"
+
+# gh has to come down eagerly and unverified: aqua checks a download's GitHub
+# attestation by running `gh attestation verify`, and gh reaches the API with the
+# token from `gh auth` — which git also uses as its credential helper. Left to
+# install on first use, gh needs a working gh, so a fresh machine deadlocks and
+# git push fails. Nothing else needs this treatment.
+echo "Installing gh (attestation check skipped — see comment)..."
+AQUA_DISABLE_GITHUB_ARTIFACT_ATTESTATION=true \
+    "$aqua_bin" -c "$aqua_yaml" install -t bootstrap
+
 # JIT: create links only; each binary downloads on first use.
 echo "Linking aqua packages..."
-"$HOME/.local/share/aquaproj-aqua/bin/aqua" -c "$HOME/.aqua/aqua.yaml" install --only-link --all
+"$aqua_bin" -c "$aqua_yaml" install --only-link --all
