@@ -88,12 +88,11 @@ shell:
     ports:
       description: show listening TCP ports
       body: lsof -iTCP -sTCP:LISTEN -nP
-    rr:
-      description: fzf picker over every repo and worktree under ~/altis and ~/mkramers
+    _repo_rows:
+      description: internal - emit picker rows for the given repo roots and their worktrees
       body: |
         # Reads branch and worktree metadata straight off disk rather than shelling
         # out to git, the same trade the prompt makes: ~50 rows with zero forks.
-        local -a rows
         local d w repo name branch gitdir label
         # Branch from HEAD directly, which also handles detached HEAD (raw sha).
         _rr_head() {
@@ -101,11 +100,11 @@ shell:
           read -r h <$1/HEAD 2>/dev/null || return 1
           if [[ $h == ref:* ]]; then print -r -- ${h#ref: refs/heads/}; else print -r -- ${h[1,7]}; fi
         }
-        for d in ~/altis/*(N/) ~/mkramers/*(N/); do
+        for d in "$@"; do
           [[ -e $d/.git ]] || continue
           repo=${d:t}
           branch=$(_rr_head $d/.git) || continue
-          rows+=( "${d#$HOME/}"$'\t'"${d#$HOME/}"$'\t'"0"$'\t'"$repo"$'\t'"$branch" )
+          printf '%s\t%s\t%s\t%s\t%s\n' "${d#$HOME/}" "${d#$HOME/}" 0 "$repo" "$branch"
           for w in $d/.git/worktrees/*(N/); do
             read -r gitdir <$w/gitdir 2>/dev/null || continue
             # A worktree whose checkout is gone is prunable; git still lists it.
@@ -116,14 +115,14 @@ shell:
             [[ $name == $branch ]] && label=$repo || label="$repo/$name"
             # Keyed by the repo, not the worktree: worktrees are ephemeral, so their
             # visits should credit the repo they belong to.
-            rows+=( "${${gitdir:h}/#$HOME\//}"$'\t'"${d#$HOME/}"$'\t'"1"$'\t'"$label"$'\t'"$branch" )
+            printf '%s\t%s\t%s\t%s\t%s\n' "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "$label" "$branch"
           done
         done
         unfunction _rr_head
-        if (( ${#rows} == 0 )); then
-          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
-          return 1
-        fi
+    _repo_pick:
+      description: internal - fzf picker over rows from _repo_rows, cd to the choice
+      body: |
+        local prompt=$1 rowfile=$2
         local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
         local histread=$hist
         [[ -f $hist ]] || histread=/dev/null
@@ -170,10 +169,10 @@ shell:
                   mark[i], score[key[i]] + 0, p[i], key[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
               }
             }
-          ' <(printf '%s\n' "${rows[@]}") "$histread" \
+          ' "$rowfile" "$histread" \
           | sort -t$'\t' -k1,1n -k2,2rn -k3,3 \
           | cut -f3,4,5 \
-          | fzf --ansi --height=40% --reverse --prompt='repo> ' --no-sort \
+          | fzf --ansi --height=40% --reverse --prompt="$prompt" --no-sort \
                 --with-nth=3 --delimiter=$'\t' --select-1) || return
         target=${sel%%$'\t'*}
         local repokey=${${sel#*$'\t'}%%$'\t'*}
@@ -181,66 +180,25 @@ shell:
         # A worktree outside $HOME keeps its absolute path; everything else is
         # stored relative to $HOME so the frecency key is stable.
         [[ $target == /* ]] && cd "$target" || cd "$HOME/$target"
-    wts:
-      description: fzf picker to cd into a git worktree, newest commit first
+    rr:
+      description: fzf picker over every repo and worktree under ~/altis and ~/mkramers
       body: |
-        git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
+        local rows
+        rows=$(_repo_rows ~/altis/*(N/) ~/mkramers/*(N/))
+        if [[ -z $rows ]]; then
+          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
+          return 1
+        fi
+        _repo_pick 'repo> ' <(print -r -- "$rows")
+    wts:
+      description: fzf picker over the current repo and its worktrees
+      body: |
+        local common
+        common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || {
           print -u2 "wts: not inside a git repository"
           return 1
         }
-        local sel
-        # Two forks total: the worktree list, and every branch date in one shot.
-        # The primary worktree is pinned first because it is the repo's home base;
-        # the rest sort by last commit, which tracks where work is actually happening.
-        sel=$(awk '
-            BEGIN { esc = sprintf("%c", 27)
-                    br  = sprintf("%c%c%c", 238, 156, 165)
-                    wt  = sprintf("%c%c%c", 238, 130, 160) }
-            function ago(t,   d) {
-              if (t == 0) return "-"
-              d = now - t
-              if (d < 3600)   return int(d / 60) "m"
-              if (d < 86400)  return int(d / 3600) "h"
-              if (d < 604800) return int(d / 86400) "d"
-              if (d < 2592000) return int(d / 604800) "w"
-              return int(d / 2592000) "mo"
-            }
-            NR==FNR { split($0, f, "\t"); when[f[2]] = f[1]; next }
-            /^worktree / { path = substr($0, 10); branch = ""; skip = 0; next }
-            /^prunable/  { skip = 1; next }
-            /^branch /   { branch = substr($0, 8); next }
-            /^$/         { emit() }
-            END          { emit() }
-            function emit(   name, label, t, w) {
-              if (path == "" || skip) { path = ""; return }
-              n++
-              name = path; sub(/.*\//, "", name)
-              short = branch; sub(/^refs\/heads\//, "", short)
-              if (short == "") label = name "  (detached)"
-              # Same rule as the prompt: only name the dir when it differs. The
-              # primary worktree has the repo as its dir, so it never needs naming.
-              else if (n == 1 || name == short) label = short
-              else label = short "  " name
-              t = (branch in when) ? when[branch] : 0
-              w = length(label) + (n == 1 ? 0 : 2); if (w > max) max = w
-              ord[n] = (n == 1 ? 0 : 1); tim[n] = t; lbl[n] = label; loc[n] = path
-              path = ""
-            }
-            END {
-              for (i = 1; i <= n; i++)
-                printf "%d\t%d\t%s\t%s" esc "[38;5;212m%s %s" esc "[0m%*s" esc "[38;5;245m%s" esc "[0m\n", \
-                  ord[i], tim[i], loc[i], \
-                  (ord[i] ? esc "[38;5;245m" wt " " esc "[0m" : ""), \
-                  br, lbl[i], max - length(lbl[i]) - (ord[i] ? 2 : 0) + 2, "", ago(tim[i])
-            }
-          ' now=$(date +%s) \
-            <(git for-each-ref --format='%(committerdate:unix)%09%(refname)' refs/heads) \
-            <(git worktree list --porcelain) \
-          | sort -t$'\t' -k1,1n -k2,2rn \
-          | cut -f3,4 \
-          | fzf --ansi --height=40% --reverse --prompt='worktree> ' --no-sort \
-                --with-nth=2 --delimiter=$'\t' --select-1) || return
-        cd "${sel%%$'\t'*}"
+        _repo_pick 'worktree> ' <(_repo_rows "${common:h}")
     wth:
       description: cd to the primary worktree root (head of the repo)
       body: cd "$(git worktree list | head -1 | awk '{print $1}')"
