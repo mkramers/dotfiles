@@ -183,7 +183,10 @@ shell:
         # awk measures and pads plain text, then paints, so no width calculation
         # ever has to see through an escape sequence. Colors match the prompt:
         # bold purple for the repo, pink for the branch, dim for the rest.
-        sel=$(awk -F'\t' -v now="$now" -v limit=34 -v style="$style" '
+        # LC_ALL=C keeps awk byte-oriented: in a UTF-8 locale gawk turns %c into
+        # a code point, so the glyph bytes below would come out as six bytes of
+        # Latin-1 mojibake, and length() would stop matching the clip() math.
+        sel=$(LC_ALL=C awk -F'\t' -v now="$now" -v limit=34 -v style="$style" '
             BEGIN { esc = sprintf("%c", 27)
                     br  = sprintf("%c%c%c", 238, 156, 165) " "
                     if (style == "wt") { g1 = br; c1 = esc "[38;5;212m"; c2 = esc "[38;5;245m" }
