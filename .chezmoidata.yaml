@@ -249,12 +249,18 @@ shell:
         # stored relative to $HOME so the frecency key is stable.
         [[ $target == /* ]] && cd "$target" || cd "$HOME/$target"
     rr:
-      description: fzf picker over every repo and worktree under ~/altis and ~/mkramers
+      description: fzf picker over every repo and worktree under the known dev roots
       body: |
+        # The union of the roots used across machines, since .chezmoidata.yaml is
+        # read before the template engine and so cannot vary per host. The mac
+        # groups repos directly under $HOME, mkThinkpad nests them under ~/dev;
+        # (N/) drops whichever pair is absent.
+        local -a roots
+        roots=(~/{,dev/}{altis,mkramers}/*(N/))
         local rows
-        rows=$(_repo_rows repo ~/altis/*(N/) ~/mkramers/*(N/))
+        rows=$(_repo_rows repo $roots)
         if [[ -z $rows ]]; then
-          print -u2 "rr: no repos found in ~/altis or ~/mkramers"
+          print -u2 "rr: no repos found under any known dev root"
           return 1
         fi
         _repo_pick 'repo> ' <(print -r -- "$rows") repo
