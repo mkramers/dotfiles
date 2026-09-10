@@ -356,6 +356,10 @@ themes {
 // Default: normal
 // 
 default_mode "normal"
+
+// Control a nested session as soon as its pane takes focus, with no modal.
+// Ascend back out with Ctrl o + [.
+nested_session_handling "descend"
  
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
