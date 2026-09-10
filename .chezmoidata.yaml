@@ -26,6 +26,9 @@ shell:
       check: delta
       fallback: less
     OP_BIOMETRIC_UNLOCK_ENABLED: "true"
+    # Default account for unqualified op:// refs (sandy profiles); the personal
+    # account is addressed explicitly as op+account://.
+    OP_ACCOUNT: altislabs.1password.com
     DOCKER_CLI_HINTS: "false"
 
   aliases:
