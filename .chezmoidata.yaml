@@ -71,7 +71,12 @@ shell:
         else
           shift
         fi
-        aws-vault exec "$profile" -s "$@"
+        # Prefills the next prompt instead of running: confirm the picked profile
+        # with Enter, or append a command to run inside the session. print -z
+        # re-parses the line as shell input, so every word is quoted on the way in.
+        local -a line
+        line=(aws-vault exec ${(q)profile} -s ${(q)@})
+        print -z "${line[*]} "
     avl:
       description: open the AWS console for a profile
       body: |
