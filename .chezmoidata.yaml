@@ -95,6 +95,9 @@ shell:
         # prompt makes: ~50 rows with zero forks. Commit dates are the exception,
         # so those forks run in parallel and land in one file each.
         setopt localoptions no_monitor no_notify
+        # style `repo` leads with the repo name and follows with the branch; style
+        # `wt` leads with the branch, since one repo's list needs no repo column.
+        local style=$1; shift
         local d w repo name branch gitdir tdir i=0
         local -A when
         tdir=$(mktemp -d) || return 1
@@ -126,8 +129,13 @@ shell:
           [[ -e $d/.git ]] || continue
           repo=${d:t}
           branch=$(_rr_head $d/.git) || continue
-          printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
-            "${d#$HOME/}" "${d#$HOME/}" 0 "$repo" "$branch" "${when[$d$'\x1f'$branch]:-0}"
+          if [[ $style == wt ]]; then
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+              "${d#$HOME/}" "${d#$HOME/}" 0 "$branch" "" "${when[$d$'\x1f'$branch]:-0}"
+          else
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+              "${d#$HOME/}" "${d#$HOME/}" 0 "$repo" "$branch" "${when[$d$'\x1f'$branch]:-0}"
+          fi
           for w in $d/.git/worktrees/*(N/); do
             read -r gitdir <$w/gitdir 2>/dev/null || continue
             # A worktree whose checkout is gone is prunable; git still lists it.
@@ -139,15 +147,20 @@ shell:
             [[ $name == $branch ]] && name=""
             # Keyed by the repo, not the worktree: worktrees are ephemeral, so their
             # visits should credit the repo they belong to, and they nest under it.
-            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
-              "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "$name" "$branch" "${when[$d$'\x1f'$branch]:-0}"
+            if [[ $style == wt ]]; then
+              printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+                "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "$branch" "$name" "${when[$d$'\x1f'$branch]:-0}"
+            else
+              printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+                "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "${name:+$repo/$name}${name:-$repo}" "$branch" "${when[$d$'\x1f'$branch]:-0}"
+            fi
           done
         done
         unfunction _rr_head
     _repo_pick:
       description: internal - fzf picker over rows from _repo_rows, cd to the choice
       body: |
-        local prompt=$1 rowfile=$2
+        local prompt=$1 rowfile=$2 style=$3
         local hist=${XDG_STATE_HOME:-$HOME/.local/state}/rr/history
         local histread=$hist
         [[ -f $hist ]] || histread=/dev/null
@@ -157,10 +170,12 @@ shell:
         # and each repo's worktrees nest directly under it, newest commit first.
         # awk measures and pads plain text, then paints, so no width calculation
         # ever has to see through an escape sequence. Colors match the prompt:
-        # bold purple for the repo, pink for the branch, dim for worktrees and age.
-        sel=$(awk -F'\t' -v now="$now" -v limit=34 '
+        # bold purple for the repo, pink for the branch, dim for the rest.
+        sel=$(awk -F'\t' -v now="$now" -v limit=34 -v style="$style" '
             BEGIN { esc = sprintf("%c", 27)
-                    br  = sprintf("%c%c%c", 238, 156, 165) }
+                    br  = sprintf("%c%c%c", 238, 156, 165) " "
+                    if (style == "wt") { g1 = br; c1 = esc "[38;5;212m"; c2 = esc "[38;5;245m" }
+                    else               { g2 = br; c1 = esc "[1m" esc "[38;5;141m"; c2 = esc "[38;5;212m" } }
             function pad(k,   s) { s = ""; while (k-- > 0) s = s " "; return s }
             # awk counts bytes, so the multi-byte ellipsis cannot be measured with
             # length(); a clipped string is exactly `room` columns wide.
@@ -201,12 +216,10 @@ shell:
                 room = limit - (mark[i] ? 2 : 0)
                 text = clip(nm[i], room)
                 shown = (length(nm[i]) > room ? room : length(nm[i])) + (mark[i] ? 2 : 0)
-                branch = clip(brn[i], limit)
-                bshown = length(brn[i]) > limit ? limit : length(brn[i])
-                disp = (mark[i] ? "  " esc "[38;5;245m" : esc "[1m" esc "[38;5;141m") \
-                       text esc "[0m" pad(max1 - shown + 2) \
-                       esc "[38;5;212m" br " " branch esc "[0m" \
-                       pad(max2 - bshown + 2) \
+                second = clip(brn[i], limit)
+                sshown = length(brn[i]) > limit ? limit : length(brn[i])
+                disp = (mark[i] ? "  " : "") c1 g1 text esc "[0m" pad(max1 - shown + 2) \
+                       c2 g2 second esc "[0m" pad(max2 - sshown + 2) \
                        esc "[38;5;245m" ago(tim[i]) esc "[0m"
                 printf "%.4f\t%s\t%d\t%d\t%s\t%s\t%s\n", \
                   score[key[i]] + 0, key[i], mark[i], tim[i], p[i], key[i], disp
@@ -227,12 +240,12 @@ shell:
       description: fzf picker over every repo and worktree under ~/altis and ~/mkramers
       body: |
         local rows
-        rows=$(_repo_rows ~/altis/*(N/) ~/mkramers/*(N/))
+        rows=$(_repo_rows repo ~/altis/*(N/) ~/mkramers/*(N/))
         if [[ -z $rows ]]; then
           print -u2 "rr: no repos found in ~/altis or ~/mkramers"
           return 1
         fi
-        _repo_pick 'repo> ' <(print -r -- "$rows")
+        _repo_pick 'repo> ' <(print -r -- "$rows") repo
     wts:
       description: fzf picker over the current repo and its worktrees
       body: |
@@ -241,7 +254,7 @@ shell:
           print -u2 "wts: not inside a git repository"
           return 1
         }
-        _repo_pick 'worktree> ' <(_repo_rows "${common:h}")
+        _repo_pick 'worktree> ' <(_repo_rows wt "${common:h}") wt
     wth:
       description: cd to the primary worktree root (head of the repo)
       body: cd "$(git worktree list | head -1 | awk '{print $1}')"
