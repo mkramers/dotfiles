@@ -13,6 +13,17 @@ typeset -g _prompt_orange=215
 _prompt_precmd() {
     local exit_code=$?
 
+    # OSC 133 semantic prompt markers. Zellij 0.45+ reads these to find command
+    # boundaries, giving prompt jumping ([ / ]), select-command-with-output (m)
+    # and copy-last-output (c) in scroll mode. Emitted from inside this function
+    # rather than a second precmd hook, which would clobber $? before the hook
+    # above could read it. Terminals that do not know these sequences drop them.
+    if (( _osc133_ran )); then
+        printf '\033]133;D;%d\a' $exit_code
+        _osc133_ran=0
+    fi
+    printf '\033]133;A\a'
+
     # Directory + Git section.
     #
     # Every git fork costs ~10ms on an NFS home, so this section is written to use as
@@ -113,9 +124,22 @@ _prompt_precmd() {
     fi
 
     # Build prompt
-    PROMPT="${ssh_info}%F{${_prompt_purple}}${dir_display}%f${git_info}${aws_info} %F{${char_color}}❯%f "
+    PROMPT="${ssh_info}%F{${_prompt_purple}}${dir_display}%f${git_info}${aws_info} %F{${char_color}}❯%f ${_osc133_b}"
 }
 
-# Register precmd hook
+# Marks the end of the prompt / start of the typed command. Wrapped in %{ %} so
+# zsh counts it as zero width when measuring the prompt.
+typeset -g _osc133_b=$'%{\033]133;B\a%}'
+typeset -g _osc133_ran=0
+
+# Marks the start of command output, and records that a command ran so the next
+# prompt knows to report its exit status.
+_osc133_preexec() {
+    printf '\033]133;C\a'
+    _osc133_ran=1
+}
+
+# Register hooks
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _prompt_precmd
+add-zsh-hook preexec _osc133_preexec
