@@ -68,15 +68,19 @@ shell:
     av:
       description: aws-vault session with self-refreshing credentials
       body: |
-        local profile="$1"
-        if [[ -z "$profile" ]]; then
-          profile=$(_aws_profile) || return
-        else
+        # A named profile is already unambiguous, so run it. A leading dash is a
+        # flag or a `--` separator, never a profile, so the picker still opens.
+        if [[ -n "$1" && "$1" != -* ]]; then
+          local profile="$1"
           shift
+          aws-vault exec "$profile" -s "$@"
+          return
         fi
-        # Prefills the next prompt instead of running: confirm the picked profile
-        # with Enter, or append a command to run inside the session. print -z
-        # re-parses the line as shell input, so every word is quoted on the way in.
+        local profile
+        profile=$(_aws_profile) || return
+        # Picked from the list, so hand the line to the next prompt instead of
+        # running it: the choice is worth a glance, and a command can be appended.
+        # print -z re-parses the line as shell input, hence ${(q)} on every word.
         local -a line
         line=(aws-vault exec ${(q)profile} -s ${(q)@})
         print -z "${line[*]} "
