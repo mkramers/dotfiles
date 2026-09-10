@@ -91,9 +91,31 @@ shell:
     _repo_rows:
       description: internal - emit picker rows for the given repo roots and their worktrees
       body: |
-        # Reads branch and worktree metadata straight off disk rather than shelling
-        # out to git, the same trade the prompt makes: ~50 rows with zero forks.
-        local d w repo name branch gitdir label
+        # Branch and worktree metadata comes straight off disk, the same trade the
+        # prompt makes: ~50 rows with zero forks. Commit dates are the exception,
+        # so those forks run in parallel and land in one file each.
+        setopt localoptions no_monitor no_notify
+        local d w repo name branch gitdir tdir i=0
+        local -A when
+        tdir=$(mktemp -d) || return 1
+        for d in "$@"; do
+          [[ -e $d/.git ]] || continue
+          # The counter has to advance here: a redirection on a backgrounded
+          # command is expanded by the child, so `$((++i))` there would leave
+          # every job writing the same file.
+          (( ++i ))
+          git --git-dir=$d/.git for-each-ref \
+            --format="%(committerdate:unix)"$'\t'"$d"$'\t'"%(refname:short)" refs/heads \
+            >$tdir/$i 2>/dev/null &
+        done
+        wait
+        local t dd b f
+        for f in $tdir/*(N); do
+          while IFS=$'\t' read -r t dd b; do
+            when[$dd$'\x1f'$b]=$t
+          done <$f
+        done
+        rm -rf $tdir
         # Branch from HEAD directly, which also handles detached HEAD (raw sha).
         _rr_head() {
           local h
@@ -104,18 +126,21 @@ shell:
           [[ -e $d/.git ]] || continue
           repo=${d:t}
           branch=$(_rr_head $d/.git) || continue
-          printf '%s\t%s\t%s\t%s\t%s\n' "${d#$HOME/}" "${d#$HOME/}" 0 "$repo" "$branch"
+          printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+            "${d#$HOME/}" "${d#$HOME/}" 0 "$repo" "$branch" "${when[$d$'\x1f'$branch]:-0}"
           for w in $d/.git/worktrees/*(N/); do
             read -r gitdir <$w/gitdir 2>/dev/null || continue
             # A worktree whose checkout is gone is prunable; git still lists it.
             [[ -e $gitdir ]] || continue
             branch=$(_rr_head $w) || continue
             name=${w:t}
-            # Same rule as the prompt: only name the dir when it differs from the branch.
-            [[ $name == $branch ]] && label=$repo || label="$repo/$name"
+            # Same rule as the prompt: the dir is only worth naming when it differs
+            # from the branch, which the row already shows.
+            [[ $name == $branch ]] && name=""
             # Keyed by the repo, not the worktree: worktrees are ephemeral, so their
-            # visits should credit the repo they belong to.
-            printf '%s\t%s\t%s\t%s\t%s\n' "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "$label" "$branch"
+            # visits should credit the repo they belong to, and they nest under it.
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+              "${${gitdir:h}/#$HOME\//}" "${d#$HOME/}" 1 "$name" "$branch" "${when[$d$'\x1f'$branch]:-0}"
           done
         done
         unfunction _rr_head
@@ -128,21 +153,39 @@ shell:
         [[ -f $hist ]] || histread=/dev/null
         local now=$(date +%s)
         local sel target
-        # Repo roots come first, ranked by frecency, so the common jump is a few
-        # letters and Enter. Worktrees sort below them all and are found by typing,
-        # since reaching one is the rarer, more deliberate move.
+        # Repos rank by frecency, so the common jump is a few letters and Enter,
+        # and each repo's worktrees nest directly under it, newest commit first.
         # awk measures and pads plain text, then paints, so no width calculation
         # ever has to see through an escape sequence. Colors match the prompt:
-        # bold purple for the repo, pink for the branch, dim for the worktree mark.
+        # bold purple for the repo, pink for the branch, dim for worktrees and age.
         sel=$(awk -F'\t' -v now="$now" -v limit=34 '
             BEGIN { esc = sprintf("%c", 27)
-                    wt  = esc "[38;5;245m" sprintf("%c%c%c", 238, 130, 160) " " esc "[0m"
                     br  = sprintf("%c%c%c", 238, 156, 165) }
+            function pad(k,   s) { s = ""; while (k-- > 0) s = s " "; return s }
+            # awk counts bytes, so the multi-byte ellipsis cannot be measured with
+            # length(); a clipped string is exactly `room` columns wide.
+            function clip(s, room) {
+              if (length(s) <= room) return s
+              return substr(s, 1, room - 1) sprintf("%c%c%c", 226, 128, 166)
+            }
+            function ago(t,   d) {
+              if (t == 0) return "-"
+              d = now - t
+              if (d < 3600)    return int(d / 60) "m"
+              if (d < 86400)   return int(d / 3600) "h"
+              if (d < 604800)  return int(d / 86400) "d"
+              if (d < 2592000) return int(d / 604800) "w"
+              return int(d / 2592000) "mo"
+            }
             NR==FNR {
-              n++; p[n] = $1; key[n] = $2; mark[n] = $3; lbl[n] = $4; brn[n] = $5
+              n++; p[n] = $1; key[n] = $2; mark[n] = $3
+              nm[n] = $4; brn[n] = $5; tim[n] = $6
               w = length($4) + ($3 ? 2 : 0)
               if (w > limit) w = limit
-              if (w > max) max = w
+              if (w > max1) max1 = w
+              w = length($5)
+              if (w > limit) w = limit
+              if (w > max2) max2 = w
               next
             }
             { age = now - $1
@@ -154,24 +197,24 @@ shell:
             }
             END {
               for (i = 1; i <= n; i++) {
-                text = lbl[i]
-                room = limit - (mark[i] ? 2 : 0)
-                shown = length(text)
                 # One very long name would otherwise set the gap for every row.
-                # awk counts bytes, so the multi-byte ellipsis cannot be measured
-                # with length(); a clipped label is exactly `room` columns wide.
-                if (shown > room) {
-                  text = substr(text, 1, room - 1) sprintf("%c%c%c", 226, 128, 166)
-                  shown = room
-                }
-                shown += (mark[i] ? 2 : 0)
-                printf "%d\t%.4f\t%s\t%s\t%s" esc "[1m" esc "[38;5;141m%s" esc "[0m%*s" esc "[38;5;212m%s %s" esc "[0m\n", \
-                  mark[i], score[key[i]] + 0, p[i], key[i], (mark[i] ? wt : ""), text, max - shown + 2, "", br, brn[i]
+                room = limit - (mark[i] ? 2 : 0)
+                text = clip(nm[i], room)
+                shown = (length(nm[i]) > room ? room : length(nm[i])) + (mark[i] ? 2 : 0)
+                branch = clip(brn[i], limit)
+                bshown = length(brn[i]) > limit ? limit : length(brn[i])
+                disp = (mark[i] ? "  " esc "[38;5;245m" : esc "[1m" esc "[38;5;141m") \
+                       text esc "[0m" pad(max1 - shown + 2) \
+                       esc "[38;5;212m" br " " branch esc "[0m" \
+                       pad(max2 - bshown + 2) \
+                       esc "[38;5;245m" ago(tim[i]) esc "[0m"
+                printf "%.4f\t%s\t%d\t%d\t%s\t%s\t%s\n", \
+                  score[key[i]] + 0, key[i], mark[i], tim[i], p[i], key[i], disp
               }
             }
           ' "$rowfile" "$histread" \
-          | sort -t$'\t' -k1,1n -k2,2rn -k3,3 \
-          | cut -f3,4,5 \
+          | sort -t$'\t' -k1,1rn -k2,2 -k3,3n -k4,4rn \
+          | cut -f5,6,7 \
           | fzf --ansi --height=40% --reverse --prompt="$prompt" --no-sort \
                 --with-nth=3 --delimiter=$'\t' --select-1) || return
         target=${sel%%$'\t'*}
