@@ -105,8 +105,8 @@ keybinds clear-defaults=true {
         // Nested sessions (0.45): descend into a zellij running inside a pane,
         // ascend back out, or zoom it fullscreen. clear-defaults drops zellij's
         // own binds for these.
-        bind "[" { FocusGuestSession; SwitchToMode "normal"; }
-        bind "]" { FocusHostSession; SwitchToMode "normal"; }
+        bind "]" { FocusGuestSession; SwitchToMode "normal"; }
+        bind "[" { FocusHostSession; SwitchToMode "normal"; }
         bind "f" { ToggleHostFullscreen; SwitchToMode "normal"; }
         bind "a" {
             LaunchOrFocusPlugin "zellij:about" {
