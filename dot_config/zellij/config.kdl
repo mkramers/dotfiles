@@ -231,6 +231,9 @@ keybinds clear-defaults=true {
         bind "[" { ScrollToPreviousPrompt; }
         bind "]" { ScrollToNextPrompt; }
         bind "m" { SelectCommandAtScrollPosition; }
+        // copy_on_select only fires for mouse selections, so a selection made
+        // with "m" needs an explicit Copy.
+        bind "y" { Copy; SwitchToMode "normal"; }
     }
     entersearch {
         bind "Ctrl c" { SwitchToMode "scroll"; }
