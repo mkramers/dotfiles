@@ -20,6 +20,7 @@ Library/
 .config/nvim/
 .config/diffnav/
 .config/gh-dash/
+.config/sublime-text/
 .config/zen/
 Library/
 .tmux.conf
