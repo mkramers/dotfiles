@@ -3,6 +3,9 @@
 {{- $devRoot := promptStringOnce . "devRoot" "Dev root holding your repos and the plans repo (e.g. ~/dev/altis)" -}}
 {{- $profile := promptChoiceOnce . "profile" "Profile (full = macOS zsh + GUI apps, minimal = zsh + core CLI, no GUI/sudo)" (list "full" "minimal") -}}
 
+[diff]
+    pager = "delta"
+
 [data]
     email = {{ $email | quote }}
     github_username = {{ $github_username | quote }}
