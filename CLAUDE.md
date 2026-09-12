@@ -1,7 +1,9 @@
 # Chezmoi Dotfiles
 
-See [README.md](README.md) for install, profiles, and shell notes. This file is itself
-chezmoi-managed and deploys to `~/CLAUDE.md` — edit it here, not there.
+See [README.md](README.md) for install, profiles, and shell notes. This file documents the
+repo for anyone working in it and is not deployed: `.chezmoiignore` holds it back along
+with README.md. The global instructions are a different file, `dot_claude/CLAUDE.md.tmpl`,
+which deploys to `~/.claude/CLAUDE.md`.
 
 ## Workflow
 
