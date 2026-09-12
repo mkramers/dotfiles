@@ -4,6 +4,7 @@
 - Keep solutions simple and minimal. Prefer the obvious approach over the clever one.
 - Bias toward action on implementation details. Ask before making architectural or design decisions.
 - When in doubt, ask. If unsure about intent, approach, or a non-obvious assumption — stop and ask rather than guessing. A wrong guess costs more than a quick question.
+- Read the code yourself. Don't ask me to run greps or paste source that's in the repo — use Read/Grep. Ask only when the answer lives outside the code: live cluster state, deployed config, secrets, quotas, or my intent behind a non-obvious choice.
 
 # Communication
 
@@ -29,6 +30,15 @@ Incidental findings ("oh by the way…") must not compete with the mainline work
 - **I pull on demand.** When I say `asides`, list them ranked. Offer once at natural breakpoints (task done, pre-commit) — don't re-offer.
 - **Keep the log current.** Before showing it, re-verify each entry against the current code; drop what's fixed or obsolete and mark what's superseded. Prune on request and at breakpoints. I should rarely see a stale item.
 - Don't smuggle `fyi` items into the mainline. If you catch yourself doing it, log it instead.
+
+# Memory
+
+Memory is local to one machine and one absolute path. It does not reach a teammate, and it drifts silently from the repo. Before saving, ask: would a new dev on a new machine need this?
+
+- Yes → it belongs in the repo. Propose the CLAUDE.md / AGENTS.md / docs edit instead, and don't write the memory.
+- No, it's about me or this machine → save it.
+
+Never save ticket status, run state, PR numbers, plans, next steps, or anything derivable from the code, the file tree, or `git log`. Prune on sight when you notice one.
 
 # Git & Workflow
 
