@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Overlay my Claude Code preferences onto ~/.claude/settings.json.
+
+A modify_ script rather than a managed file because Claude Code writes this file
+itself (`claude plugin install` edits enabledPlugins), and a plain managed file
+would silently revert that on the next `chezmoi apply`. Everything not listed
+below is passed through untouched.
+"""
+
+import json
+import sys
+
+# Replaced outright: these are preferences, and whatever the machine has drifted
+# to is not worth keeping.
+MANAGED = {
+    "env": {"CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT": "0"},
+    "outputStyle": "Concise",
+    "effortLevel": "medium",
+    "modelSettings": {
+        "claude-opus-5": {"effortLevel": "medium"},
+        "claude-fable-5-1": {"effortLevel": "low"},
+    },
+    "tui": "fullscreen",
+    "skipDangerousModePermissionPrompt": True,
+    "statusLine": {
+        "type": "command",
+        "command": "ccstatusline",
+        "padding": 0,
+        "refreshInterval": 10,
+    },
+    # Payloads live in ~/.claude/hooks (managed here too). Addressed through `~`
+    # so the same string works on a host and inside a sandy sandbox, where
+    # ~/.claude is a bind mount. sandy adds its own SessionStart on top.
+    "hooks": {
+        "WorktreeCreate": [
+            {"hooks": [{"type": "command", "command": "~/.claude/hooks/worktree-create.sh", "timeout": 10}]}
+        ],
+        "UserPromptSubmit": [
+            {"hooks": [{"type": "command", "command": "cat ~/.claude/hooks/prose-style.json", "timeout": 5}]}
+        ],
+    },
+    "permissions": {
+        "allow": [
+            "Bash(bun:*)",
+            "Bash(cat:*)",
+            "Bash(chmod:*)",
+            "Bash(curl:*)",
+            "Bash(delta:*)",
+            "Bash(docker:*)",
+            "Bash(du:*)",
+            "Bash(echo:*)",
+            "Bash(find:*)",
+            "Bash(fnm:*)",
+            "Bash(gh:*)",
+            "Bash(git:*)",
+            "Bash(git-lfs:*)",
+            "Bash(grep:*)",
+            "Bash(just:*)",
+            "Bash(kubectl:*)",
+            "Bash(lazygit:*)",
+            "Bash(ls:*)",
+            "Bash(node:*)",
+            "Bash(npm:*)",
+            "Bash(npx:*)",
+            "Bash(nu:*)",
+            "Bash(python:*)",
+            "Bash(python3:*)",
+            "Bash(readlink:*)",
+            "Bash(sh:*)",
+            "Bash(terraform:*)",
+            "Bash(terragrunt:*)",
+            "Bash(tree:*)",
+            "Bash(trivy:*)",
+            "Bash(unzip:*)",
+            "Bash(uv:*)",
+            "Bash(wc:*)",
+            "Bash(xargs:*)",
+            "Bash(yamllint:*)",
+            "Bash(ytt:*)",
+            "Bash(zsh:*)",
+            "Bash(~/.local/bin/mise:*)",
+            "Bash(~/.local/bin/nu:*)",
+            "WebFetch(domain:github.com)",
+            "WebFetch(domain:pypi.org)",
+            "WebFetch(domain:raw.githubusercontent.com)",
+            "WebSearch",
+        ]
+    },
+}
+
+# Merged in, never subtracted, because `claude plugin install` writes here too and
+# an apply must not undo it. Removing a plugin is a deliberate edit in both places.
+ADDITIVE = {
+    "enabledPlugins": {
+        "altis-skills@altis-skills": True,
+        "hodgepodge@hodgepodge": True,
+        "slack@claude-plugins-official": True,
+        "mattpocock-skills@claude-plugins-official": True,
+        "playwright@claude-plugins-official": True,
+    },
+    "extraKnownMarketplaces": {
+        "altis-skills": {"source": {"source": "github", "repo": "altis-labs/skills"}},
+        "hodgepodge": {
+            "source": {"source": "directory", "path": "{{ .chezmoi.homeDir }}/mkramers/hodgepodge"}
+        },
+    },
+}
+
+raw = sys.stdin.read().strip()
+try:
+    settings = json.loads(raw) if raw else {}
+except json.JSONDecodeError:
+    settings = {}
+if not isinstance(settings, dict):
+    settings = {}
+
+settings.update(MANAGED)
+for key, managed in ADDITIVE.items():
+    existing = settings.get(key)
+    settings[key] = {**managed, **existing} if isinstance(existing, dict) else dict(managed)
+
+json.dump(settings, sys.stdout, indent=2)
+sys.stdout.write("\n")
