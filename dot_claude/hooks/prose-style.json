@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "UserPromptSubmit",
+    "additionalContext": "Prose style rules (always on, apply to every response):\n- No em dashes. End the sentence or use a comma. Do not substitute parentheses or en dashes.\n- No opener or closer filler: \"Great question\", \"Certainly\", \"You're absolutely right\", \"I hope this helps\", \"Let me know if\". Answer directly and stop when done.\n- Cut filler phrases: \"in order to\" -> \"to\", \"due to the fact that\" -> \"because\", delete \"it is important to note that\".\n- Use the plain word: utilize -> use, leverage -> use, facilitate -> help, numerous -> many, additionally -> also.\n- Banned vocabulary: crucial, delve, pivotal, seamless, showcase, testament, underscore, tapestry, landscape (figurative). Say the concrete thing.\n- Active voice, name the actor: \"queries are validated\" -> \"the compiler validates queries\".\n- No \"not just X, but Y\" and no forced groups of three. State the point, use the natural number.\n- Straight quotes and apostrophes, never curly. No closing recap of what you already said."
+  }
+}
