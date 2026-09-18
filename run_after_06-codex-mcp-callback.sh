@@ -57,8 +57,46 @@ ensure_key() {
     changed=1
 }
 
+# An absent server block is restored, a present one is left exactly as it is: the
+# file is where a login or a hand-tuned timeout lands, and this script has no way
+# to tell a deliberate edit from drift. Absence is the only unambiguous signal,
+# and it is the one that actually bit: codex dropped the Mac's playwright entry
+# on its own. That also propagates, because sandy seeds each sandbox by mirroring
+# these blocks from the host.
+ensure_server() {
+    name="$1"
+    block="$2"
+
+    grep -q "^\[mcp_servers\.$name\]" "$config" && return 0
+
+    printf '\n%s\n' "$block" >> "$config"
+    echo "codex: restored [mcp_servers.$name]"
+    changed=1
+}
+
 ensure_key mcp_oauth_callback_port '3118'
 ensure_key mcp_oauth_callback_url '"http://localhost:3118/callback"'
+
+# Slack's client id is the one the Claude slack plugin ships, not a self-created
+# app; it is what the pinned callback above is registered against.
+ensure_server slack '[mcp_servers.slack]
+url = "https://mcp.slack.com/mcp"
+oauth.client_id = "1601185624273.8899143856786"'
+
+ensure_server linear-server '[mcp_servers.linear-server]
+url = "https://mcp.linear.app/mcp"'
+
+ensure_server playwright '[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@0.0.80"]'
+
+# env_vars forwards the name from the launching shell. The [.env] table instead
+# sets a literal, and codex never expands ${VAR} there, so that form silently
+# hands the server the string rather than the key.
+ensure_server doit_mcp_server '[mcp_servers.doit_mcp_server]
+command = "npx"
+args = ["-y", "@doitintl/doit-mcp-server@1.6.0"]
+env_vars = ["DOIT_API_KEY"]'
 
 if (( changed )); then
     echo "codex: run 'codex mcp login slack' if Slack reads Not logged in"
