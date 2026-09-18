@@ -21,6 +21,11 @@ MANAGED = {
         "claude-fable-5-1": {"effortLevel": "low"},
     },
     "tui": "fullscreen",
+    # Transcripts default to a 30-day sweep. They are the record of how a piece of
+    # work was actually done, which is worth more later than the disk it costs, so
+    # keep them effectively forever. A large number rather than 0, because 0 is
+    # ambiguous between "never expire" and "expire immediately".
+    "cleanupPeriodDays": 3650,
     "skipDangerousModePermissionPrompt": True,
     "statusLine": {
         "type": "command",
