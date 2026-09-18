@@ -328,7 +328,8 @@ web_client {
 // Default: default
 // 
 // theme "dracula"
-theme "stacked"
+// theme "stacked"
+theme "tokyo-night-storm"
 
 themes {
     stacked {
