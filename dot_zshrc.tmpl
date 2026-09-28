@@ -113,6 +113,11 @@ alias configzsh='$EDITOR $(chezmoi source-path)/dot_zshrc.tmpl'
 
 alias typora='open -a typora'
 {{- end }}
+{{- if eq .profile "full" }}
+
+# viddy is a full-profile aqua package
+alias watch='viddy'
+{{- end }}
 
 # ----------------------------------------------------
 # ----- colors ----------------------------------------
